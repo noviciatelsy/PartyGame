@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 
 public class BalloonGameManager : MonoBehaviour
@@ -7,11 +8,10 @@ public class BalloonGameManager : MonoBehaviour
     public GameObject balloonPrefab;
     public Animator anim;
     public AnimationClip ccb;
-    [Header("Settings")]
     public float shortPressAmount = 0.2f;
     public float continuousSpeed = 0.8f;
     [SerializeField] private float maxHoldTime;
-
+    [SerializeField] private TextMeshProUGUI gameTip;
     private float currentHoldTimer = 0f;
     private bool isGameOver = false;
     private bool canContinuousInflate = false;
@@ -34,6 +34,7 @@ public class BalloonGameManager : MonoBehaviour
         }
         if (Input.GetKey(KeyCode.Space) && canContinuousInflate)
         {
+            gameTip.text = $"持续充气中... 持续时间: {currentHoldTimer:F1}s";
             HandleContinuousInflation();
         }
         if (Input.GetKeyUp(KeyCode.Space))
@@ -79,7 +80,7 @@ public class BalloonGameManager : MonoBehaviour
     {
         isGameOver = true;
         canContinuousInflate = false;
-        Debug.Log("爆炸！");
+        gameTip.text = "爆炸！";
         anim.Play("爆炸");
     }
 }
