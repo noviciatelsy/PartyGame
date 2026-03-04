@@ -67,8 +67,8 @@ public class RedButton03 : MonoBehaviour
             greenButton.position = pos;
         }
 
-        // 随机等待 0~2 秒
-        float randomDelay = Random.Range(0f, 2f);
+        // 随机等待 1~3 秒
+        float randomDelay = Random.Range(1f, 3f);
         yield return new WaitForSeconds(randomDelay);
 
         // 开始移动
