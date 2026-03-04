@@ -1,128 +1,132 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
-
 public class BalloonGameManager : MonoBehaviour
 {
     public static BalloonGameManager instance;
-    public GameObject balloonPrefab;
-    public Animator anim;
-    public AnimationClip ccb;
-    public float shortPressAmount = 0.2f;
+
+    [Header("Player Settings")]
+    public BalloonEntity p1;
+    public BalloonEntity p2;
+
+    [Header("Global Settings")]
     public float continuousSpeed = 0.8f;
-
-    [Header("漏气设置")]
     public float deflateSpeed = 0.4f;
-    public Vector3 minScale;
-
     [SerializeField] private float maxHoldTime;
     [SerializeField] private TextMeshProUGUI gameTip;
-    private float currentHoldTimer = 0f;
-    private bool isGameOver = false;
-    private bool canContinuousInflate = false;
-    private Coroutine prepareRoutine;
 
-    private void Start()
+    private void Awake()
     {
         if (instance == null) instance = this;
         maxHoldTime = Random.Range(4.0f, 8.0f);
-        anim = balloonPrefab.GetComponent<Animator>();
-        minScale = balloonPrefab.transform.localScale;
+
+        InitPlayer(p1);
+        InitPlayer(p2);
+    }
+
+    private void InitPlayer(BalloonEntity p)
+    {
+        p.anim = p.balloonObj.GetComponent<Animator>();
+        p.minScale = p.balloonObj.transform.localScale;
     }
 
     private void Update()
     {
-        if (isGameOver) return;
-        if (Input.GetKeyDown(KeyCode.Space))
+        HandlePlayerInput(p1, KeyCode.Space);
+        HandlePlayerInput(p2, KeyCode.Mouse0);
+    }
+
+    private void HandlePlayerInput(BalloonEntity p, KeyCode key)
+    {
+        if (p.isGameOver) return;
+
+        if (Input.GetKeyDown(key))
         {
-            if (prepareRoutine != null) StopCoroutine(prepareRoutine);
-            prepareRoutine = StartCoroutine(PrepareToInflate());
-        }
-        if (Input.GetKey(KeyCode.Space) && canContinuousInflate)
-        {
-            gameTip.text = $"持续充气中... 进度: {currentHoldTimer:F1}s";
-            HandleContinuousInflation();
-        }
-        else if (!Input.GetKey(KeyCode.Space))
-        {
-            HandleDeflation();
+            if (p.prepareRoutine != null) StopCoroutine(p.prepareRoutine);
+            p.prepareRoutine = StartCoroutine(PrepareToInflateRoutine(p, key));
         }
 
-        if (Input.GetKeyUp(KeyCode.Space))
+        if (Input.GetKey(key) && p.canContinuousInflate)
         {
-            StopInflating();
+            HandleContinuousInflation(p);
+        }
+        else if (!Input.GetKey(key))
+        {
+            HandleDeflation(p);
+        }
+
+        if (Input.GetKeyUp(key))
+        {
+            StopInflating(p);
         }
     }
 
-    private IEnumerator PrepareToInflate()
+    private IEnumerator PrepareToInflateRoutine(BalloonEntity p, KeyCode key)
     {
-        anim.Play("充充爆", 0, 0f);
-        float waitTime = (ccb != null) ? ccb.length : 0.3f;
+        p.canContinuousInflate = false;
+        p.anim.Play("充充爆", 0, 0f);
+
+        float waitTime = (p.ccb != null) ? p.ccb.length : 0.3f;
         yield return new WaitForSeconds(waitTime);
 
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKey(key))
         {
-            canContinuousInflate = true;
+            p.canContinuousInflate = true;
         }
         else
         {
-            anim.Play("Idle");
+            p.anim.Play("Idle");
         }
     }
 
-    private void HandleContinuousInflation()
+    private void HandleContinuousInflation(BalloonEntity p)
     {
-        currentHoldTimer += Time.deltaTime;
+        p.currentHoldTimer += Time.deltaTime;
         float growth = continuousSpeed * Time.deltaTime;
-        balloonPrefab.transform.localScale += new Vector3(growth, growth, growth);
+        p.balloonObj.transform.localScale += new Vector3(growth, growth, growth);
 
-        if (currentHoldTimer >= maxHoldTime)
+        if (p.currentHoldTimer >= maxHoldTime)
         {
-            Explode();
+            Explode(p);
         }
     }
-    private void HandleDeflation()
+
+    private void HandleDeflation(BalloonEntity p)
     {
-        if (balloonPrefab.transform.localScale.x > minScale.x)
+        if (p.balloonObj.transform.localScale.x > p.minScale.x)
         {
             float shrink = deflateSpeed * Time.deltaTime;
-            balloonPrefab.transform.localScale -= new Vector3(shrink, shrink, shrink);
-            currentHoldTimer -= Time.deltaTime * (deflateSpeed / continuousSpeed);
-            if (currentHoldTimer < 0) currentHoldTimer = 0;
+            p.balloonObj.transform.localScale -= new Vector3(shrink, shrink, shrink);
 
-            gameTip.text = "气球漏气中...";
+            p.currentHoldTimer -= Time.deltaTime * (deflateSpeed / continuousSpeed);
+            if (p.currentHoldTimer < 0) p.currentHoldTimer = 0;
         }
         else
         {
-            balloonPrefab.transform.localScale = minScale;
-            currentHoldTimer = 0;
+            p.balloonObj.transform.localScale = p.minScale;
+            p.currentHoldTimer = 0;
         }
     }
 
-    private void StopInflating()
+    private void StopInflating(BalloonEntity p)
     {
-        canContinuousInflate = false;
-        if (prepareRoutine != null) StopCoroutine(prepareRoutine);
+        p.canContinuousInflate = false;
+        if (p.prepareRoutine != null) StopCoroutine(p.prepareRoutine);
 
-        if (!isGameOver)
+        if (!p.isGameOver)
         {
-            if (balloonPrefab.transform.localScale.x >= minScale.x)
-            {
-                anim.Play("爆爆充");
-            }
+            if (p.balloonObj.transform.localScale.x > p.minScale.x + 0.05f)
+                p.anim.Play("爆爆充");
             else
-            anim.Play("Idle");
+                p.anim.Play("Idle");
         }
-        
-
-        Debug.Log("停止充气，当前计时：" + currentHoldTimer);
     }
 
-    private void Explode()
+    private void Explode(BalloonEntity p)
     {
-        isGameOver = true;
-        canContinuousInflate = false;
-        gameTip.text = "爆炸！";
-        anim.Play("爆炸");
+        //isGameOver = true;
+        p.canContinuousInflate = false;
+        gameTip.text = $"{p.playerName} Exploded!";
+        p.anim.Play("爆炸");
     }
 }
