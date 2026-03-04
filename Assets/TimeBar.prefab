@@ -27,15 +27,15 @@ RectTransform:
   m_GameObject: {fileID: 3267716333966986563}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 100}
-  m_LocalScale: {x: 10, y: 0.2, z: 1}
+  m_LocalScale: {x: 1, y: 0.2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1741616324388662255}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0.2}
-  m_AnchoredPosition: {x: 455.5, y: -62}
-  m_SizeDelta: {x: -1819, y: -118}
+  m_AnchoredPosition: {x: 600, y: -62}
+  m_SizeDelta: {x: -800, y: -118}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &5499988771945401465
 CanvasRenderer:
@@ -58,7 +58,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.78431374}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -102,15 +102,15 @@ RectTransform:
   m_GameObject: {fileID: 3415732841061712159}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 20}
-  m_LocalScale: {x: 10.2, y: 0.3, z: 1}
+  m_LocalScale: {x: 1, y: 0.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1741616324388662255}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0.2}
-  m_AnchoredPosition: {x: 443, y: -62}
-  m_SizeDelta: {x: -1819, y: -118}
+  m_AnchoredPosition: {x: 590, y: -62}
+  m_SizeDelta: {x: -780, y: -118}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &1766152165628305023
 CanvasRenderer:
@@ -176,8 +176,8 @@ Transform:
   m_GameObject: {fileID: 3789120759797987630}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -10, y: 0, z: 0}
-  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
+  m_LocalPosition: {x: -10.43, y: 0.28, z: 0}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 7655822525120511661}
@@ -282,7 +282,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   duration: 10
   targetScaleObject: {fileID: 4241612799206777265}
-  startScaleX: 10
+  startScaleX: 1
   endScaleX: 0
 --- !u!1 &8824318168686664358
 GameObject:
