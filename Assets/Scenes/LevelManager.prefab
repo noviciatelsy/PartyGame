@@ -49,5 +49,7 @@ MonoBehaviour:
     weight: 1
   - sceneName: RedButton02
     weight: 1
+  - sceneName: RedButton03
+    weight: 1
   avoidRepeat: 1
   Transition: {fileID: 0}
