@@ -6,17 +6,16 @@ public class BalloonEntity
 {
     public string playerName;
     public GameObject balloonObj;
-    public Animator anim;
     public AnimationClip ccb;
-    public int id;
+    public Sprite initialSprite;
+    public Sprite inflatingSprite;
+    public int score = 0;
+    [HideInInspector] public Animator anim;
+    [HideInInspector] public SpriteRenderer spriteRenderer;
+    [HideInInspector] public Vector3 minScale;
     [HideInInspector] public float currentHoldTimer = 0f;
     [HideInInspector] public bool isGameOver = false;
     [HideInInspector] public bool canContinuousInflate = false;
     [HideInInspector] public Coroutine prepareRoutine;
-    [HideInInspector] public Vector3 minScale;
-    public void Init()
-    {
-        anim = balloonObj.GetComponent<Animator>();
-        minScale = balloonObj.transform.localScale;
-    }
+    [HideInInspector] public bool isWaitingToPlayDeflateAnim = false;
 }
