@@ -18,7 +18,6 @@ public class Click : MonoBehaviour
         targetY = upY;
         Vector3 pos = transform.localPosition;
         pos.y = upY;
-        transform.localPosition = pos;
     }
 
     /// <summary>

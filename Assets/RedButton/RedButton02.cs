@@ -5,16 +5,16 @@ using UnityEngine;
 public class RedButton02 : MonoBehaviour
 {
     [Header("拔河参数")]
-    public float winThreshold = 20f;  // 差距达到多少胜利
+    public float winThreshold = 12f;  // 差距达到多少胜利
     public float powerPerClick = 1f;
 
     [Header("手")]
     public Click player1Hand;
     public Click player2Hand;
 
-    [Header("UI")]
-    public TextMeshPro player1Text;
-    public TextMeshPro player2Text;
+    [Header("中线物体")]
+    public Transform lineObject;
+    private const float progressToWorldScale = 40f;
 
     public float progress = 0.5f;
     private float targetProgress = 0.5f;
@@ -23,6 +23,7 @@ public class RedButton02 : MonoBehaviour
     public Material splitMaterial;
     private float tugPower = 0f;
     private bool gameFinished = false;
+    private Coroutine winCoroutine;
 
     private void Awake()
     {
@@ -31,6 +32,8 @@ public class RedButton02 : MonoBehaviour
 
         if (splitMaterial != null)
             splitMaterial.SetFloat("_LineOffset", 0.5f);
+
+        lineObject.position = new Vector3(0, 0, 5);
     }
 
     private void Start()
@@ -38,7 +41,7 @@ public class RedButton02 : MonoBehaviour
         GlobalInput.Instance.OnSpaceAction += OnPlayer1Input;
         GlobalInput.Instance.OnMouseLeftAction += OnPlayer2Input;
         splitMaterial.SetFloat("_LineOffset", 0.5f);
-        UpdateUI();
+        //UpdateUI();
     }
 
     private void Update()
@@ -92,7 +95,7 @@ public class RedButton02 : MonoBehaviour
     private void AfterPowerChanged()
     {
         CheckWin();
-        UpdateUI();
+        //UpdateUI();
         UpdateTargetProgress();
     }
 
@@ -127,6 +130,8 @@ public class RedButton02 : MonoBehaviour
         // 动画
         // 音效
         // 关卡结束
+        if (winCoroutine == null)
+            winCoroutine = StartCoroutine(WinDelayCoroutine());
     }
 
     private void SyncShader()
@@ -135,14 +140,36 @@ public class RedButton02 : MonoBehaviour
         {
             splitMaterial.SetFloat("_LineOffset", progress);
         }
+        SyncLineObject();
+    }
+
+    private void SyncLineObject()
+    {
+        if (lineObject == null) return;
+
+        float delta = progress - 0.5f;
+
+        float xPos = delta * progressToWorldScale;
+
+        lineObject.position = new Vector3(
+            xPos,
+            0f,
+            5f
+        );
     }
 
     private void UpdateUI()
     {
-        if (player1Text != null)
-            player1Text.text = "力量: " + tugPower.ToString("F0");
+        //
+    }
 
-        if (player2Text != null)
-            player2Text.text = "力量: " + tugPower.ToString("F0");
+    private IEnumerator WinDelayCoroutine()
+    {
+        yield return new WaitForSeconds(2.0f);
+
+        if (LevelManager.Instance != null)
+        {
+            LevelManager.Instance.NextLevel();
+        }
     }
 }
