@@ -14,4 +14,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TestScene2.unity
     guid: c6310ab10638dd047a8c302f3c698d00
+  - enabled: 1
+    path: Assets/Scenes/RedButton01.unity
+    guid: 190308c67dbc64a489b24cbbc44547cc
+  - enabled: 1
+    path: Assets/Scenes/RedButton02.unity
+    guid: 2efbd126d151c6c44b88c8e0fdcb81b0
   m_configObjects: {}

@@ -16,6 +16,7 @@ public class RedButton01 : MonoBehaviour
     private int player2Count = 0;
 
     private bool gameFinished = false;
+    private Coroutine winCoroutine;
 
     private void Start()
     {
@@ -82,6 +83,8 @@ public class RedButton01 : MonoBehaviour
         // 播放动画
         // 禁止输入
         // 触发下一场景
+        if (winCoroutine == null)
+            winCoroutine = StartCoroutine(WinDelayCoroutine());
     }
 
     private void UpdateUI()
@@ -91,5 +94,15 @@ public class RedButton01 : MonoBehaviour
 
         if (player2Text != null)
             player2Text.text = player2Count.ToString();
+    }
+
+    private IEnumerator WinDelayCoroutine()
+    {
+        yield return new WaitForSeconds(2.0f);
+
+        if (LevelManager.Instance != null)
+        {
+            LevelManager.Instance.NextLevel();
+        }
     }
 }
