@@ -25,6 +25,7 @@ public class BalloonGameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI timerText;
 
     private bool roundActive = false;
+    private Coroutine winCoroutine; //新增:获胜切换关卡调用的协程引用
 
     private void Awake()
     {
@@ -206,8 +207,22 @@ public class BalloonGameManager : MonoBehaviour
         {
             string finalWinner = (p1.score >= 3) ? p1.playerName : p2.playerName;
             gameTip.text = $"游戏结束！{finalWinner} 是最终胜者！";
+            //===========新增:切换随机下一关==============
+            if (winCoroutine == null)
+                winCoroutine = StartCoroutine(WinDelayCoroutine());
         }
         else Invoke(nameof(StartNewRound), 3.0f);
+    }
+
+    //============新增:切换关卡协程==============
+    private IEnumerator WinDelayCoroutine()
+    {
+        yield return new WaitForSeconds(3f);
+
+        if (LevelManager.Instance != null)
+        {
+            LevelManager.Instance.NextLevel();
+        }
     }
 
     private void UpdateScoreUI()
