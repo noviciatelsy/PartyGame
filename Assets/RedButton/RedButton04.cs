@@ -13,7 +13,6 @@ public class RedButton04 : MonoBehaviour
     private bool gameFinished = false;
     private Coroutine winCoroutine;
 
-
     private void Start()
     {
         GlobalInput.Instance.OnSpaceAction += OnPlayer1Input;
