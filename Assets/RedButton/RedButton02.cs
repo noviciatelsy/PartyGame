@@ -124,7 +124,7 @@ public class RedButton02 : MonoBehaviour
     private void DeclareWinner(int playerIndex)
     {
         Debug.Log("Winner is Player " + playerIndex);
-
+        GlobalScoreManager.Instance.AddScore(playerIndex, 1);
         // 这里可以做：
         // 胜利UI
         // 动画

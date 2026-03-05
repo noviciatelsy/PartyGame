@@ -77,7 +77,7 @@ public class RedButton01 : MonoBehaviour
         gameFinished = true;
 
         Debug.Log("Winner is Player " + playerIndex);
-
+        GlobalScoreManager.Instance.AddScore(playerIndex, 1);
         // 这里可以加：
         // UI显示胜利
         // 播放动画

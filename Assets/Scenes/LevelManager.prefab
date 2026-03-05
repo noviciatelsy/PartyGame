@@ -62,10 +62,10 @@ MonoBehaviour:
   - sceneName: CowBoyFight01
     weight: 1
   - sceneName: FishingLevel1
-    weight: 10
+    weight: 3
   - sceneName: FishingLevel2
-    weight: 10
+    weight: 3
   - sceneName: Balloon
-    weight: 1
+    weight: 3
   avoidRepeat: 1
   Transition: {fileID: 0}

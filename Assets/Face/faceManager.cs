@@ -34,9 +34,15 @@ public class faceManager : MonoBehaviour
             return;
 
         if (player1Score > player2Score)
+        {
             Debug.Log("Player 1 Wins!");
+            GlobalScoreManager.Instance.AddScore(1, 1);
+        }
         else if (player2Score > player1Score)
+        {
             Debug.Log("Player 2 Wins!");
+            GlobalScoreManager.Instance.AddScore(2, 1);
+        }
         else
             Debug.Log("Draw!");
 

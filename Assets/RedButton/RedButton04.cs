@@ -88,8 +88,8 @@ public class RedButton04 : MonoBehaviour
         gameFinished = true;
         canTouch = false;
 
-
         Debug.Log("Winner is Player " + playerIndex);
+        GlobalScoreManager.Instance.AddScore(playerIndex, 1);
 
         if (winCoroutine == null)
             winCoroutine = StartCoroutine(WinDelayCoroutine());

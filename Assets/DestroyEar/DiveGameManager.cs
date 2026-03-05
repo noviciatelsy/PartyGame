@@ -89,11 +89,13 @@ public class DiveGameManager : MonoBehaviour
         {
             Debug.Log("Player2 Wins!");
             winner = player2;
+            GlobalScoreManager.Instance.AddScore(2, 1);
         }
         else
         {
             Debug.Log("Player1 Wins!");
             winner = player1;
+            GlobalScoreManager.Instance.AddScore(1, 1);
         }
 
         player1.isfinished = true;
@@ -145,10 +147,12 @@ public class DiveGameManager : MonoBehaviour
         if (p1Distance < p2Distance)
         {
             Debug.Log("Player1 Wins!");
+            GlobalScoreManager.Instance.AddScore(1, 1);
         }
         else if (p2Distance < p1Distance)
         {
             Debug.Log("Player2 Wins!");
+            GlobalScoreManager.Instance.AddScore(2, 1);
         }
         else
         {

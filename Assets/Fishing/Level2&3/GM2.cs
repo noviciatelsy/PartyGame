@@ -219,7 +219,16 @@ public class GM2 : MonoBehaviour
 		matchActive = false;
 		//调用LevelManager切换关卡
 		Debug.Log($"Match End. Score1: {score1}, Score2: {score2}");
-
+		//=================新增代码=======================
+		if (score1 > score2)
+		{
+			GlobalScoreManager.Instance.AddScore(1, 1);
+		}
+		else if (score1 < score2)
+		{
+			GlobalScoreManager.Instance.AddScore(2, 1);
+		}
+		else Debug.Log("draw");
         if (winCoroutine == null)
             winCoroutine = StartCoroutine(WinDelayCoroutine());
     }

@@ -205,6 +205,15 @@ public class BalloonGameManager : MonoBehaviour
         {
             string finalWinner = (p1.score >= 3) ? p1.playerName : p2.playerName;
             gameTip.text = $"游戏结束！{finalWinner} 是最终胜者！";
+
+            if (p1.score >= 3)
+            {
+                GlobalScoreManager.Instance.AddScore(1, 1);
+            }
+            else
+            {
+                GlobalScoreManager.Instance.AddScore(2, 1);
+            }
             if (winCoroutine == null)
                 winCoroutine = StartCoroutine(WinDelayCoroutine());
         }

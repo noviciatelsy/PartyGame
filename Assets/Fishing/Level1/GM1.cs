@@ -133,6 +133,16 @@ public class GM1 : MonoBehaviour
         if (roundWinner.Score >= roundsToWin)
         {
             Debug.Log($"{roundWinner.playerName} is match winner!");
+            //========================新增代码================
+            if (roundWinner.playerID == 1)
+            {
+                GlobalScoreManager.Instance.AddScore(1, 1);
+            }
+            else
+            {
+                GlobalScoreManager.Instance.AddScore(2, 1);
+            }
+
             if (winCoroutine == null)
                 winCoroutine = StartCoroutine(MatchWinCoroutine(roundWinner));
         }
