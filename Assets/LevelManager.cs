@@ -14,10 +14,8 @@ public class LevelManager : MonoBehaviour
         public int weight = 1;
     }
 
-    [Header("�ؿ��б�����д�������� + Ȩ�أ�")]
+    [Header("LevelList")]
     public List<LevelData> levels = new List<LevelData>();
-
-    [Header("�Ƿ���������ظ��ؿ�")]
     public bool avoidRepeat = true;
 
     private string lastLevelLoaded = "";
@@ -50,14 +48,14 @@ public class LevelManager : MonoBehaviour
 
         if (transitionObj == null)
         {
-            Debug.LogWarning("û���ҵ� LevelTransition ����");
+            Debug.LogWarning("lack LevelTransition");
             yield break;
         }
         Transition = transitionObj.GetComponentInChildren<Animator>();
 
         if (Transition == null)
         {
-            Debug.LogWarning("LevelTransition ��û�� Animator");
+            Debug.LogWarning("LevelTransition don't have Animator");
             yield break;
         }
 
