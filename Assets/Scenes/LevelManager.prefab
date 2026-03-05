@@ -55,5 +55,7 @@ MonoBehaviour:
     weight: 1
   - sceneName: face
     weight: 3
+  - sceneName: DestroyEar
+    weight: 3
   avoidRepeat: 1
   Transition: {fileID: 0}

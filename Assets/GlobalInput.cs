@@ -5,8 +5,15 @@ public class GlobalInput : MonoBehaviour
     public static GlobalInput Instance;
 
     [Header("Timing")]
-    public float longPressThreshold = 0.4f;
+    public float longPressThreshold = 0.1f;
     public float doubleClickThreshold = 0.3f;
+
+    // HOLD STATE
+    public bool SpaceHolding { get; private set; }
+    public bool MouseHolding { get; private set; }
+
+    public System.Action OnMouseHoldStart;
+    public System.Action OnMouseUp;
 
     public enum InputType
     {
@@ -55,19 +62,23 @@ public class GlobalInput : MonoBehaviour
     // =====================================================
     private void HandleSpace()
     {
-        // detect when press duration crosses the long-press threshold while still pressing
+        // detect long press while pressing
         if (spaceIsPressing && !spaceLongPressTriggered)
         {
             if (Time.time - spacePressStart >= longPressThreshold)
             {
                 spaceLongPressTriggered = true;
+
+                SpaceHolding = true;
                 OnSpaceHoldStart?.Invoke();
             }
         }
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
             spaceIsPressing = true;
             spacePressStart = Time.time;
+
             OnSpaceDown?.Invoke();
             spaceLongPressTriggered = false;
         }
@@ -76,24 +87,20 @@ public class GlobalInput : MonoBehaviour
         {
             spaceIsPressing = false;
 
-            OnSpaceUp?.Invoke();
+            SpaceHolding = false;
 
-            // reset long-press trigger
-            spaceLongPressTriggered = false;
+            OnSpaceUp?.Invoke();
 
             float duration = Time.time - spacePressStart;
 
-            // ��������
             if (duration >= longPressThreshold)
             {
                 OnSpaceAction?.Invoke(InputType.LongPress);
                 return;
             }
 
-            // ===== �ؼ������̴������� =====
             OnSpaceAction?.Invoke(InputType.SingleClick);
 
-            // �ж��Ƿ�˫��
             if (Time.time - spaceLastClickTime <= doubleClickThreshold)
             {
                 OnSpaceAction?.Invoke(InputType.DoubleClick);
@@ -114,9 +121,25 @@ public class GlobalInput : MonoBehaviour
             mousePressStart = Time.time;
         }
 
+        // 检测 HoldStart
+        if (mouseIsPressing && !MouseHolding)
+        {
+            if (Time.time - mousePressStart >= longPressThreshold)
+            {
+                MouseHolding = true;
+                OnMouseHoldStart?.Invoke();
+            }
+        }
+
         if (Input.GetMouseButtonUp(0))
         {
             mouseIsPressing = false;
+
+            if (MouseHolding)
+            {
+                MouseHolding = false;
+                OnMouseUp?.Invoke();
+            }
 
             float duration = Time.time - mousePressStart;
 
@@ -126,10 +149,8 @@ public class GlobalInput : MonoBehaviour
                 return;
             }
 
-            // ===== ���̵��� =====
             OnMouseLeftAction?.Invoke(InputType.SingleClick);
 
-            // ˫�����
             if (Time.time - mouseLastClickTime <= doubleClickThreshold)
             {
                 OnMouseLeftAction?.Invoke(InputType.DoubleClick);
