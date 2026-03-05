@@ -30,6 +30,12 @@ EditorBuildSettings:
     path: Assets/Scenes/face.unity
     guid: 48e5d4da1f8f149489f7c2f01f1b1116
   - enabled: 1
-    path: Assets/Scenes/DestoryEar.unity
+    path: Assets/Scenes/DestroyEar.unity
     guid: f9255b5aa87fea0439971ac982c42242
+  - enabled: 1
+    path: Assets/Scenes/CowBoyFight.unity
+    guid: 7cb8e8400c17f8b4886dfe391ada7886
+  - enabled: 1
+    path: Assets/Scenes/CowBoyFight01.unity
+    guid: 9bd0354a152f181468f8f8cd0c0f257b
   m_configObjects: {}

@@ -57,5 +57,9 @@ MonoBehaviour:
     weight: 3
   - sceneName: DestroyEar
     weight: 3
+  - sceneName: CowBoyFight
+    weight: 3
+  - sceneName: CowBoyFight01
+    weight: 1
   avoidRepeat: 1
   Transition: {fileID: 0}
