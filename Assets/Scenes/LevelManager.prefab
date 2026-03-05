@@ -57,9 +57,16 @@ MonoBehaviour:
     weight: 3
   - sceneName: DestroyEar
     weight: 3
+<<<<<<< Updated upstream
   - sceneName: CowBoyFight
     weight: 3
   - sceneName: CowBoyFight01
     weight: 1
+=======
+  - sceneName: FishingLevel1
+    weight: 3
+  - sceneName: FishingLevel2
+    weight: 2
+>>>>>>> Stashed changes
   avoidRepeat: 1
   Transition: {fileID: 0}

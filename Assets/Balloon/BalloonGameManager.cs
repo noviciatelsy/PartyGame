@@ -25,7 +25,7 @@ public class BalloonGameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI timerText;
 
     private bool roundActive = false;
-    private Coroutine winCoroutine; //新增:获胜切换关卡调用的协程引用
+    private Coroutine winCoroutine; 
 
     private void Awake()
     {
@@ -46,7 +46,7 @@ public class BalloonGameManager : MonoBehaviour
 
     private void StartNewRound()
     {
-        maxHoldTime = Random.Range(5.0f, 10.0f);
+        maxHoldTime = Random.Range(5.0f, 8.0f);
         currentTimer = initialTimer;
         ResetBalloon(p1);
         ResetBalloon(p2);
@@ -131,7 +131,6 @@ public class BalloonGameManager : MonoBehaviour
 
     private void HandleContinuousInflation(BalloonEntity p)
     {
-        // 切换为充气中贴图
         if (p.spriteRenderer != null && p.spriteRenderer.sprite != p.inflatingSprite)
             p.spriteRenderer.sprite = p.inflatingSprite;
 
@@ -153,7 +152,6 @@ public class BalloonGameManager : MonoBehaviour
         }
         else
         {
-            // 彻底缩回初始尺寸，切换回初始贴图
             if (p.spriteRenderer != null) p.spriteRenderer.sprite = p.initialSprite;
 
             if (p.isWaitingToPlayDeflateAnim)
@@ -207,24 +205,20 @@ public class BalloonGameManager : MonoBehaviour
         {
             string finalWinner = (p1.score >= 3) ? p1.playerName : p2.playerName;
             gameTip.text = $"游戏结束！{finalWinner} 是最终胜者！";
-            //===========新增:切换随机下一关==============
-            if (winCoroutine == null)
-                winCoroutine = StartCoroutine(WinDelayCoroutine());
+            // if (winCoroutine == null)
+            //     winCoroutine = StartCoroutine(WinDelayCoroutine());
         }
         else Invoke(nameof(StartNewRound), 3.0f);
     }
+    // private IEnumerator WinDelayCoroutine()
+    // {
+    //     yield return new WaitForSeconds(3f);
 
-    //============新增:切换关卡协程==============
-    private IEnumerator WinDelayCoroutine()
-    {
-        yield return new WaitForSeconds(3f);
-
-        if (LevelManager.Instance != null)
-        {
-            LevelManager.Instance.NextLevel();
-        }
-    }
-
+    //     if (LevelManager.Instance != null)
+    //     {
+    //         LevelManager.Instance.NextLevel();
+    //     }
+    // }
     private void UpdateScoreUI()
     {
         if (p1.score > 0 && p1.score <= p1Medals.Count) p1Medals[p1.score - 1].SetActive(true);

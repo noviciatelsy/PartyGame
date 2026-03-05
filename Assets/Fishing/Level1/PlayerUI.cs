@@ -17,6 +17,7 @@ public class PlayerEntity
     public string playerName;
     public int playerID;
     private int score = 0;
+    public int Score { get => score; set => score = value; }
     [Header("Bounds")]
     public RectTransform UpBound;
     public RectTransform DownBound;
