@@ -205,20 +205,22 @@ public class BalloonGameManager : MonoBehaviour
         {
             string finalWinner = (p1.score >= 3) ? p1.playerName : p2.playerName;
             gameTip.text = $"游戏结束！{finalWinner} 是最终胜者！";
-            // if (winCoroutine == null)
-            //     winCoroutine = StartCoroutine(WinDelayCoroutine());
+            if (winCoroutine == null)
+                winCoroutine = StartCoroutine(WinDelayCoroutine());
         }
         else Invoke(nameof(StartNewRound), 3.0f);
     }
-    // private IEnumerator WinDelayCoroutine()
-    // {
-    //     yield return new WaitForSeconds(3f);
 
-    //     if (LevelManager.Instance != null)
-    //     {
-    //         LevelManager.Instance.NextLevel();
-    //     }
-    // }
+    private IEnumerator WinDelayCoroutine()
+    {
+        yield return new WaitForSeconds(3f);
+
+        if (LevelManager.Instance != null)
+        {
+            LevelManager.Instance.NextLevel();
+        }
+    }
+
     private void UpdateScoreUI()
     {
         if (p1.score > 0 && p1.score <= p1Medals.Count) p1Medals[p1.score - 1].SetActive(true);

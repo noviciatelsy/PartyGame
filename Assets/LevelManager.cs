@@ -38,32 +38,31 @@ public class LevelManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        Time.timeScale = 1f;
         StartCoroutine(HandleSceneTransition());
     }
 
     private IEnumerator HandleSceneTransition()
     {
-        yield return null; 
+        yield return null;
+
         GameObject transitionObj = GameObject.FindGameObjectWithTag("LevelTransition");
 
         if (transitionObj == null)
         {
-            Debug.LogWarning("lack LevelTransition");
+            Debug.LogWarning("LevelTransition not found. Transition animation skipped.");
+            Transition = null;
             yield break;
         }
+
         Transition = transitionObj.GetComponentInChildren<Animator>();
 
         if (Transition == null)
         {
-            Debug.LogWarning("LevelTransition don't have Animator");
-            yield break;
+            Debug.LogWarning("LevelTransition Animator missing. Transition animation skipped.");
         }
-
     }
 
-    // ============================
-    // ������ú���
-    // ============================
     public void NextLevel()
     {
         if (levels == null || levels.Count == 0)
@@ -105,9 +104,12 @@ public class LevelManager : MonoBehaviour
         if (Transition != null)
         {
             Transition.SetTrigger("Start");
-            yield return new WaitForSeconds(0.6f);
+            yield return new WaitForSecondsRealtime(0.6f);
         }
         SceneManager.LoadScene(sceneName);
+
+        //可能会有错
+        Time.timeScale = 1f;
     }
     // ============================
     // ��Ȩ��������߼�

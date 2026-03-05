@@ -47,8 +47,9 @@ public class GM2 : MonoBehaviour
 	private bool matchActive = false;
 
 	private Coroutine roundCoroutine;
+    private Coroutine winCoroutine;
 
-	void Start()
+    void Start()
 	{
 		if (player1Medals != null) foreach (var m in player1Medals) if (m != null) m.SetActive(false);
 		if (player2Medals != null) foreach (var m in player2Medals) if (m != null) m.SetActive(false);
@@ -218,5 +219,18 @@ public class GM2 : MonoBehaviour
 		matchActive = false;
 		//调用LevelManager切换关卡
 		Debug.Log($"Match End. Score1: {score1}, Score2: {score2}");
-	}
+
+        if (winCoroutine == null)
+            winCoroutine = StartCoroutine(WinDelayCoroutine());
+    }
+
+    private IEnumerator WinDelayCoroutine()
+    {
+        yield return new WaitForSeconds(3f);
+
+        if (LevelManager.Instance != null)
+        {
+            LevelManager.Instance.NextLevel();
+        }
+    }
 }
