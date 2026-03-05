@@ -38,4 +38,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/CowBoyFight01.unity
     guid: 9bd0354a152f181468f8f8cd0c0f257b
+  - enabled: 1
+    path: Assets/Scenes/Balloon.unity
+    guid: 719d3fea14a7e26409f5c67e53efd01b
+  - enabled: 1
+    path: Assets/Scenes/FishingLevel1.unity
+    guid: f312b4b4b9214f040aa268d0c78f98fe
+  - enabled: 1
+    path: Assets/Scenes/FishingLevel2.unity
+    guid: a0d5ad582137cca4a8eb1a1135fc899c
   m_configObjects: {}
