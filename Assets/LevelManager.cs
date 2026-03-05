@@ -88,6 +88,17 @@ public class LevelManager : MonoBehaviour
         StartCoroutine(LoadLevelAfterTransition(nextLevel));
         //SceneManager.LoadScene(nextLevel);
     }
+    public void LoadLevel(string sceneName)
+    {
+        if (string.IsNullOrEmpty(sceneName))
+        {
+            Debug.LogError("LevelManager.LoadLevel: sceneName is null or empty");
+            return;
+        }
+
+        lastLevelLoaded = sceneName;
+        StartCoroutine(LoadLevelAfterTransition(sceneName));
+    }
 
     private IEnumerator LoadLevelAfterTransition(string sceneName)
     {
