@@ -16,12 +16,16 @@ public class GlobalInput : MonoBehaviour
     }
 
     public System.Action<InputType> OnSpaceAction;
+    public System.Action OnSpaceDown;
+    public System.Action OnSpaceUp;
+    public System.Action OnSpaceHoldStart;
     public System.Action<InputType> OnMouseLeftAction;
 
     // ===== SPACE =====
     private float spacePressStart;
     private float spaceLastClickTime;
     private bool spaceIsPressing;
+    private bool spaceLongPressTriggered = false;
 
     // ===== MOUSE =====
     private float mousePressStart;
@@ -51,29 +55,45 @@ public class GlobalInput : MonoBehaviour
     // =====================================================
     private void HandleSpace()
     {
+        // detect when press duration crosses the long-press threshold while still pressing
+        if (spaceIsPressing && !spaceLongPressTriggered)
+        {
+            if (Time.time - spacePressStart >= longPressThreshold)
+            {
+                spaceLongPressTriggered = true;
+                OnSpaceHoldStart?.Invoke();
+            }
+        }
         if (Input.GetKeyDown(KeyCode.Space))
         {
             spaceIsPressing = true;
             spacePressStart = Time.time;
+            OnSpaceDown?.Invoke();
+            spaceLongPressTriggered = false;
         }
 
         if (Input.GetKeyUp(KeyCode.Space))
         {
             spaceIsPressing = false;
 
+            OnSpaceUp?.Invoke();
+
+            // reset long-press trigger
+            spaceLongPressTriggered = false;
+
             float duration = Time.time - spacePressStart;
 
-            // ³¤°´ÓÅÏÈ
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             if (duration >= longPressThreshold)
             {
                 OnSpaceAction?.Invoke(InputType.LongPress);
                 return;
             }
 
-            // ===== ¹Ø¼ü£ºÁ¢¿Ì´¥·¢µ¥»÷ =====
+            // ===== ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ =====
             OnSpaceAction?.Invoke(InputType.SingleClick);
 
-            // ÅÐ¶ÏÊÇ·ñË«»÷
+            // ï¿½Ð¶ï¿½ï¿½Ç·ï¿½Ë«ï¿½ï¿½
             if (Time.time - spaceLastClickTime <= doubleClickThreshold)
             {
                 OnSpaceAction?.Invoke(InputType.DoubleClick);
@@ -106,10 +126,10 @@ public class GlobalInput : MonoBehaviour
                 return;
             }
 
-            // ===== Á¢¿Ìµ¥»÷ =====
+            // ===== ï¿½ï¿½ï¿½Ìµï¿½ï¿½ï¿½ =====
             OnMouseLeftAction?.Invoke(InputType.SingleClick);
 
-            // Ë«»÷¼ì²â
+            // Ë«ï¿½ï¿½ï¿½ï¿½ï¿½
             if (Time.time - mouseLastClickTime <= doubleClickThreshold)
             {
                 OnMouseLeftAction?.Invoke(InputType.DoubleClick);

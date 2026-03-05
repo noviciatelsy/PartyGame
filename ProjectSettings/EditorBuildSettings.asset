@@ -27,6 +27,6 @@ EditorBuildSettings:
     path: Assets/Scenes/RedButton04.unity
     guid: 56f820cb1bd9bcb4a9a80e098d6662b8
   - enabled: 1
-    path: Assets/Scenes/face.unity
+    path: Assets/Scenes/Face.unity
     guid: 48e5d4da1f8f149489f7c2f01f1b1116
   m_configObjects: {}
