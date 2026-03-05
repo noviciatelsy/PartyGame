@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using UnityEngine.XR;
 
 public class GlobalInput : MonoBehaviour
 {
@@ -20,7 +22,7 @@ public class GlobalInput : MonoBehaviour
     public System.Action OnSpaceUp;
     public System.Action OnSpaceHoldStart;
     public System.Action<InputType> OnMouseLeftAction;
-
+public Action OnEscapeDown;
     // ===== SPACE =====
     private float spacePressStart;
     private float spaceLastClickTime;
@@ -48,6 +50,7 @@ public class GlobalInput : MonoBehaviour
     {
         HandleSpace();
         HandleMouse();
+        HandleEscape();
     }
 
     // =====================================================
@@ -136,6 +139,14 @@ public class GlobalInput : MonoBehaviour
             }
 
             mouseLastClickTime = Time.time;
+        }
+    }
+
+    private void HandleEscape()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            OnEscapeDown?.Invoke();
         }
     }
 }
