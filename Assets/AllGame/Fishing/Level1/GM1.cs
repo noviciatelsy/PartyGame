@@ -19,12 +19,6 @@ public class GM1 : MonoBehaviour
     void Start()
     {
         Time.timeScale = 1f; 
-        if (fishes == null || fishes.Count == 0)
-        {
-            Debug.LogWarning("GM1.Start: no fishes assigned.");
-            return;
-        }
-
         foreach (var fish in fishes)
         {
             if (fish != null) fish.Initialize();
