@@ -18,8 +18,10 @@ public class GlobalScoreManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
+        if (Instance != null)
         {
+            player1Score = Instance.player1Score;
+            player2Score = Instance.player2Score;
             Destroy(gameObject);
             return;
         }
@@ -28,6 +30,18 @@ public class GlobalScoreManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         SceneManager.sceneLoaded += OnSceneLoaded;
+        SceneManager.activeSceneChanged += OnSceneChanging;
+    }
+
+    void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        SceneManager.activeSceneChanged -= OnSceneChanging;
+    }
+
+    void OnSceneChanging(Scene oldScene, Scene newScene)
+    {
+        transform.SetParent(null);
     }
 
     void Start()
@@ -35,12 +49,26 @@ public class GlobalScoreManager : MonoBehaviour
         UpdateUI();
     }
 
+    void BindToCamera()
+    {
+        Camera cam = Camera.main;
+
+        if (cam == null)
+            return;
+
+        transform.SetParent(cam.transform);
+
+        transform.localPosition = Vector3.zero;
+        transform.localRotation = Quaternion.identity;
+    }
+
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        BindToCamera();
         UpdateUI();
     }
 
-    // ==========================
+    // ==========================·
     // 外部调用接口
     // ==========================
 

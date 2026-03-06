@@ -53,4 +53,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Belelax.unity
     guid: f3968db244222b546b8af8edeef375c0
+  - enabled: 1
+    path: Assets/Scenes/StickHero.unity
+    guid: 085dc6e424a81a64d9064031e8144e6e
   m_configObjects: {}
