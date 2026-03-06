@@ -464,7 +464,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!223 &425186307
 Canvas:
   m_ObjectHideFlags: 0
@@ -474,7 +474,7 @@ Canvas:
   m_GameObject: {fileID: 425186304}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 1
+  m_RenderMode: 2
   m_Camera: {fileID: 759435691}
   m_PlaneDistance: 6
   m_PixelPerfect: 0
@@ -496,8 +496,8 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 425186304}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -4}
+  m_LocalScale: {x: 0.0069444445, y: 0.0069444445, z: 0.0069444445}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 935069614}
@@ -510,8 +510,8 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 0}
+  m_SizeDelta: {x: 2560, y: 1440}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &576283362
 GameObject:
   m_ObjectHideFlags: 0
@@ -589,6 +589,7 @@ GameObject:
   - component: {fileID: 759435691}
   - component: {fileID: 759435690}
   - component: {fileID: 759435693}
+  - component: {fileID: 759435694}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -714,6 +715,21 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!114 &759435694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 759435689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1a19f806d01f1141b99da26b07ea051, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cam: {fileID: 759435691}
+  duration: 0.5
+  magnitude: 20
 --- !u!1 &764586005 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8017414598324458039, guid: a8c9a3588a475bd4fa745921b7985262, type: 3}

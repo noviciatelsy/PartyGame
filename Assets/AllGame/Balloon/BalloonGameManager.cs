@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-
+using CameraEffects;
 public class BalloonGameManager : MonoBehaviour
 {
     public static BalloonGameManager instance;
@@ -18,14 +18,14 @@ public class BalloonGameManager : MonoBehaviour
     public float deflateSpeed = 0.2f;
     [SerializeField] private float initialTimer = 10.0f;
     private float currentTimer;
-
+    private CameraShake cameraShake;
     [SerializeField] private float maxHoldTime;
     [SerializeField] private TextMeshProUGUI gameTip;
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private TextMeshProUGUI timerText;
 
     private bool roundActive = false;
-    private Coroutine winCoroutine; 
+    private Coroutine winCoroutine;
 
     private void Awake()
     {
@@ -34,6 +34,7 @@ public class BalloonGameManager : MonoBehaviour
         InitPlayer(p2);
         foreach (var medal in p1Medals) medal.SetActive(false);
         foreach (var medal in p2Medals) medal.SetActive(false);
+        cameraShake = Camera.main.GetComponent<CameraShake>();
         StartNewRound();
     }
 
@@ -89,7 +90,6 @@ public class BalloonGameManager : MonoBehaviour
 
         if (Input.GetKeyDown(key))
         {
-            // 判定：只有在气球接近初始尺寸时，才允许触发“充充爆”起始动画
             if (p.balloonObj.transform.localScale.x <= p.minScale.x + 0.01f)
             {
                 p.isWaitingToPlayDeflateAnim = false;
@@ -98,7 +98,6 @@ public class BalloonGameManager : MonoBehaviour
             }
             else
             {
-                // 如果气球还没漏完气就按下了，直接接管缩放逻辑，不重播动画
                 p.canContinuousInflate = true;
                 p.isWaitingToPlayDeflateAnim = false;
             }
@@ -183,7 +182,7 @@ public class BalloonGameManager : MonoBehaviour
         poppedPlayer.balloonObj.transform.localScale = poppedPlayer.minScale;
         BalloonEntity winner = (poppedPlayer == p1) ? p2 : p1;
         gameTip.text = $"{poppedPlayer.playerName} 爆炸! {winner.playerName} 胜利! 正在前往下一关...";
-        // 直接进入下一关（延迟展示）
+        if (cameraShake != null) StartCoroutine(cameraShake.Shake());
         if (winCoroutine != null) StopCoroutine(winCoroutine);
         winCoroutine = StartCoroutine(ProceedToNextLevelCoroutine(2.0f));
     }
