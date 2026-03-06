@@ -78,7 +78,6 @@ public class GlobalScoreManager : MonoBehaviour
 
     public void UpdateUI()
     {
-        Debug.Log("?");
         if (player1Text != null)
             player1Text.text = player1Score.ToString();
 

@@ -23,10 +23,7 @@ public class Breath : MonoBehaviour
     private float timeRemaining;
     private bool timerRunning = false;
 
-    //[Header("Player Accuracy UI")]
-    //public TextMeshPro p1TimeText;
-    //public TextMeshPro p2TimeText;
-    //[Header("Player Breath UI")]
+
     public TextMeshPro p1InhaleText;
     public TextMeshPro p1ExhaleText;
     public TextMeshPro p2InhaleText;
@@ -109,13 +106,13 @@ public class Breath : MonoBehaviour
         GlobalInput.Instance.OnSpaceDown -= OnPlayer1Down;
         GlobalInput.Instance.OnSpaceUp -= OnPlayer1Up;
 
-        GlobalInput.Instance.OnMouseHoldStart -= OnPlayer2Down;
+        GlobalInput.Instance.OnMouseDown -= OnPlayer2Down;   // 修正
         GlobalInput.Instance.OnMouseUp -= OnPlayer2Up;
     }
 
     IEnumerator GameLoop()
     {
-        StartFontFadeTo(0f, 20f); // 1秒内从1→0
+        StartFontFadeTo(0f, 12f); // 1秒内从1→0
         for (int i = 0; i < cycleCount; i++)
         {
             // ===== 吸气 =====
@@ -411,4 +408,5 @@ public class Breath : MonoBehaviour
             fontList[i].color = c;
         }
     }
+
 }

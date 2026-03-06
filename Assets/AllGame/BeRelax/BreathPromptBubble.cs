@@ -6,6 +6,7 @@ public class BreathPromptBubble : MonoBehaviour
 {
     public TextMeshPro textA;
     public TextMeshPro textB;
+    public float fadeDuration = 20f;
 
     float offsetIn = 0.8f;
     float offsetOut = 1.0f;
@@ -18,11 +19,20 @@ public class BreathPromptBubble : MonoBehaviour
     Vector3 basePosB;
 
     bool useA = true;
+    bool fadeStarted = false;
 
+    float fadeAlpha = 1f;
+    
     void Awake()
     {
-        basePosA = textA.transform.localPosition;
-        basePosB = textB.transform.localPosition;
+        if (textA == null || textB == null)
+        {
+            Debug.LogError("BreathPromptBubble: textA 或 textB 没有赋值", this);
+            return;
+        }
+
+        basePosA = new Vector3 (0, 0, 0);
+        basePosB = new Vector3(0, 0, 0);
 
         SetAlpha(textA, 0);
         SetAlpha(textB, 0);
@@ -30,6 +40,13 @@ public class BreathPromptBubble : MonoBehaviour
 
     public void Play(string msg)
     {
+        if (!fadeStarted)
+        {
+            fadeStarted = true;
+            StartCoroutine(FadeRoutine());
+        }
+
+
         TextMeshPro text = useA ? textA : textB;
         Vector3 basePos = useA ? basePosA : basePosB;
 
@@ -105,7 +122,23 @@ public class BreathPromptBubble : MonoBehaviour
     void SetAlpha(TextMeshPro t, float a)
     {
         Color c = t.color;
-        c.a = a;
+        c.a = a * fadeAlpha;
         t.color = c;
+    }
+
+    IEnumerator FadeRoutine()
+    {
+        float t = 0;
+
+        while (t < fadeDuration)
+        {
+            t += Time.deltaTime;
+
+            fadeAlpha = Mathf.Lerp(1f, 0f, t / fadeDuration);
+
+            yield return null;
+        }
+
+        fadeAlpha = 0;
     }
 }

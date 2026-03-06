@@ -7,8 +7,8 @@ public class BreathAlphaController : MonoBehaviour
     public SpriteRenderer targetImage;
 
     [Header("Settings")]
-    private float inhaleRise = 0.35f;
-    private float exhaleDrop = 0.15f;
+    private float inhaleRise = 0.4f;
+    private float exhaleDrop = 0.2f;
 
     [Tooltip("一次呼吸的平滑时间（吸气 or 呼气）")]
     private float phaseAnimTime = 0.6f;
@@ -39,7 +39,7 @@ public class BreathAlphaController : MonoBehaviour
 
         if (isInhale)
         {
-            nextTarget = Mathf.Min(currentAlpha + inhaleRise, 0.98f);
+            nextTarget = Mathf.Min(currentAlpha + inhaleRise, 1.05f);
         }
         else
         {

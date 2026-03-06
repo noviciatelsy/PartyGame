@@ -68,6 +68,6 @@ MonoBehaviour:
   - sceneName: Balloon
     weight: 3
   - sceneName: Belelax
-    weight: 300
+    weight: 3
   avoidRepeat: 1
   Transition: {fileID: 0}
