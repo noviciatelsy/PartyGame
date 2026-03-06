@@ -114,7 +114,6 @@ public class CowboyFight : MonoBehaviour
         if (type != GlobalInput.InputType.SingleClick) return;
 
         //player1Hand.Press();
-        Debug.Log("1");
         HandleShoot(1);
     }
 
