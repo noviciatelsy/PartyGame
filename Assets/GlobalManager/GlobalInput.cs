@@ -16,6 +16,7 @@ public class GlobalInput : MonoBehaviour
 
     public System.Action OnMouseHoldStart;
     public System.Action OnMouseUp;
+    public Action OnMouseDown;
 
     public enum InputType
     {
@@ -114,37 +115,41 @@ public Action OnEscapeDown;
     }
 
     // =====================================================
-    // MOUSE
+    // MOUSE（完全对齐 HandleSpace 逻辑）
     // =====================================================
     private void HandleMouse()
     {
+        // ===== 按下 =====
         if (Input.GetMouseButtonDown(0))
         {
             mouseIsPressing = true;
-            mousePressStart = Time.time;
+            mousePressStart = Time.unscaledTime;
+
+            OnMouseDown?.Invoke();
         }
 
-        // 检测 HoldStart
+        // ===== 长按检测 =====
         if (mouseIsPressing && !MouseHolding)
         {
-            if (Time.time - mousePressStart >= longPressThreshold)
+            if (Time.unscaledTime - mousePressStart >= longPressThreshold)
             {
                 MouseHolding = true;
                 OnMouseHoldStart?.Invoke();
             }
         }
 
+        // ===== 松开 =====
         if (Input.GetMouseButtonUp(0))
         {
             mouseIsPressing = false;
 
-            if (MouseHolding)
-            {
-                MouseHolding = false;
-                OnMouseUp?.Invoke();
-            }
+            bool wasHolding = MouseHolding;
 
-            float duration = Time.time - mousePressStart;
+            MouseHolding = false;
+
+            OnMouseUp?.Invoke(); // ✅ 在真正松开时触发
+
+            float duration = Time.unscaledTime - mousePressStart;
 
             if (duration >= longPressThreshold)
             {
@@ -154,12 +159,12 @@ public Action OnEscapeDown;
 
             OnMouseLeftAction?.Invoke(InputType.SingleClick);
 
-            if (Time.time - mouseLastClickTime <= doubleClickThreshold)
+            if (Time.unscaledTime - mouseLastClickTime <= doubleClickThreshold)
             {
                 OnMouseLeftAction?.Invoke(InputType.DoubleClick);
             }
 
-            mouseLastClickTime = Time.time;
+            mouseLastClickTime = Time.unscaledTime;
         }
     }
 

@@ -26,7 +26,7 @@ public class Breath : MonoBehaviour
     //[Header("Player Accuracy UI")]
     //public TextMeshPro p1TimeText;
     //public TextMeshPro p2TimeText;
-    [Header("Player Breath UI")]
+    //[Header("Player Breath UI")]
     public TextMeshPro p1InhaleText;
     public TextMeshPro p1ExhaleText;
     public TextMeshPro p2InhaleText;
@@ -36,22 +36,30 @@ public class Breath : MonoBehaviour
     Vector3 p2InhaleBase;
     Vector3 p2ExhaleBase;
 
-    float breathOffsetIn = 0.5f;
-    float breathOffsetOut = 0.6f;
+    private float breathOffsetIn = 0.4f;
+    private float breathOffsetOut = 0.3f;
+    private float breathAppear = 0.2f;
+    private float breathStay = 0.2f;
+    private float breathDisappear = 0.2f;
 
-    float breathAppear = 0.2f;
-    float breathStay = 0.3f;
-    float breathDisappear = 0.2f;
-
+    [Header("Match UI")]
+    public TextMeshPro p1MatchText;
+    public TextMeshPro p2MatchText;
     Coroutine p1Coroutine;
     Coroutine p2Coroutine;
+
+    [Header("Alpha Control")]
+    public BreathAlphaController alphaController;
+    [Header("Font Fade")]
+    public TextMeshPro[] fontList;
+    private Coroutine fontFadeCoroutine;
 
     void Start()
     {
         GlobalInput.Instance.OnSpaceDown += OnPlayer1Down;
         GlobalInput.Instance.OnSpaceUp += OnPlayer1Up;
 
-        GlobalInput.Instance.OnMouseHoldStart += OnPlayer2Down;
+        GlobalInput.Instance.OnMouseDown += OnPlayer2Down;
         GlobalInput.Instance.OnMouseUp += OnPlayer2Up;
 
         totalGameTime = cycleCount * 2f * phaseTime;
@@ -68,6 +76,11 @@ public class Breath : MonoBehaviour
         p1ExhaleText.gameObject.SetActive(false);
         p2InhaleText.gameObject.SetActive(false);
         p2ExhaleText.gameObject.SetActive(false);
+
+        if (alphaController == null)
+        {
+            Debug.LogWarning("AlphaController 未赋值！");
+        }
     }
 
     IEnumerator StartDelay()
@@ -102,18 +115,21 @@ public class Breath : MonoBehaviour
 
     IEnumerator GameLoop()
     {
+        StartFontFadeTo(0f, 20f); // 1秒内从1→0
         for (int i = 0; i < cycleCount; i++)
         {
             // ===== 吸气 =====
             inhalePhase = true;
 
             bubble.Play("吸气");
+            alphaController?.OnBreathPhase(true);
             yield return PhaseTimer();
 
             // ===== 呼气 =====
             inhalePhase = false;
 
             bubble.Play("呼气");
+            alphaController?.OnBreathPhase(false);
 
             yield return PhaseTimer();
         }
@@ -162,9 +178,14 @@ public class Breath : MonoBehaviour
     void EndGame()
     {
         timerRunning = false;
+        alphaController?.OnGameEnd();
 
         float p1Score = p1CorrectTime / totalGameTime;
         float p2Score = p2CorrectTime / totalGameTime;
+
+        // ===== 计算匹配度 =====
+        UpdateMatchUI();
+        StartFontFadeTo(1f, 0.1f);
 
         if (p1Score > p2Score)
         {
@@ -321,4 +342,73 @@ public class Breath : MonoBehaviour
         p2Coroutine = StartCoroutine(ShowBreath(p2ExhaleText, p2ExhaleBase));
     }
 
+    void UpdateMatchUI()
+    {
+        float totalTime = 30.0f;
+
+        if (p1MatchText != null)
+        {
+            float rate1 = p1CorrectTime / totalTime;
+            float percent1 = rate1 * 100f;
+
+            p1MatchText.text = "匹配度:" + percent1.ToString("F1") + "%";
+        }
+
+        if (p2MatchText != null)
+        {
+            float rate2 = p2CorrectTime / totalTime;
+            float percent2 = rate2 * 100f;
+
+            p2MatchText.text = "匹配度:" + percent2.ToString("F1") + "%";
+        }
+    }
+
+    void StartFontFadeTo(float targetAlpha, float duration)
+    {
+        if (fontFadeCoroutine != null)
+            StopCoroutine(fontFadeCoroutine);
+
+        fontFadeCoroutine = StartCoroutine(FontFadeRoutine(targetAlpha, duration));
+    }
+
+    IEnumerator FontFadeRoutine(float targetAlpha, float duration)
+    {
+        float time = 0f;
+
+        // 先获取当前alpha
+        float[] startAlphas = new float[fontList.Length];
+
+        for (int i = 0; i < fontList.Length; i++)
+        {
+            if (fontList[i] != null)
+                startAlphas[i] = fontList[i].color.a;
+        }
+
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            float t = time / duration;
+
+            for (int i = 0; i < fontList.Length; i++)
+            {
+                if (fontList[i] == null) continue;
+
+                Color c = fontList[i].color;
+                c.a = Mathf.Lerp(startAlphas[i], targetAlpha, t);
+                fontList[i].color = c;
+            }
+
+            yield return null;
+        }
+
+        // 强制修正最终值
+        for (int i = 0; i < fontList.Length; i++)
+        {
+            if (fontList[i] == null) continue;
+
+            Color c = fontList[i].color;
+            c.a = targetAlpha;
+            fontList[i].color = c;
+        }
+    }
 }
