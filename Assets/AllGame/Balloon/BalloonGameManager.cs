@@ -182,9 +182,10 @@ public class BalloonGameManager : MonoBehaviour
         poppedPlayer.anim.Play("爆炸");
         poppedPlayer.balloonObj.transform.localScale = poppedPlayer.minScale;
         BalloonEntity winner = (poppedPlayer == p1) ? p2 : p1;
-        winner.score++;
-        gameTip.text = $"{poppedPlayer.playerName} 爆炸! {winner.playerName} 胜利!";
-        CheckMatchWinner();
+        gameTip.text = $"{poppedPlayer.playerName} 爆炸! {winner.playerName} 胜利! 正在前往下一关...";
+        // 直接进入下一关（延迟展示）
+        if (winCoroutine != null) StopCoroutine(winCoroutine);
+        winCoroutine = StartCoroutine(ProceedToNextLevelCoroutine(2.0f));
     }
 
     private void EndRoundByTime()
@@ -193,37 +194,24 @@ public class BalloonGameManager : MonoBehaviour
         float p1Diff = maxHoldTime - p1.currentHoldTimer;
         float p2Diff = maxHoldTime - p2.currentHoldTimer;
         BalloonEntity winner = (p1Diff < p2Diff) ? p1 : p2;
-        winner.score++;
-        gameTip.text = $"时间到！{winner.playerName} 更接近极限！";
-        CheckMatchWinner();
+        gameTip.text = $"时间到！{winner.playerName} 更接近极限，胜出！ 正在前往下一关...";
+        if (winCoroutine != null) StopCoroutine(winCoroutine);
+        winCoroutine = StartCoroutine(ProceedToNextLevelCoroutine(2.0f));
     }
 
     private void CheckMatchWinner()
     {
-        UpdateScoreUI();
-        if (p1.score >= 3 || p2.score >= 3)
-        {
-            string finalWinner = (p1.score >= 3) ? p1.playerName : p2.playerName;
-            gameTip.text = $"游戏结束！{finalWinner} 是最终胜者！";
-
-            if (p1.score >= 3)
-            {
-                GlobalScoreManager.Instance.AddScore(1, 1);
-            }
-            else
-            {
-                GlobalScoreManager.Instance.AddScore(2, 1);
-            }
-            if (winCoroutine == null)
-                winCoroutine = StartCoroutine(WinDelayCoroutine());
-        }
-        else Invoke(nameof(StartNewRound), 3.0f);
+        // 旧的多轮逻辑已废弃 in 一局一胜 模式。
     }
 
     private IEnumerator WinDelayCoroutine()
     {
-        yield return new WaitForSeconds(3f);
+        yield return null;
+    }
 
+    private IEnumerator ProceedToNextLevelCoroutine(float delay)
+    {
+        yield return new WaitForSeconds(delay);
         if (LevelManager.Instance != null)
         {
             LevelManager.Instance.NextLevel();
