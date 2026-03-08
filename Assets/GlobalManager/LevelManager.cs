@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class LevelManager : MonoBehaviour
 {
     public static LevelManager Instance;
+    private bool isLoadingLevel = false;
 
     [System.Serializable]
     public class LevelData
@@ -38,6 +39,7 @@ public class LevelManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        isLoadingLevel = false;
         Time.timeScale = 1f;
         StartCoroutine(HandleSceneTransition());
     }
@@ -65,6 +67,10 @@ public class LevelManager : MonoBehaviour
 
     public void NextLevel()
     {
+        if (isLoadingLevel) return;   // 防止重复加载
+
+        isLoadingLevel = true;
+
         if (levels == null || levels.Count == 0)
         {
             Debug.LogError("LevelManager: û�����ùؿ��б���");
