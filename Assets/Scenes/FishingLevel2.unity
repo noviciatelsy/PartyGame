@@ -846,7 +846,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1184885553}
-  - component: {fileID: 1184885556}
   - component: {fileID: 1184885555}
   m_Layer: 0
   m_Name: GameManager
@@ -906,18 +905,6 @@ MonoBehaviour:
   speedIncreasePerRound: 250
   preQTEDelay: 1
   preQTESound: {fileID: 0}
---- !u!114 &1184885556
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1184885551}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c831f01d3a42e5c469718286040fb493, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1236430195
 GameObject:
   m_ObjectHideFlags: 0

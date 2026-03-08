@@ -18,70 +18,101 @@ public class GlobalScoreManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null)
+        Debug.Log($"[ScoreManager] Awake on {gameObject.name}  scene:{SceneManager.GetActiveScene().name}");
+
+        if (Instance != null && Instance != this)
         {
-            player1Score = Instance.player1Score;
-            player2Score = Instance.player2Score;
+            Debug.Log("[ScoreManager] Duplicate detected → Destroying new one");
             Destroy(gameObject);
             return;
         }
 
         Instance = this;
+        transform.SetParent(null);
+
         DontDestroyOnLoad(gameObject);
+
+        Debug.Log("[ScoreManager] Set as Instance + DontDestroyOnLoad");
 
         SceneManager.sceneLoaded += OnSceneLoaded;
         SceneManager.activeSceneChanged += OnSceneChanging;
     }
 
+    void Start()
+    {
+        Debug.Log($"[ScoreManager] Start | Score: {player1Score}:{player2Score}");
+        UpdateUI();
+    }
+
     void OnDestroy()
     {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-        SceneManager.activeSceneChanged -= OnSceneChanging;
+        Debug.Log($"[ScoreManager] OnDestroy called on {gameObject.name}");
+
+        if (Instance == this)
+        {
+            Debug.Log("[ScoreManager] Removing scene callbacks");
+
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+            SceneManager.activeSceneChanged -= OnSceneChanging;
+        }
     }
 
     void OnSceneChanging(Scene oldScene, Scene newScene)
     {
+        Debug.Log($"[ScoreManager] Scene Changing {oldScene.name} → {newScene.name}");
+
         transform.SetParent(null);
     }
 
-    void Start()
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        Debug.Log($"[ScoreManager] Scene Loaded: {scene.name}");
+
+        BindToCamera();
+
+        Debug.Log($"[ScoreManager] Score After Load: {player1Score}:{player2Score}");
+
         UpdateUI();
     }
 
+    private Transform cameraTransform;
     void BindToCamera()
     {
         Camera cam = Camera.main;
 
         if (cam == null)
+        {
+            Debug.Log("[ScoreManager] Camera.main NOT FOUND");
             return;
+        }
 
-        transform.SetParent(cam.transform);
+        Debug.Log("[ScoreManager] Following Camera");
 
-        transform.localPosition = Vector3.zero;
-        transform.localRotation = Quaternion.identity;
+        cameraTransform = cam.transform;
     }
-
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    void LateUpdate()
     {
-        BindToCamera();
-        UpdateUI();
+        if (cameraTransform != null)
+        {
+            transform.position = cameraTransform.position;
+            transform.rotation = cameraTransform.rotation;
+        }
     }
 
-    // ==========================·
+    // ==========================
     // 外部调用接口
     // ==========================
 
     public void AddScore(int playerID, int amount = 1)
     {
+        Debug.Log($"[ScoreManager] AddScore Player{playerID} +{amount}");
+
         if (playerID == 1)
-        {
             player1Score += amount;
-        }
         else if (playerID == 2)
-        {
             player2Score += amount;
-        }
+
+        Debug.Log($"[ScoreManager] Score Now: {player1Score}:{player2Score}");
 
         UpdateUI();
     }
@@ -95,8 +126,11 @@ public class GlobalScoreManager : MonoBehaviour
 
     public void ResetScore()
     {
+        Debug.Log("[ScoreManager] ResetScore CALLED");
+
         player1Score = 0;
         player2Score = 0;
+
         UpdateUI();
     }
 
@@ -106,10 +140,16 @@ public class GlobalScoreManager : MonoBehaviour
 
     public void UpdateUI()
     {
+        Debug.Log($"[ScoreManager] UpdateUI {player1Score}:{player2Score}");
+
         if (player1Text != null)
             player1Text.text = player1Score.ToString();
+        else
+            Debug.LogWarning("[ScoreManager] player1Text is NULL");
 
         if (player2Text != null)
             player2Text.text = player2Score.ToString();
+        else
+            Debug.LogWarning("[ScoreManager] player2Text is NULL");
     }
 }

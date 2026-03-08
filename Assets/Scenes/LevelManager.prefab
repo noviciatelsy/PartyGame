@@ -69,5 +69,7 @@ MonoBehaviour:
     weight: 3
   - sceneName: Belelax
     weight: 3
+  - sceneName: StickHero
+    weight: 3
   avoidRepeat: 1
   Transition: {fileID: 0}
