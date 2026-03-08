@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class BreathPromptBubble : MonoBehaviour
 {
-    public TextMeshPro textA;
-    public TextMeshPro textB;
+    public TMP_Text textA;
+    public TMP_Text textB;
     public float fadeDuration = 20f;
 
     float offsetIn = 0.8f;
@@ -25,19 +25,30 @@ public class BreathPromptBubble : MonoBehaviour
     
     void Awake()
     {
-        if (textA == null || textB == null)
-        {
-            Debug.LogError("BreathPromptBubble: textA 或 textB 没有赋值", this);
-            return;
-        }
 
         basePosA = new Vector3 (0, 0, 0);
         basePosB = new Vector3(0, 0, 0);
 
+    }
+
+    void Start()
+    {
+        if (textA == null || textB == null)
+        {
+            if (textA == null)
+            {
+                Debug.LogError("BreathPromptBubble: textA没有赋值", this);
+            }
+            else
+            {
+                Debug.LogError("BreathPromptBubble: textB 没有赋值", this);
+            }
+        }
         SetAlpha(textA, 0);
         SetAlpha(textB, 0);
     }
 
+    Coroutine playCoroutine;
     public void Play(string msg)
     {
         if (!fadeStarted)
@@ -46,19 +57,17 @@ public class BreathPromptBubble : MonoBehaviour
             StartCoroutine(FadeRoutine());
         }
 
-
-        TextMeshPro text = useA ? textA : textB;
+        TMP_Text text = useA ? textA : textB;
         Vector3 basePos = useA ? basePosA : basePosB;
 
         text.text = msg;
 
-        StopCoroutine("PlayRoutine");
-        StartCoroutine(PlayRoutine(text, basePos));
+        StartCoroutine(PlayRoutine(text, basePos)); // 不要Stop
 
         useA = !useA;
     }
 
-    IEnumerator PlayRoutine(TextMeshPro text, Vector3 basePos)
+    IEnumerator PlayRoutine(TMP_Text text, Vector3 basePos)
     {
         yield return Appear(text, basePos);
 
@@ -67,7 +76,7 @@ public class BreathPromptBubble : MonoBehaviour
         yield return Disappear(text, basePos);
     }
 
-    IEnumerator Appear(TextMeshPro text, Vector3 basePos)
+    IEnumerator Appear(TMP_Text text, Vector3 basePos)
     {
         float t = 0;
 
@@ -95,7 +104,7 @@ public class BreathPromptBubble : MonoBehaviour
         SetAlpha(text, 1);
     }
 
-    IEnumerator Disappear(TextMeshPro text, Vector3 basePos)
+    IEnumerator Disappear(TMP_Text text, Vector3 basePos)
     {
         float t = 0;
 
@@ -119,7 +128,7 @@ public class BreathPromptBubble : MonoBehaviour
         SetAlpha(text, 0);
     }
 
-    void SetAlpha(TextMeshPro t, float a)
+    void SetAlpha(TMP_Text t, float a)
     {
         Color c = t.color;
         c.a = a * fadeAlpha;

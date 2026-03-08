@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.XR;
+using UnityEngine.SceneManagement;
 
 public class GlobalInput : MonoBehaviour
 {
@@ -30,7 +31,7 @@ public class GlobalInput : MonoBehaviour
     public System.Action OnSpaceUp;
     public System.Action OnSpaceHoldStart;
     public System.Action<InputType> OnMouseLeftAction;
-public Action OnEscapeDown;
+    public Action OnEscapeDown;
     // ===== SPACE =====
     private float spacePressStart;
     private float spaceLastClickTime;
@@ -52,6 +53,21 @@ public Action OnEscapeDown;
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+    }
+
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        FlushInput();
     }
 
     private void Update()
@@ -174,5 +190,25 @@ public Action OnEscapeDown;
         {
             OnEscapeDown?.Invoke();
         }
+    }
+
+    //reset all state
+    public void FlushInput()
+    {
+        //reset press
+        spaceIsPressing = false;
+        mouseIsPressing = false;
+
+        //reset holding
+        SpaceHolding = false;
+        MouseHolding = false;
+        spaceLongPressTriggered = false;
+
+        // resettime
+        spacePressStart = 0f;
+        mousePressStart = 0f;
+
+        spaceLastClickTime = 0f;
+        mouseLastClickTime = 0f;
     }
 }

@@ -104,7 +104,6 @@ public class CowboyFight01 : MonoBehaviour
         if (type != GlobalInput.InputType.SingleClick) return;
 
         //player1Hand.Press();
-        Debug.Log("1");
         HandleShoot(1);
     }
 
@@ -113,7 +112,6 @@ public class CowboyFight01 : MonoBehaviour
         if (gameFinished) return;
         if (type != GlobalInput.InputType.SingleClick) return;
 
-        Debug.Log("2");
         //player2Hand.Press();
         HandleShoot(2);
     }
@@ -159,6 +157,12 @@ public class CowboyFight01 : MonoBehaviour
         gameFinished = true;
         canShoot = false;
         isTiming = false;
+
+        if (GlobalInput.Instance != null)
+        {
+            GlobalInput.Instance.OnSpaceAction -= OnPlayer1Input;
+            GlobalInput.Instance.OnMouseLeftAction -= OnPlayer2Input;
+        }
 
         Debug.Log("Winner is Player " + playerIndex);
         GlobalScoreManager.Instance.AddScore(playerIndex, 1);
