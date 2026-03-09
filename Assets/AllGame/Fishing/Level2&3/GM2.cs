@@ -91,51 +91,55 @@ public class GM2 : MonoBehaviour
 		SetPointerToTop(pointer2, upBound2);
 
 		bool roundEnded = false;
+		bool isDraw = false;
 		bool attempted1 = false;
 		bool attempted2 = false;
 
-		float topY1 = upBound1.anchoredPosition.y;
 		float bottomY1 = downBound1.anchoredPosition.y;
-		float topY2 = upBound2.anchoredPosition.y;
 		float bottomY2 = downBound2.anchoredPosition.y;
 		while (!roundEnded)
 		{
 			float step1 = pointerSpeed * Time.deltaTime;
 			MovePointerDown(pointer1, step1, bottomY1);
 			MovePointerDown(pointer2, step1, bottomY2);
+			bool p1Pressed = !attempted1 && Input.GetKeyDown(KeyCode.Space);
+			bool p2Pressed = !attempted2 && Input.GetMouseButtonDown(0);
+			if (p1Pressed) attempted1 = true;
+			if (p2Pressed) attempted2 = true;
 
-			if (!attempted1 && Input.GetKeyDown(KeyCode.Space))
+			bool p1Hit = p1Pressed && IsPointerInZone(pointer1, activeZone1);
+			bool p2Hit = p2Pressed && IsPointerInZone(pointer2, activeZone2);
+
+			if (p1Pressed && p2Pressed)
 			{
-				attempted1 = true;
-				if (IsPointerInZone(pointer1, activeZone1))
-				{
+				if (p1Hit && !p2Hit)
 					score1++;
-				}
-				else
-				{
+				else if (!p1Hit && p2Hit)
 					score2++;
-				}
+				else
+					isDraw = true;
 				UpdateMedalsUI();
 				roundEnded = true;
 			}
-			if (!attempted2 && Input.GetMouseButtonDown(0))
+			else if (p1Pressed)
 			{
-				attempted2 = true;
-				if (IsPointerInZone(pointer2, activeZone2))
-				{
-					score2++;
-				}
-				else
-				{
-					score1++;
-				}
+				if (p1Hit) score1++;
+				else score2++;
+				UpdateMedalsUI();
+				roundEnded = true;
+			}
+			else if (p2Pressed)
+			{
+				if (p2Hit) score2++;
+				else score1++;
 				UpdateMedalsUI();
 				roundEnded = true;
 			}
 			bool p1AtBottom = pointer1.anchoredPosition.y <= bottomY1;
 			bool p2AtBottom = pointer2.anchoredPosition.y <= bottomY2;
-			if ((p1AtBottom || attempted1) && (p2AtBottom || attempted2))
+			if (!roundEnded && (p1AtBottom || attempted1) && (p2AtBottom || attempted2))
 			{
+				isDraw = true;
 				roundEnded = true;
 			}
 
@@ -144,7 +148,15 @@ public class GM2 : MonoBehaviour
 		}
 		if (activeZone1 != null) Destroy(activeZone1.gameObject);
 		if (activeZone2 != null) Destroy(activeZone2.gameObject);
-		if (score1 >= roundsToWin || score2 >= roundsToWin)
+
+		if (isDraw)
+		{
+			// 平局：回退轮次，重赛
+			currentRound--;
+			yield return new WaitForSeconds(1.0f);
+			StartNextRound();
+		}
+		else if (score1 >= roundsToWin || score2 >= roundsToWin)
 		{
 			EndMatch();
 		}
@@ -219,7 +231,6 @@ public class GM2 : MonoBehaviour
 		matchActive = false;
 		//调用LevelManager切换关卡
 		Debug.Log($"Match End. Score1: {score1}, Score2: {score2}");
-		//=================新增代码=======================
 		if (score1 > score2)
 		{
 			GlobalScoreManager.Instance.AddScore(1, 1);

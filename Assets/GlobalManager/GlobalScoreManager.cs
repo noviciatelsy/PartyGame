@@ -22,7 +22,7 @@ public class GlobalScoreManager : MonoBehaviour
 
         if (Instance != null && Instance != this)
         {
-            Debug.Log("[ScoreManager] Duplicate detected ¡ú Destroying new one");
+            Debug.Log("[ScoreManager] Duplicate detected ï¿½ï¿½ Destroying new one");
             Destroy(gameObject);
             return;
         }
@@ -59,7 +59,7 @@ public class GlobalScoreManager : MonoBehaviour
 
     void OnSceneChanging(Scene oldScene, Scene newScene)
     {
-        //Debug.Log($"[ScoreManager] Scene Changing {oldScene.name} ¡ú {newScene.name}");
+        //Debug.Log($"[ScoreManager] Scene Changing {oldScene.name} ï¿½ï¿½ {newScene.name}");
 
         transform.SetParent(null);
     }
@@ -100,7 +100,7 @@ public class GlobalScoreManager : MonoBehaviour
     }
 
     // ==========================
-    // Íâ²¿µ÷ÓÃ½Ó¿Ú
+    // ï¿½â²¿ï¿½ï¿½ï¿½Ã½Ó¿ï¿½
     // ==========================
 
     public void AddScore(int playerID, int amount = 1)
@@ -135,7 +135,7 @@ public class GlobalScoreManager : MonoBehaviour
     }
 
     // ==========================
-    // UI¸üÐÂ
+    // UIï¿½ï¿½ï¿½ï¿½
     // ==========================
 
     public void UpdateUI()
