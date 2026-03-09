@@ -215,7 +215,7 @@ MonoBehaviour:
   player1: {fileID: 880677426}
   player2: {fileID: 410981561}
   platformPrefab: {fileID: -2253760767284669403, guid: b02d459ba6d2c544f983115b040e13a8, type: 3}
-  nextPlatform: {fileID: 0}
+  nextPlatform: {fileID: 1453723510}
   cam: {fileID: 519420031}
   cameraSpeed: 5
   cameraOffset: 5
@@ -1502,6 +1502,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CircleFade
       objectReference: {fileID: 0}
+    - target: {fileID: 1420034003177837709, guid: e54159ad036a1db4e92cf887d8b0ac0d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6358543558556881491, guid: e54159ad036a1db4e92cf887d8b0ac0d, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -1758,6 +1762,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &1453723510 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -2253760767284669403, guid: b02d459ba6d2c544f983115b040e13a8, type: 3}
+  m_PrefabInstance: {fileID: 1447430160385083651}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26d81a91c50a3d54b9f59de79a052c94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1483058352
 GameObject:
   m_ObjectHideFlags: 0

@@ -30,6 +30,10 @@ public class StickHeroGameManager : MonoBehaviour
     {
         GeneratePlatforms();
 
+        float firstY = platforms[0].transform.position.y;
+        player1.InitPlatformY(firstY);
+        player2.InitPlatformY(firstY);
+
         GlobalInput.Instance.OnSpaceDown += P1Grow;
         GlobalInput.Instance.OnSpaceUp += P1Drop;
 
@@ -84,6 +88,7 @@ public class StickHeroGameManager : MonoBehaviour
     void GeneratePlatforms()
     {
         float lastRightEdge = -12;
+        float lastY = -7f;
 
         for (int i = 0; i < 20; i++)
         {
@@ -98,9 +103,22 @@ public class StickHeroGameManager : MonoBehaviour
 
             float x = lastRightEdge + gap + width * 0.5f;
 
+            // å¹³å°é«˜åº¦ï¼šç¬¬ä¸€ä¸ªä¿æŒä¸å˜ï¼ŒåŽç»­éšéš¾åº¦å¢žåŠ é«˜åº¦å·®èŒƒå›´
+            float y;
+            if (i == 0)
+            {
+                y = -7f;
+            }
+            else
+            {
+                float heightRange = Mathf.Lerp(1f, 3f, difficulty);
+                y = lastY + Random.Range(-heightRange, heightRange);
+                y = Mathf.Clamp(y, -10f, -4f);
+            }
+
             Platform p = Instantiate(
                 platformPrefab,
-                new Vector3(x, -7, 5),
+                new Vector3(x, y, 5),
                 Quaternion.identity
             );
 
@@ -110,13 +128,14 @@ public class StickHeroGameManager : MonoBehaviour
             platforms.Add(p);
 
             lastRightEdge = p.RightEdge;
+            lastY = y;
         }
 
         currentPlatformIndex = 0;
     }
 
     // ======================================
-    // »ñÈ¡ÏÂÒ»¸öÆ½Ì¨
+    // ï¿½ï¿½È¡ï¿½ï¿½Ò»ï¿½ï¿½Æ½Ì¨
     // ======================================
 
     public Platform GetNextPlatform()
@@ -133,7 +152,7 @@ public class StickHeroGameManager : MonoBehaviour
     }
 
     // ======================================
-    // ÉãÏñ»ú
+    // ï¿½ï¿½ï¿½ï¿½ï¿½
     // ======================================
 
     void FollowCamera()
@@ -200,8 +219,8 @@ public class StickHeroGameManager : MonoBehaviour
             Debug.Log("Player 2 WIN!");
         }
 
-        // ÕâÀï¿ÉÒÔ¼ÓUI
-        // Ê¤Àû½çÃæ / ¼Ó·Ö / ÖØ¿ª°´Å¥
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½UI
+        // Ê¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ / ï¿½Ó·ï¿½ / ï¿½Ø¿ï¿½ï¿½ï¿½Å¥
         if (winCoroutine == null)
             winCoroutine = StartCoroutine(WinDelayCoroutine());
     }
