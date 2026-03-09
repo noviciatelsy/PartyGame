@@ -18,7 +18,7 @@ public class GlobalScoreManager : MonoBehaviour
 
     private void Awake()
     {
-        Debug.Log($"[ScoreManager] Awake on {gameObject.name}  scene:{SceneManager.GetActiveScene().name}");
+        //Debug.Log($"[ScoreManager] Awake on {gameObject.name}  scene:{SceneManager.GetActiveScene().name}");
 
         if (Instance != null && Instance != this)
         {
@@ -32,7 +32,7 @@ public class GlobalScoreManager : MonoBehaviour
 
         DontDestroyOnLoad(gameObject);
 
-        Debug.Log("[ScoreManager] Set as Instance + DontDestroyOnLoad");
+        //Debug.Log("[ScoreManager] Set as Instance + DontDestroyOnLoad");
 
         SceneManager.sceneLoaded += OnSceneLoaded;
         SceneManager.activeSceneChanged += OnSceneChanging;
@@ -40,13 +40,13 @@ public class GlobalScoreManager : MonoBehaviour
 
     void Start()
     {
-        Debug.Log($"[ScoreManager] Start | Score: {player1Score}:{player2Score}");
+        //Debug.Log($"[ScoreManager] Start | Score: {player1Score}:{player2Score}");
         UpdateUI();
     }
 
     void OnDestroy()
     {
-        Debug.Log($"[ScoreManager] OnDestroy called on {gameObject.name}");
+        //Debug.Log($"[ScoreManager] OnDestroy called on {gameObject.name}");
 
         if (Instance == this)
         {
@@ -59,18 +59,18 @@ public class GlobalScoreManager : MonoBehaviour
 
     void OnSceneChanging(Scene oldScene, Scene newScene)
     {
-        Debug.Log($"[ScoreManager] Scene Changing {oldScene.name} ¡ú {newScene.name}");
+        //Debug.Log($"[ScoreManager] Scene Changing {oldScene.name} ¡ú {newScene.name}");
 
         transform.SetParent(null);
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        Debug.Log($"[ScoreManager] Scene Loaded: {scene.name}");
+        //Debug.Log($"[ScoreManager] Scene Loaded: {scene.name}");
 
         BindToCamera();
 
-        Debug.Log($"[ScoreManager] Score After Load: {player1Score}:{player2Score}");
+        //Debug.Log($"[ScoreManager] Score After Load: {player1Score}:{player2Score}");
 
         UpdateUI();
     }
@@ -86,7 +86,7 @@ public class GlobalScoreManager : MonoBehaviour
             return;
         }
 
-        Debug.Log("[ScoreManager] Following Camera");
+        //Debug.Log("[ScoreManager] Following Camera");
 
         cameraTransform = cam.transform;
     }
@@ -126,7 +126,7 @@ public class GlobalScoreManager : MonoBehaviour
 
     public void ResetScore()
     {
-        Debug.Log("[ScoreManager] ResetScore CALLED");
+        //Debug.Log("[ScoreManager] ResetScore CALLED");
 
         player1Score = 0;
         player2Score = 0;
@@ -140,7 +140,7 @@ public class GlobalScoreManager : MonoBehaviour
 
     public void UpdateUI()
     {
-        Debug.Log($"[ScoreManager] UpdateUI {player1Score}:{player2Score}");
+        //Debug.Log($"[ScoreManager] UpdateUI {player1Score}:{player2Score}");
 
         if (player1Text != null)
             player1Text.text = player1Score.ToString();
