@@ -10,10 +10,10 @@ public class PlayerEntity
 {
     [Header("References")]
     public RectTransform frameRect;
-    public Image progressImage; // backward compatibility (single image)
+    public Image progressImage; 
     [Header("Center Fill (Optional)")]
-    public Image progressLeftImage;  // left half image
-    public Image progressRightImage; // right half image
+    public Image progressLeftImage; 
+    public Image progressRightImage;
     public string playerName;
     public int playerID;
     private int score = 0;
@@ -33,7 +33,6 @@ public class PlayerEntity
         progress = 0.5f;
         isPressing = false;
         finished = false;
-        // Start in neutral state: can both fail early or recover to win.
         hasControlled = true;
         if (progressImage) progressImage.fillAmount = 0.5f;
         if (progressLeftImage) progressLeftImage.fillAmount = 0.5f;

@@ -1,21 +1,22 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class LevelTimer : MonoBehaviour
 {
-    [Header("µ¹¼ÆÊ±Ê±³¤£¨Ãë£©")]
+    [Header("ï¿½ï¿½ï¿½ï¿½Ê±Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ë£©")]
     public float duration = 10f;
 
-    [Header("ÐèÒªËõ·ÅµÄÎïÌå")]
+    [Header("ï¿½ï¿½Òªï¿½ï¿½ï¿½Åµï¿½ï¿½ï¿½ï¿½ï¿½")]
     public Transform targetScaleObject;
 
-    [Header("³õÊ¼ X Öµ")]
+    [Header("ï¿½ï¿½Ê¼ X Öµ")]
     public float startScaleX = 10f;
 
-    [Header("½áÊø X Öµ")]
+    [Header("ï¿½ï¿½ï¿½ï¿½ X Öµ")]
     public float endScaleX = 0f;
-
+    public Action OnTimerEndCallBack;
     private float timer;
     private bool isRunning = false;
 
@@ -45,7 +46,7 @@ public class LevelTimer : MonoBehaviour
 
         float progress = Mathf.Clamp01(1f - (timer / duration));
 
-        // ¼ÆËãµ±Ç° scale.x
+        // ï¿½ï¿½ï¿½ãµ±Ç° scale.x
         float currentX = Mathf.Lerp(startScaleX, endScaleX, progress);
 
         if (targetScaleObject != null)
@@ -64,7 +65,11 @@ public class LevelTimer : MonoBehaviour
 
     private void OnTimerEnd()
     {
-        if (LevelManager.Instance != null)
+        if (OnTimerEndCallBack != null)
+        {
+            OnTimerEndCallBack.Invoke();
+        }
+        else if (LevelManager.Instance != null)
         {
             LevelManager.Instance.NextLevel();
         }
