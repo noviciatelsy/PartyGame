@@ -30,47 +30,47 @@ public class PlayerDive : MonoBehaviour
     void Start()
     {
         Vector3 pos = transform.position;
-        pos.y = -25f;
+        pos.y = 28f;
         transform.position = pos;
-        introFinished = false;
+        introFinished = true;
         introTimer = 0f;
 
-        PlayIntro();
+        //PlayIntro();
     }
 
-    void PlayIntro()
-    {
-        introTimer += Time.deltaTime;
+    //void PlayIntro()
+    //{
+    //    introTimer += Time.deltaTime;
 
-        float y;
+    //    float y;
 
-        // 前0.5秒
-        if (introTimer <= 1.0f)
-        {
-            float t = introTimer / 0.5f;
-            y = Mathf.Lerp(-25f, -20f, t);
-        }
-        // 后2秒
-        else
-        {
-            float t = Mathf.Clamp01((introTimer - 1.0f) / 2f);
-            y = Mathf.Lerp(-25f, 20f, t);
+    //    // 前0.5秒
+    //    if (introTimer <= 1.0f)
+    //    {
+    //        float t = introTimer / 0.5f;
+    //        y = Mathf.Lerp(-25f, -20f, t);
+    //    }
+    //    // 后2秒
+    //    else
+    //    {
+    //        float t = Mathf.Clamp01((introTimer - 1.0f) / 2f);
+    //        y = Mathf.Lerp(-25f, 20f, t);
 
-            if (t >= 1f)
-            {
-                introFinished = true;
-            }
-        }
+    //        if (t >= 1f)
+    //        {
+    //            introFinished = true;
+    //        }
+    //    }
 
-        transform.position = new Vector3(transform.position.x, y, transform.position.z);
-    }
+    //    transform.position = new Vector3(transform.position.x, y, transform.position.z);
+    //}
 
     void Update()
     {
         if (isDead) return;
         if (!introFinished)
         {
-            PlayIntro();
+            //PlayIntro();
             return;
         }
 
