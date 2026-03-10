@@ -149,7 +149,7 @@ public LevelTimer levelTimer;
 
     private IEnumerator MatchWinCoroutine(PlayerEntity winner)
     {
-        yield return null;
+        yield return new WaitForSeconds(2f);
         OnGameEnd?.Invoke(winner);
         if (LevelManager.Instance != null)
         {

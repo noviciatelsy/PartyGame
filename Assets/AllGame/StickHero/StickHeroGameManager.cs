@@ -236,6 +236,17 @@ public class StickHeroGameManager : MonoBehaviour
         }
     }
 
+    void OnDestroy()
+    {
+        if (GlobalInput.Instance != null)
+        {
+            GlobalInput.Instance.OnSpaceDown -= P1Grow;
+            GlobalInput.Instance.OnSpaceUp -= P1Drop;
+            GlobalInput.Instance.OnMouseDown -= P2Grow;
+            GlobalInput.Instance.OnMouseUp -= P2Drop;
+        }
+    }
+
     bool IsPlayerOutOfScreen(StickHero player)
     {
         Vector3 viewportPos = cam.WorldToViewportPoint(player.transform.position);
