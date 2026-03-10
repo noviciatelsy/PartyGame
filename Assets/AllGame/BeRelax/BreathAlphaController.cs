@@ -39,7 +39,7 @@ public class BreathAlphaController : MonoBehaviour
 
         if (isInhale)
         {
-            nextTarget = Mathf.Min(currentAlpha + inhaleRise, 1.05f);
+            nextTarget = Mathf.Min(currentAlpha + inhaleRise, 0.95f);
         }
         else
         {

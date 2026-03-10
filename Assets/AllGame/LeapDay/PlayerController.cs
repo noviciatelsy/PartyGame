@@ -1,14 +1,14 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
-    public enum PlayerInputType
-    {
-        Player1_Space,
-        Player2_Mouse
-    }
+    public enum PlayerInputType { Player1_Space, Player2_Mouse }
     [Header("Player")]
     public PlayerInputType playerInput;
+
     [Header("Move")]
     public float moveSpeed = 7f;
     public int moveDir = 1;
@@ -23,20 +23,27 @@ public class PlayerController : MonoBehaviour
     private float lastJumpPressedTime = -10f;
     private float lastGroundedTime = -10f;
 
-    [Header("Wall")]
-    public float slideSpeed = 3f;
-    public LayerMask wallLayer;
-    public LayerMask groundLayer;
-    public float wallCheckDistance = 0.7f;
-    public float groundCheckDistance = 1.1f;
+    [Header("Obstacle")]
+    public LayerMask obstacleLayer;
+    public float checkDistance = 0.7f;
+    public float checkHeight = 0.7f;
     public Transform groundCheck;
     public float groundCheckRadius = 0.15f;
 
-    private Rigidbody2D rb;
+    [Header("Wall Slide")]
+    public float slideSpeed = 3f;
+    public float wallSlideGravity = 1.5f;
+    public float normalGravity = 4f;
+    public float wallSlideSmooth = 10f;
 
+    private Rigidbody2D rb;
     private bool isGrounded;
-    private bool touchingWall;
+    private bool touchingObstacle;
     private bool isWallSliding;
+    private Vector2 lastWallNormal;
+
+    // Debug flags
+    private bool debugWallTop, debugWallMid, debugWallBot;
 
     void Start()
     {
@@ -49,103 +56,146 @@ public class PlayerController : MonoBehaviour
         UnregisterInput();
     }
 
-    // =========================
-    // INPUT
-    // =========================
-
     void RegisterInput()
     {
         if (GlobalInput.Instance == null) return;
-
         if (playerInput == PlayerInputType.Player1_Space)
-        {
             GlobalInput.Instance.OnSpaceDown += OnJumpPressed;
-        }
         else if (playerInput == PlayerInputType.Player2_Mouse)
-        {
             GlobalInput.Instance.OnMouseDown += OnJumpPressed;
-        }
     }
 
     void UnregisterInput()
     {
         if (GlobalInput.Instance == null) return;
-
         if (playerInput == PlayerInputType.Player1_Space)
-        {
             GlobalInput.Instance.OnSpaceDown -= OnJumpPressed;
-        }
         else if (playerInput == PlayerInputType.Player2_Mouse)
-        {
             GlobalInput.Instance.OnMouseDown -= OnJumpPressed;
-        }
     }
 
-    void OnJumpPressed()
-    {
-        lastJumpPressedTime = Time.time;
-    }
-
-    //void Update()
-    //{
-    //    // 记录跳跃输入
-    //    if (Input.GetKeyDown(KeyCode.Space))
-    //    {
-    //        lastJumpPressedTime = Time.time;
-    //    }
-    //}
+    void OnJumpPressed() => lastJumpPressedTime = Time.time;
 
     void FixedUpdate()
     {
-        CheckEnvironment();
+        CheckObstacles();
         HandleWallSlide();
         HandleJump();
         HandleMovement();
     }
 
-    void CheckEnvironment()
+    void CheckObstacles()
     {
-        //isGrounded = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, groundLayer);
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, obstacleLayer);
+        if (isGrounded) lastGroundedTime = Time.time;
 
-        float height = 0.7f;
-
-        Vector2 originTop = new Vector2(transform.position.x, transform.position.y + height / 2);
-        Vector2 originMid = transform.position;
-        Vector2 originBot = new Vector2(transform.position.x, transform.position.y - height / 2);
-
+        float halfHeight = checkHeight / 2f;
+        Vector2 top = new Vector2(transform.position.x, transform.position.y + halfHeight);
+        Vector2 mid = transform.position;
+        Vector2 bot = new Vector2(transform.position.x, transform.position.y - halfHeight);
         Vector2 dir = new Vector2(moveDir, 0);
 
-        RaycastHit2D hit1 = Physics2D.Raycast(originTop, dir, wallCheckDistance, wallLayer);
-        RaycastHit2D hit2 = Physics2D.Raycast(originMid, dir, wallCheckDistance, wallLayer);
-        RaycastHit2D hit3 = Physics2D.Raycast(originBot, dir, wallCheckDistance, wallLayer);
+        RaycastHit2D hitTop = Physics2D.Raycast(top, dir, checkDistance, obstacleLayer);
+        RaycastHit2D hitMid = Physics2D.Raycast(mid, dir, checkDistance, obstacleLayer);
+        RaycastHit2D hitBot = Physics2D.Raycast(bot, dir, checkDistance, obstacleLayer);
 
-        touchingWall = hit1.collider || hit2.collider || hit3.collider;
+        touchingObstacle = hitTop || hitMid || hitBot;
+        if (hitTop) lastWallNormal = hitTop.normal;
+        else if (hitMid) lastWallNormal = hitMid.normal;
+        else if (hitBot) lastWallNormal = hitBot.normal;
 
-        if (isGrounded)
-        {
-            lastGroundedTime = Time.time;
-            jumpCount = 0;
-        }
+        // Debug flags
+        debugWallTop = hitTop;
+        debugWallMid = hitMid;
+        debugWallBot = hitBot;
+
+        //Debug.Log($"[CheckObstacles] Top:{hitTop.collider != null} Mid:{hitMid.collider != null} Bot:{hitBot.collider != null} Touching:{touchingObstacle}");
     }
 
     void HandleWallSlide()
     {
-        if (!isGrounded && touchingWall)
+        if (!isGrounded && touchingObstacle && Mathf.Abs(lastWallNormal.x) > 0.9f)
         {
-            isWallSliding = true;
+            // 使用左右碰撞判定
+            float halfHeight = checkHeight / 2f;
+            Vector2 top = new Vector2(transform.position.x, transform.position.y + halfHeight);
+            Vector2 mid = transform.position;
+            Vector2 bot = new Vector2(transform.position.x, transform.position.y - halfHeight);
+            Vector2 dir = new Vector2(moveDir, 0);
 
-            //rb.gravityScale = 4;
+            RaycastHit2D hitTop = Physics2D.Raycast(top, dir, checkDistance, obstacleLayer);
+            RaycastHit2D hitMid = Physics2D.Raycast(mid, dir, checkDistance, obstacleLayer);
+            RaycastHit2D hitBot = Physics2D.Raycast(bot, dir, checkDistance, obstacleLayer);
 
-            //// 限制最大下落速度
-            //if (rb.velocity.y < -slideSpeed)
-            //{
-            //    rb.velocity = new Vector2(rb.velocity.x, -slideSpeed);
-            //}
+            bool stillTouchingWall = hitTop || hitMid || hitBot;
+
+            if (stillTouchingWall)
+            {
+                isWallSliding = true;
+                jumpCount = 0;
+                //Debug.Log($"[WallSlide] Sliding ON, velocityY={rb.velocity.y}");
+            }
+            else
+            {
+                isWallSliding = false;
+                //Debug.Log($"[WallSlide] Sliding OFF, velocityY={rb.velocity.y}");
+            }
         }
         else
         {
             isWallSliding = false;
+        }
+    }
+
+    void HandleMovement()
+    {
+        // 地面碰障碍翻转方向
+        if (isGrounded && touchingObstacle)
+        {
+            moveDir *= -1;
+        }
+
+        if (isWallSliding)
+        {
+            rb.gravityScale = normalGravity * 1.5f; // 保持正常重力
+
+            // 检测左右是否还有墙（微调 Raycast 避免角落卡）
+            float halfHeight = checkHeight / 2f;
+            Vector2 top = new Vector2(transform.position.x, transform.position.y + halfHeight);
+            Vector2 mid = transform.position;
+            Vector2 bot = new Vector2(transform.position.x, transform.position.y - halfHeight);
+            Vector2 dir = new Vector2(moveDir, 0);
+
+            RaycastHit2D hitTop = Physics2D.Raycast(top, dir, checkDistance, obstacleLayer);
+            RaycastHit2D hitMid = Physics2D.Raycast(mid, dir, checkDistance, obstacleLayer);
+            RaycastHit2D hitBot = Physics2D.Raycast(bot, dir, checkDistance, obstacleLayer);
+
+            bool stillTouchingWall = hitTop || hitMid || hitBot;
+
+            if (!stillTouchingWall)
+            {
+                // 左右没墙了，取消滑墙状态
+                isWallSliding = false;
+
+                // 保持原水平速度，让角色自然滑下角落
+                rb.velocity = new Vector2(moveDir * 0.05f, rb.velocity.y);
+                //Debug.Log("[WallSlide] No wall, free fall with small horizontal velocity");
+            }
+            else
+            {
+                // 左右还有墙，限制最大下落速度
+                float limitedY = Mathf.Max(rb.velocity.y, -slideSpeed);
+                // 水平速度微调，避免卡角
+                float horizontalVelocity = moveDir * 0.1f;
+                rb.velocity = new Vector2(horizontalVelocity, limitedY);
+                //Debug.Log($"[WallSlide] Sliding, Y capped: {limitedY}, small horizontal: {horizontalVelocity}");
+            }
+        }
+        else
+        {
+            // 普通移动
+            rb.gravityScale = normalGravity;
+            rb.velocity = new Vector2(moveDir * moveSpeed, rb.velocity.y);
         }
     }
 
@@ -156,68 +206,31 @@ public class PlayerController : MonoBehaviour
 
         if (!jumpBuffered) return;
 
-        // 墙跳
         if (isWallSliding)
         {
             moveDir *= -1;
-
             rb.velocity = new Vector2(moveDir * moveSpeed, jumpForce);
-
             jumpCount = 1;
             lastJumpPressedTime = -10f;
             isWallSliding = false;
-
+            //Debug.Log("[HandleJump] Wall Jump executed");
             return;
         }
 
-        // 地面跳 / Coyote
         if (coyoteValid)
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-
             jumpCount = 1;
             lastJumpPressedTime = -10f;
-
             return;
         }
 
-        // 二段跳
         if (jumpCount < maxJump)
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-
             jumpCount++;
             lastJumpPressedTime = -10f;
         }
     }
 
-    private float wallSlideDecay = 80f;
-    void HandleMovement()
-    {
-        // 地面撞墙反向
-        if (isGrounded && touchingWall)
-        {
-            moveDir *= -1;
-        }
-
-        if (isWallSliding)
-        {
-            //rb.gravityScale = 0;
-            //rb.velocity = new Vector2(0, Mathf.Max(-slideSpeed, rb.velocity.y) );
-            rb.gravityScale = 4;
-
-            float newY = Mathf.Lerp(
-                rb.velocity.y,
-                -slideSpeed,
-                wallSlideDecay * Time.fixedDeltaTime
-            );
-
-            rb.velocity = new Vector2(0, newY);
-        }
-        else
-        {
-            rb.gravityScale = 4;
-            rb.velocity = new Vector2(moveDir * moveSpeed, rb.velocity.y);
-        }
-    }
 }

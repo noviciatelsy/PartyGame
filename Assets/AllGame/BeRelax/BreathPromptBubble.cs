@@ -6,7 +6,7 @@ public class BreathPromptBubble : MonoBehaviour
 {
     public TMP_Text textA;
     public TMP_Text textB;
-    public float fadeDuration = 20f;
+    private float fadeDuration = 28f;
 
     float offsetIn = 0.8f;
     float offsetOut = 1.0f;
