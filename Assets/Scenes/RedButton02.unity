@@ -180,6 +180,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CircleFade
       objectReference: {fileID: 0}
+    - target: {fileID: 1420034003177837709, guid: e54159ad036a1db4e92cf887d8b0ac0d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4965828717683318404, guid: e54159ad036a1db4e92cf887d8b0ac0d, type: 3}
       propertyPath: m_Camera
       value: 
