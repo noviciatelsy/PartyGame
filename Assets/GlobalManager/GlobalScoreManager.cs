@@ -8,13 +8,11 @@ public class GlobalScoreManager : MonoBehaviour
 {
     public static GlobalScoreManager Instance;
 
+    private VictoryAnimation victoryAnim;
     [Header("Score")]
     public int player1Score = 0;
     public int player2Score = 0;
 
-    [Header("UI")]
-    public TMP_Text player1Text;
-    public TMP_Text player2Text;
 
     private void Awake()
     {
@@ -108,9 +106,15 @@ public class GlobalScoreManager : MonoBehaviour
         Debug.Log($"[ScoreManager] AddScore Player{playerID} +{amount}");
 
         if (playerID == 1)
+        {
             player1Score += amount;
+            PlayVictoryAnimation(true);
+        }
         else if (playerID == 2)
+        {
             player2Score += amount;
+            PlayVictoryAnimation(false);
+        }
 
         Debug.Log($"[ScoreManager] Score Now: {player1Score}:{player2Score}");
 
@@ -135,21 +139,35 @@ public class GlobalScoreManager : MonoBehaviour
     }
 
     // ==========================
-    // UI����
+    // UI
+    
     // ==========================
 
     public void UpdateUI()
     {
-        //Debug.Log($"[ScoreManager] UpdateUI {player1Score}:{player2Score}");
 
-        if (player1Text != null)
-            player1Text.text = player1Score.ToString();
-        else
-            Debug.LogWarning("[ScoreManager] player1Text is NULL");
+    }
 
-        if (player2Text != null)
-            player2Text.text = player2Score.ToString();
-        else
-            Debug.LogWarning("[ScoreManager] player2Text is NULL");
+    public void PlayVictoryAnimation(bool isPlayer1)
+    {
+        VictoryAnimation anim = GetVictoryAnimation();
+
+        if (anim != null)
+        {
+            anim.PlayVictory(isPlayer1);
+        }
+    }
+
+    VictoryAnimation GetVictoryAnimation()
+    {
+        if (victoryAnim == null)
+        {
+            victoryAnim = FindObjectOfType<VictoryAnimation>();
+
+            if (victoryAnim == null)
+                Debug.LogWarning("[ScoreManager] VictoryAnimation not found in scene!");
+        }
+
+        return victoryAnim;
     }
 }

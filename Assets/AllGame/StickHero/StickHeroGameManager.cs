@@ -220,7 +220,6 @@ public class StickHeroGameManager : MonoBehaviour
         }
 
         // ������Լ�UI
-        // ʤ������ / �ӷ� / �ؿ���ť
         if (winCoroutine == null)
             winCoroutine = StartCoroutine(WinDelayCoroutine());
     }

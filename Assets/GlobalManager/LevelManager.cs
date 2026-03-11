@@ -117,6 +117,7 @@ public class LevelManager : MonoBehaviour
         //可能会有错
         Time.timeScale = 1f;
     }
+
     // ============================
     // ��Ȩ��������߼�
     // ============================
