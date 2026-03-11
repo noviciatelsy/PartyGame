@@ -227,7 +227,7 @@ public class StickHeroGameManager : MonoBehaviour
 
     IEnumerator WinDelayCoroutine()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(3f);
 
         if (LevelManager.Instance != null)
         {

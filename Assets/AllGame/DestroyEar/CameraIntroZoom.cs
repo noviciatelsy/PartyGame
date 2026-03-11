@@ -13,7 +13,7 @@ public class CameraIntroZoom : MonoBehaviour
 
     [Header("Follow Target")]
     public Transform player;
-    public float triggerOffset = 1f;
+    private float triggerOffset = 5f;
 
     private float timer = 0f;
     private bool introFinished = false;

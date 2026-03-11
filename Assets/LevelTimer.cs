@@ -5,16 +5,12 @@ using UnityEngine;
 
 public class LevelTimer : MonoBehaviour
 {
-    [Header("����ʱʱ�����룩")]
+    [Header("TimeofLevel")]
     public float duration = 10f;
-
-    [Header("��Ҫ���ŵ�����")]
     public Transform targetScaleObject;
 
-    [Header("��ʼ X ֵ")]
+    [Header("timebar")]
     public float startScaleX = 10f;
-
-    [Header("���� X ֵ")]
     public float endScaleX = 0f;
     public Action OnTimerEndCallBack;
     private float timer;

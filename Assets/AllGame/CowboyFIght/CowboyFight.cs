@@ -178,7 +178,7 @@ public class CowboyFight : MonoBehaviour
 
     IEnumerator WinDelayCoroutine()
     {
-        yield return new WaitForSeconds(4f);
+        yield return new WaitForSeconds(3f);
 
         if (LevelManager.Instance != null)
         {

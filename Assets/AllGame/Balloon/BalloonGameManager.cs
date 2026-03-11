@@ -20,7 +20,7 @@ public class BalloonGameManager : MonoBehaviour
     private float currentTimer;
     private CameraShake cameraShake;
     [SerializeField] private float maxHoldTime;
-    [SerializeField] private TextMeshProUGUI gameTip;
+    //[SerializeField] private TextMeshProUGUI gameTip;
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private TextMeshProUGUI timerText;
 
@@ -52,7 +52,7 @@ public class BalloonGameManager : MonoBehaviour
         ResetBalloon(p1);
         ResetBalloon(p2);
         roundActive = true;
-        gameTip.text = "游戏开始！";
+        //gameTip.text = "游戏开始！";
         UpdateScoreTextOnly();
     }
 
@@ -72,7 +72,7 @@ public class BalloonGameManager : MonoBehaviour
     {
         if (!roundActive) return;
         currentTimer -= Time.deltaTime;
-        timerText.text = $"剩余：{Mathf.Max(0, currentTimer):F1}s";
+        timerText.text = $" 剩余时间：\n{Mathf.Max(0, currentTimer):F1}s";
 
         if (currentTimer <= 0)
         {
@@ -181,10 +181,21 @@ public class BalloonGameManager : MonoBehaviour
         poppedPlayer.anim.Play("爆炸");
         poppedPlayer.balloonObj.transform.localScale = poppedPlayer.minScale;
         BalloonEntity winner = (poppedPlayer == p1) ? p2 : p1;
-        gameTip.text = $"{poppedPlayer.playerName} 爆炸! {winner.playerName} 胜利! 正在前往下一关...";
+        //gameTip.text = $"{poppedPlayer.playerName} 爆炸! {winner.playerName} 胜利! 正在前往下一关...";
+
+        //=======新增全局计分===========
+        if (winner == p1)
+        {
+            GlobalScoreManager.Instance.AddScore(1, 1);
+        }
+        else
+        {
+            GlobalScoreManager.Instance.AddScore(2, 1);
+        }
+
         if (cameraShake != null) StartCoroutine(cameraShake.Shake());
         if (winCoroutine != null) StopCoroutine(winCoroutine);
-        winCoroutine = StartCoroutine(ProceedToNextLevelCoroutine(2.0f));
+        winCoroutine = StartCoroutine(ProceedToNextLevelCoroutine(3.0f));
     }
 
     private void EndRoundByTime()
@@ -193,9 +204,20 @@ public class BalloonGameManager : MonoBehaviour
         float p1Diff = maxHoldTime - p1.currentHoldTimer;
         float p2Diff = maxHoldTime - p2.currentHoldTimer;
         BalloonEntity winner = (p1Diff < p2Diff) ? p1 : p2;
-        gameTip.text = $"时间到！{winner.playerName} 更接近极限，胜出！ 正在前往下一关...";
+        //gameTip.text = $"时间到！{winner.playerName} 更接近极限，胜出！ 正在前往下一关...";
+
+        //=======新增全局计分===========
+        if (winner == p1)
+        {
+            GlobalScoreManager.Instance.AddScore(1, 1);
+        }
+        else
+        {
+            GlobalScoreManager.Instance.AddScore(2, 1);
+        }
+
         if (winCoroutine != null) StopCoroutine(winCoroutine);
-        winCoroutine = StartCoroutine(ProceedToNextLevelCoroutine(2.0f));
+        winCoroutine = StartCoroutine(ProceedToNextLevelCoroutine(3.0f));
     }
 
     private void CheckMatchWinner()
