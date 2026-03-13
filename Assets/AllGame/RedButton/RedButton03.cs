@@ -14,6 +14,12 @@ public class RedButton03 : MonoBehaviour
     public TextMeshPro player1Text;
     public TextMeshPro player2Text;
 
+    public List<GameObject> ButtonPrefab1;
+    public List<GameObject> ButtonPrefab2;
+
+    [Header("æŒ‰é’®å›¾ç‰‡åˆ‡æ¢å›å¼¹å»¶è¿Ÿ")]
+    public float buttonResetDelay = 0.15f;
+
     private bool canTouch = false;
     private bool gameFinished = false;
     private Coroutine winCoroutine;
@@ -23,6 +29,8 @@ public class RedButton03 : MonoBehaviour
 
     private void Start()
     {
+        player1Hand.OnPressed += () => HandleButtonPress(1);
+        player2Hand.OnPressed += () => HandleButtonPress(2);
         GlobalInput.Instance.OnSpaceAction += OnPlayer1Input;
         GlobalInput.Instance.OnMouseLeftAction += OnPlayer2Input;
 
@@ -52,14 +60,14 @@ public class RedButton03 : MonoBehaviour
     }
 
     // =========================
-    // »ØºÏÁ÷³Ì
+    // ï¿½Øºï¿½ï¿½ï¿½ï¿½ï¿½
     // =========================
     private IEnumerator StartRound()
     {
         canTouch = false;
         gameFinished = false;
 
-        // ³õÊ¼»¯°´Å¥Î»ÖÃ z = 1
+        // ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Å¥Î»ï¿½ï¿½ z = 1
         if (greenButton != null)
         {
             Vector3 pos = greenButton.position;
@@ -67,11 +75,11 @@ public class RedButton03 : MonoBehaviour
             greenButton.position = pos;
         }
 
-        // Ëæ»úµÈ´ı 1~3 Ãë
+        // ï¿½ï¿½ï¿½ï¿½È´ï¿½ 1~3 ï¿½ï¿½
         float randomDelay = Random.Range(1f, 3f);
         yield return new WaitForSeconds(randomDelay);
 
-        // ¿ªÊ¼ÒÆ¶¯
+        // ï¿½ï¿½Ê¼ï¿½Æ¶ï¿½
         canTouch = true;
         reactionTimer = 0f;
         isTiming = true;
@@ -85,7 +93,7 @@ public class RedButton03 : MonoBehaviour
 
 
     // =========================
-    // Íæ¼ÒÊäÈë
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     // =========================
     private void OnPlayer1Input(GlobalInput.InputType type)
     {
@@ -106,20 +114,24 @@ public class RedButton03 : MonoBehaviour
     }
 
     // =========================
-    // ÅĞ¶¨Âß¼­
+    // ï¿½Ğ¶ï¿½ï¿½ß¼ï¿½
     // =========================
     private void HandleClick(int playerIndex)
     {
         if (gameFinished) return;
 
+        // ç‚¹å‡»æ—¶éšè—ç»¿è‰²æŒ‰é’®
+        if (greenButton != null)
+            greenButton.gameObject.SetActive(false);
+
         if (canTouch)
         {
-            // ÕıÈ·µã»÷£¬µ±Ç°Íæ¼Ò»ñÊ¤
+            // ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½Ò»ï¿½Ê¤
             DeclareWinner(playerIndex);
         }
         else
         {
-            // ÌáÇ°µã»÷£¬µ±Ç°Íæ¼ÒÊ§°Ü
+            // ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½Ê§ï¿½ï¿½
             int otherPlayer = playerIndex == 1 ? 2 : 1;
             DeclareWinner(otherPlayer);
         }
@@ -155,5 +167,27 @@ public class RedButton03 : MonoBehaviour
 
         if (player2Text != null)
             player2Text.text = value;
+    }
+
+    private void HandleButtonPress(int playerIndex)
+    {
+        switch (playerIndex)
+        {
+            case 1:
+                StartCoroutine(SwapButtonImage(ButtonPrefab1));
+                break;
+            case 2:
+                StartCoroutine(SwapButtonImage(ButtonPrefab2));
+                break;
+        }
+    }
+
+    private IEnumerator SwapButtonImage(List<GameObject> buttonPrefabs)
+    {
+        buttonPrefabs[0].SetActive(false);
+        buttonPrefabs[1].SetActive(true);
+        yield return new WaitForSeconds(buttonResetDelay);
+        buttonPrefabs[1].SetActive(false);
+        buttonPrefabs[0].SetActive(true);
     }
 }

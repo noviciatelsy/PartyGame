@@ -47,7 +47,7 @@ public class GamePause : MonoBehaviour
     }
     private bool IsDisabledScene()
     {
-        return SceneManager.GetActiveScene().name == "BeginScene";
+        return SceneManager.GetActiveScene().name == "AAABeginScene";
     }
     private void PauseGame()
     {
@@ -113,7 +113,7 @@ public class GamePause : MonoBehaviour
     }
     private void ReturnToMainMenu()
     {
-        LevelManager.Instance.LoadLevel("MainMenu");
+        LevelManager.Instance.LoadLevel("AAABeginScene");
     }
     
 }

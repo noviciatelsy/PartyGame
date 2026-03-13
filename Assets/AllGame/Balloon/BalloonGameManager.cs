@@ -47,7 +47,7 @@ public class BalloonGameManager : MonoBehaviour
 
     private void StartNewRound()
     {
-        maxHoldTime = Random.Range(5.0f, 8.0f);
+        maxHoldTime = Random.Range(5.0f, 7.0f);
         currentTimer = initialTimer;
         ResetBalloon(p1);
         ResetBalloon(p2);

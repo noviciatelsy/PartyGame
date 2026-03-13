@@ -1,18 +1,25 @@
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
 public class RedButton02 : MonoBehaviour
 {
-    [Header("°ÎºÓ²ÎÊý")]
-    public float winThreshold = 12f;  // ²î¾à´ïµ½¶àÉÙÊ¤Àû
+    [Header("ï¿½ÎºÓ²ï¿½ï¿½ï¿½")]
+    public float winThreshold = 12f;  // ï¿½ï¿½ï¿½ïµ½ï¿½ï¿½ï¿½ï¿½Ê¤ï¿½ï¿½
     public float powerPerClick = 1f;
 
-    [Header("ÊÖ")]
+    [Header("ï¿½ï¿½")]
     public Click player1Hand;
     public Click player2Hand;
 
-    [Header("ÖÐÏßÎïÌå")]
+    public List<GameObject> ButtonPrefab1;
+    public List<GameObject> ButtonPrefab2;
+
+    [Header("æŒ‰é’®å›¾ç‰‡åˆ‡æ¢å›žå¼¹å»¶è¿Ÿ")]
+    public float buttonResetDelay = 0.15f;
+
+    [Header("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½")]
     public Transform lineObject;
     private const float progressToWorldScale = 40f;
 
@@ -38,6 +45,8 @@ public class RedButton02 : MonoBehaviour
 
     private void Start()
     {
+        player1Hand.OnPressed += () => HandleButtonPress(1);
+        player2Hand.OnPressed += () => HandleButtonPress(2);
         GlobalInput.Instance.OnSpaceAction += OnPlayer1Input;
         GlobalInput.Instance.OnMouseLeftAction += OnPlayer2Input;
         splitMaterial.SetFloat("_LineOffset", 0.5f);
@@ -46,7 +55,7 @@ public class RedButton02 : MonoBehaviour
 
     private void Update()
     {
-        // Ã¿Ö¡Æ½»¬±Æ½üÄ¿±ê
+        // Ã¿Ö¡Æ½ï¿½ï¿½ï¿½Æ½ï¿½Ä¿ï¿½ï¿½
         progress = Mathf.Lerp(progress, targetProgress, Time.deltaTime * smoothSpeed);
 
         SyncShader();
@@ -70,7 +79,7 @@ public class RedButton02 : MonoBehaviour
 
         player1Hand.Press();
 
-        // Íæ¼Ò1ÏòÓÒÀ­
+        // ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         tugPower -= powerPerClick;
 
         AfterPowerChanged();
@@ -86,7 +95,7 @@ public class RedButton02 : MonoBehaviour
 
         player2Hand.Press();
 
-        // Íæ¼Ò2Ïò×óÀ­
+        // ï¿½ï¿½ï¿½2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         tugPower += powerPerClick;
 
         AfterPowerChanged();
@@ -125,11 +134,11 @@ public class RedButton02 : MonoBehaviour
     {
         Debug.Log("Winner is Player " + playerIndex);
         GlobalScoreManager.Instance.AddScore(playerIndex, 1);
-        // ÕâÀï¿ÉÒÔ×ö£º
-        // Ê¤ÀûUI
-        // ¶¯»­
-        // ÒôÐ§
-        // ¹Ø¿¨½áÊø
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        // Ê¤ï¿½ï¿½UI
+        // ï¿½ï¿½ï¿½ï¿½
+        // ï¿½ï¿½Ð§
+        // ï¿½Ø¿ï¿½ï¿½ï¿½ï¿½ï¿½
         if (winCoroutine == null)
             winCoroutine = StartCoroutine(WinDelayCoroutine());
     }
@@ -171,5 +180,27 @@ public class RedButton02 : MonoBehaviour
         {
             LevelManager.Instance.NextLevel();
         }
+    }
+
+    private void HandleButtonPress(int playerIndex)
+    {
+        switch (playerIndex)
+        {
+            case 1:
+                StartCoroutine(SwapButtonImage(ButtonPrefab1));
+                break;
+            case 2:
+                StartCoroutine(SwapButtonImage(ButtonPrefab2));
+                break;
+        }
+    }
+
+    private IEnumerator SwapButtonImage(List<GameObject> buttonPrefabs)
+    {
+        buttonPrefabs[0].SetActive(false);
+        buttonPrefabs[1].SetActive(true);
+        yield return new WaitForSeconds(buttonResetDelay);
+        buttonPrefabs[1].SetActive(false);
+        buttonPrefabs[0].SetActive(true);
     }
 }

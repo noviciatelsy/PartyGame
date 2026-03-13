@@ -9,12 +9,20 @@ public class RedButton04 : MonoBehaviour
     public Click player1Hand;
     public Click player2Hand;
 
+    public List<GameObject> ButtonPrefab1;
+    public List<GameObject> ButtonPrefab2;
+
+    [Header("æŒ‰é’®å›¾ç‰‡åˆ‡æ¢å›žå¼¹å»¶è¿Ÿ")]
+    public float buttonResetDelay = 0.15f;
+
     private bool canTouch = false;
     private bool gameFinished = false;
     private Coroutine winCoroutine;
 
     private void Start()
     {
+        player1Hand.OnPressed += () => HandleButtonPress(1);
+        player2Hand.OnPressed += () => HandleButtonPress(2);
         GlobalInput.Instance.OnSpaceAction += OnPlayer1Input;
         GlobalInput.Instance.OnMouseLeftAction += OnPlayer2Input;
 
@@ -31,7 +39,7 @@ public class RedButton04 : MonoBehaviour
 
 
     // =========================
-    // »ØºÏÁ÷³Ì
+    // ï¿½Øºï¿½ï¿½ï¿½ï¿½ï¿½
     // =========================
     private IEnumerator StartRound()
     {
@@ -43,7 +51,7 @@ public class RedButton04 : MonoBehaviour
 
 
     // =========================
-    // Íæ¼ÒÊäÈë
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     // =========================
     private void OnPlayer1Input(GlobalInput.InputType type)
     {
@@ -64,7 +72,7 @@ public class RedButton04 : MonoBehaviour
     }
 
     // =========================
-    // ÅÐ¶¨Âß¼­
+    // ï¿½Ð¶ï¿½ï¿½ß¼ï¿½
     // =========================
     private void HandleClick(int playerIndex)
     {
@@ -72,12 +80,12 @@ public class RedButton04 : MonoBehaviour
 
         if (canTouch)
         {
-            // ÕýÈ·µã»÷£¬µ±Ç°Íæ¼Ò»ñÊ¤
+            // ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½Ò»ï¿½Ê¤
             DeclareWinner(playerIndex);
         }
         else
         {
-            // ÌáÇ°µã»÷£¬µ±Ç°Íæ¼ÒÊ§°Ü
+            // ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½Ê§ï¿½ï¿½
             int otherPlayer = playerIndex == 1 ? 2 : 1;
             DeclareWinner(otherPlayer);
         }
@@ -105,4 +113,25 @@ public class RedButton04 : MonoBehaviour
         }
     }
 
+    private void HandleButtonPress(int playerIndex)
+    {
+        switch (playerIndex)
+        {
+            case 1:
+                StartCoroutine(SwapButtonImage(ButtonPrefab1));
+                break;
+            case 2:
+                StartCoroutine(SwapButtonImage(ButtonPrefab2));
+                break;
+        }
+    }
+
+    private IEnumerator SwapButtonImage(List<GameObject> buttonPrefabs)
+    {
+        buttonPrefabs[0].SetActive(false);
+        buttonPrefabs[1].SetActive(true);
+        yield return new WaitForSeconds(buttonResetDelay);
+        buttonPrefabs[1].SetActive(false);
+        buttonPrefabs[0].SetActive(true);
+    }
 }

@@ -1,40 +1,42 @@
+using System;
 using UnityEngine;
 
 public class Click : MonoBehaviour
 {
-    [Header("¹Ì¶¨Î»ÖÃ")]
+    [Header("ï¿½Ì¶ï¿½Î»ï¿½ï¿½")]
     public float upY = 1f;
     public float downY = -1f;
 
-    [Header("ÒÆ¶¯ËÙ¶È")]
+    [Header("ï¿½Æ¶ï¿½ï¿½Ù¶ï¿½")]
     public float moveSpeed = 25f;
-
+public Action OnPressed;
     private float targetY;
     private bool moving = false;
 
     private void Awake()
     {
-        // ³õÊ¼ÔÚÉÏ·½
+        // ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½Ï·ï¿½
         targetY = upY;
         Vector3 pos = transform.localPosition;
         pos.y = upY;
     }
 
     /// <summary>
-    /// Íâ²¿µ÷ÓÃ
+    /// ï¿½â²¿ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     public void Press()
     {
-        // Ã¿´Îµã»÷ ¡ú ÏÈÏÂÑ¹
+        // Ã¿ï¿½Îµï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ¹
         targetY = downY;
         moving = true;
+        OnPressed?.Invoke();
     }
 
     private void Update()
     {
         Vector3 pos = transform.localPosition;
 
-        // Æ½»¬ÒÆ¶¯µ½Ä¿±êY
+        // Æ½ï¿½ï¿½ï¿½Æ¶ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½Y
         pos.y = Mathf.MoveTowards(
             pos.y,
             targetY,
@@ -43,14 +45,14 @@ public class Click : MonoBehaviour
 
         transform.localPosition = pos;
 
-        // Èç¹ûÒÑ¾­µ½ÏÂ·½
+        // ï¿½ï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½Â·ï¿½
         if (Mathf.Abs(pos.y - downY) < 0.01f)
         {
-            // ×Ô¶¯»Øµ¯
+            // ï¿½Ô¶ï¿½ï¿½Øµï¿½
             targetY = upY;
         }
 
-        // µ½´ïÉÏ·½¾ÍÍ£Ö¹ÒÆ¶¯
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½Í£Ö¹ï¿½Æ¶ï¿½
         if (Mathf.Abs(pos.y - upY) < 0.01f && targetY == upY)
         {
             moving = false;
