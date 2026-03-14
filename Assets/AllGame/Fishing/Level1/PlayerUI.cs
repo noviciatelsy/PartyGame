@@ -27,16 +27,14 @@ public class PlayerEntity
     [HideInInspector] public bool finished = false;
     [HideInInspector] public bool hasControlled = false;
 
-    public void ResetState()
+    public void ResetState(float startProgress = 0.3f)
     {
         currentVelocity = 0f;
-        progress = 0.5f;
+        progress = startProgress;
         isPressing = false;
         finished = false;
-        hasControlled = true;
-        if (progressImage) progressImage.fillAmount = 0.5f;
-        if (progressLeftImage) progressLeftImage.fillAmount = 0.5f;
-        if (progressRightImage) progressRightImage.fillAmount = 0.5f;
+        hasControlled = false;
+        if (progressImage) progressImage.fillAmount = startProgress;
     }
 }
 public class PlayerUI : MonoBehaviour
@@ -55,6 +53,8 @@ public class PlayerUI : MonoBehaviour
     [SerializeField] private float bounceFactor = 0.35f;
     [Header("阻力，越接近1越小")]
     [SerializeField] private float drag = 0.98f;
+    [Header("进度条配置")]
+    [SerializeField, Range(0f, 1f)] private float initialProgress = 0.3f;
     [Header("时长配置（秒）")]
     [SerializeField] private float holdTimeToWin = 3f; // 从0恢复到满需要的时间
     [SerializeField] private float holdTimeToLose = 3f; // 从满掉到0需要的时间
@@ -68,39 +68,27 @@ public class PlayerUI : MonoBehaviour
     {
         fishAIs = fishes;
         parentCanvas = player_1.frameRect.GetComponentInParent<Canvas>();
-        player_1.ResetState();
-        player_2.ResetState();
+        player_1.ResetState(initialProgress);
+        player_2.ResetState(initialProgress);
 
-        ConfigureCenterFill(player_1);
-        ConfigureCenterFill(player_2);
+        ConfigureVerticalFill(player_1);
+        ConfigureVerticalFill(player_2);
     }
 
-    private void ConfigureCenterFill(PlayerEntity p)
+    private void ConfigureVerticalFill(PlayerEntity p)
     {
         if (p == null) return;
-        if (p.progressLeftImage != null)
+        if (p.progressImage != null)
         {
-            p.progressLeftImage.type = Image.Type.Filled;
-            p.progressLeftImage.fillMethod = Image.FillMethod.Horizontal;
-            p.progressLeftImage.fillOrigin = (int)Image.OriginHorizontal.Right;
-        }
-        if (p.progressRightImage != null)
-        {
-            p.progressRightImage.type = Image.Type.Filled;
-            p.progressRightImage.fillMethod = Image.FillMethod.Horizontal;
-            p.progressRightImage.fillOrigin = (int)Image.OriginHorizontal.Left;
+            p.progressImage.type = Image.Type.Filled;
+            p.progressImage.fillMethod = Image.FillMethod.Vertical;
+            p.progressImage.fillOrigin = (int)Image.OriginVertical.Bottom;
         }
     }
 
     private void SetProgressVisual(PlayerEntity p, float normalized)
     {
         float v = Mathf.Clamp01(normalized);
-        if (p.progressLeftImage != null && p.progressRightImage != null)
-        {
-            p.progressLeftImage.fillAmount = v;
-            p.progressRightImage.fillAmount = v;
-            return;
-        }
         if (p.progressImage != null)
         {
             p.progressImage.fillAmount = v;
@@ -240,7 +228,7 @@ public class PlayerUI : MonoBehaviour
 
     public void ResetProgress()
     {
-        if (player_1 != null) player_1.ResetState();
-        if (player_2 != null) player_2.ResetState();
+        if (player_1 != null) player_1.ResetState(initialProgress);
+        if (player_2 != null) player_2.ResetState(initialProgress);
     }
 }

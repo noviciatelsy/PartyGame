@@ -17,6 +17,14 @@ public class RedButton03 : MonoBehaviour
     public List<GameObject> ButtonPrefab1;
     public List<GameObject> ButtonPrefab2;
 
+    [Header("绿色按钮按下图片")]
+    public GameObject greenPressedButton1;
+    public GameObject greenPressedButton2;
+
+    [Header("绿色按钮未按下图片")]
+    public GameObject greenButton1;
+    public GameObject greenButton2;
+
     [Header("按钮图片切换回弹延迟")]
     public float buttonResetDelay = 0.15f;
 
@@ -37,6 +45,11 @@ public class RedButton03 : MonoBehaviour
         greenButton.position = new Vector3(0f, 0f, 1f);
 
         UpdateText("-- ms");
+
+        if (greenPressedButton1 != null) greenPressedButton1.SetActive(false);
+        if (greenPressedButton2 != null) greenPressedButton2.SetActive(false);
+        if (greenButton1 != null) greenButton1.SetActive(false);
+        if (greenButton2 != null) greenButton2.SetActive(false);
 
         StartCoroutine(StartRound());
     }
@@ -79,16 +92,24 @@ public class RedButton03 : MonoBehaviour
         float randomDelay = Random.Range(1f, 3f);
         yield return new WaitForSeconds(randomDelay);
 
-        // ��ʼ�ƶ�
+        // 如果等待期间玩家抢跑，不再变绿
+        if (gameFinished) yield break;
+
+        // 绿色按钮出现时设置排序
         canTouch = true;
         reactionTimer = 0f;
         isTiming = true;
 
-        //yield return StartCoroutine(MoveGreenButton());
         if (greenButton != null)
         {
             greenButton.position = new Vector3(greenButton.position.x, greenButton.position.y, -1f);
         }
+
+        // 变绿后隐藏红色按钮，显示每个玩家的绿色按钮
+        foreach (var go in ButtonPrefab1) if (go != null) go.SetActive(false);
+        foreach (var go in ButtonPrefab2) if (go != null) go.SetActive(false);
+        if (greenButton1 != null) greenButton1.SetActive(true);
+        if (greenButton2 != null) greenButton2.SetActive(true);
     }
 
 
@@ -120,20 +141,51 @@ public class RedButton03 : MonoBehaviour
     {
         if (gameFinished) return;
 
-        // 点击时隐藏绿色按钮
-        if (greenButton != null)
-            greenButton.gameObject.SetActive(false);
-
         if (canTouch)
         {
-            // ��ȷ�������ǰ��һ�ʤ
+            // 绿灯后按下：按下者显示绿色按下图片，另一方保持绿色按钮不变
+            ShowGreenPressed(playerIndex);
             DeclareWinner(playerIndex);
         }
         else
         {
-            // ��ǰ�������ǰ���ʧ��
+            // 抢跑：抢跑者显示红色按下图片（保持），另一方不变
+            ShowRedPressed(playerIndex);
             int otherPlayer = playerIndex == 1 ? 2 : 1;
             DeclareWinner(otherPlayer);
+        }
+    }
+
+    private void ShowGreenPressed(int playerIndex)
+    {
+        if (playerIndex == 1)
+        {
+            if (greenButton1 != null) greenButton1.SetActive(false);
+            if (greenPressedButton1 != null) greenPressedButton1.SetActive(true);
+        }
+        else
+        {
+            if (greenButton2 != null) greenButton2.SetActive(false);
+            if (greenPressedButton2 != null) greenPressedButton2.SetActive(true);
+        }
+    }
+
+    private void ShowRedPressed(int playerIndex)
+    {
+        // 抢跑：隐藏该玩家绿色按钮，显示红色按下
+        if (playerIndex == 1)
+        {
+            if (greenButton1 != null) greenButton1.SetActive(false);
+            if (greenPressedButton1 != null) greenPressedButton1.SetActive(false);
+            ButtonPrefab1[0].SetActive(false);
+            ButtonPrefab1[1].SetActive(true);
+        }
+        else
+        {
+            if (greenButton2 != null) greenButton2.SetActive(false);
+            if (greenPressedButton2 != null) greenPressedButton2.SetActive(false);
+            ButtonPrefab2[0].SetActive(false);
+            ButtonPrefab2[1].SetActive(true);
         }
     }
 
@@ -171,6 +223,8 @@ public class RedButton03 : MonoBehaviour
 
     private void HandleButtonPress(int playerIndex)
     {
+        if (gameFinished) return;
+        if (canTouch) return;
         switch (playerIndex)
         {
             case 1:
@@ -187,6 +241,7 @@ public class RedButton03 : MonoBehaviour
         buttonPrefabs[0].SetActive(false);
         buttonPrefabs[1].SetActive(true);
         yield return new WaitForSeconds(buttonResetDelay);
+        if (gameFinished) yield break;
         buttonPrefabs[1].SetActive(false);
         buttonPrefabs[0].SetActive(true);
     }

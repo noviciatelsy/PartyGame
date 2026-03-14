@@ -10,12 +10,20 @@ public class StartSceneManager : MonoBehaviour
     [SerializeField] private Button chooseButton;
     [SerializeField] private Button exitButton;
     [SerializeField] private PlayableDirector playableDirector;
+    void Awake()
+    {
+        playableDirector.Play();
+    }
     void Start()
+    {
+
+
+    }
+    public void Initialize()
     {
         startButton.onClick.AddListener(() => LevelManager.Instance.NextLevel());
         chooseButton.onClick.AddListener(() => LevelManager.Instance.LoadLevel("ChooseScene"));
         exitButton.onClick.AddListener(() => Application.Quit());
     }
-
 
 }
