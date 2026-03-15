@@ -7,6 +7,7 @@ public class LevelManager : MonoBehaviour
 {
     public static LevelManager Instance;
     private bool isLoadingLevel = false;
+    private bool skipNextTransitionIn = true;
 
     [System.Serializable]
     public class LevelData
@@ -63,6 +64,14 @@ public class LevelManager : MonoBehaviour
         {
             Debug.LogWarning("LevelTransition Animator missing. Transition animation skipped.");
         }
+        else if (skipNextTransitionIn)
+        {
+            skipNextTransitionIn = false;
+            Transition.enabled = false;
+            var cg = transitionObj.GetComponentInChildren<CanvasGroup>();
+            if (cg != null) cg.alpha = 0f;
+            Transition.enabled = true;
+        }
     }
 
     public void NextLevel()
@@ -109,17 +118,19 @@ public class LevelManager : MonoBehaviour
     {
         if (Transition != null)
         {
+            var cg = Transition.GetComponentInChildren<CanvasGroup>();
+            if (cg != null) cg.alpha = 1f;
             Transition.SetTrigger("Start");
             yield return new WaitForSecondsRealtime(0.6f);
         }
         SceneManager.LoadScene(sceneName);
 
-        //可能会有错
+        //可能会有�?
         Time.timeScale = 1f;
     }
 
     // ============================
-    // ��Ȩ��������߼�
+    // ��Ȩ��������߼�?
     // ============================
     private string GetWeightedRandomLevel()
     {

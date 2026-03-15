@@ -1,61 +1,45 @@
-using System;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public class Click : MonoBehaviour
 {
-    [Header("�̶�λ��")]
-    public float upY = 1f;
-    public float downY = -1f;
+    [Header("手部物体")]
+    [SerializeField] GameObject raiseHand;
+    [SerializeField] GameObject downHand;
 
-    [Header("�ƶ��ٶ�")]
-    public float moveSpeed = 25f;
-public Action OnPressed;
-    private float targetY;
-    private bool moving = false;
+    [Header("按下后自动恢复时间")]
+    public float recoverDelay = 0f;
+
+    public Action OnPressed;
 
     private void Awake()
     {
-        // ��ʼ���Ϸ�
-        targetY = upY;
-        Vector3 pos = transform.localPosition;
-        pos.y = upY;
+        // 初始显示抬手，隐藏按下
+        if (raiseHand) raiseHand.SetActive(true);
+        if (downHand) downHand.SetActive(false);
     }
 
     /// <summary>
-    /// �ⲿ����
+    /// 外部调用
     /// </summary>
     public void Press()
     {
-        // ÿ�ε�� �� ����ѹ
-        targetY = downY;
-        moving = true;
+        // 切换到按下状态
+        if (raiseHand) raiseHand.SetActive(false);
+        if (downHand) downHand.SetActive(true);
         OnPressed?.Invoke();
+
+        // 自动恢复
+        StopAllCoroutines();
+        StartCoroutine(RecoverCoroutine());
     }
 
-    private void Update()
+    private IEnumerator RecoverCoroutine()
     {
-        Vector3 pos = transform.localPosition;
-
-        // ƽ���ƶ���Ŀ��Y
-        pos.y = Mathf.MoveTowards(
-            pos.y,
-            targetY,
-            moveSpeed * Time.deltaTime
-        );
-
-        transform.localPosition = pos;
-
-        // ����Ѿ����·�
-        if (Mathf.Abs(pos.y - downY) < 0.01f)
-        {
-            // �Զ��ص�
-            targetY = upY;
-        }
-
-        // �����Ϸ���ֹͣ�ƶ�
-        if (Mathf.Abs(pos.y - upY) < 0.01f && targetY == upY)
-        {
-            moving = false;
-        }
+        yield return new WaitForSeconds(recoverDelay);
+        // 恢复抬手状态
+        if (raiseHand) raiseHand.SetActive(true);
+        if (downHand) downHand.SetActive(false);
     }
 }

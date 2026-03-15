@@ -1455,8 +1455,28 @@ PrefabInstance:
       value: LevelManager
       objectReference: {fileID: 0}
     - target: {fileID: 4164723273317612953, guid: 5f812c178c33b6146ac21a8fa6d0f026, type: 3}
+      propertyPath: Transition
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4164723273317612953, guid: 5f812c178c33b6146ac21a8fa6d0f026, type: 3}
+      propertyPath: levels.Array.data[0].weight
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4164723273317612953, guid: 5f812c178c33b6146ac21a8fa6d0f026, type: 3}
+      propertyPath: levels.Array.data[1].weight
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 4164723273317612953, guid: 5f812c178c33b6146ac21a8fa6d0f026, type: 3}
       propertyPath: levels.Array.data[2].weight
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4164723273317612953, guid: 5f812c178c33b6146ac21a8fa6d0f026, type: 3}
+      propertyPath: levels.Array.data[3].weight
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4164723273317612953, guid: 5f812c178c33b6146ac21a8fa6d0f026, type: 3}
+      propertyPath: levels.Array.data[3].sceneName
+      value: RedButton04
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
