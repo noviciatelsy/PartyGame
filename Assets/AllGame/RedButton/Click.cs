@@ -23,16 +23,42 @@ public class Click : MonoBehaviour
     /// <summary>
     /// 外部调用
     /// </summary>
+    //public void Press()
+    //{
+    //    // 切换到按下状态
+    //    if (raiseHand) raiseHand.SetActive(false);
+    //    if (downHand) downHand.SetActive(true);
+    //    OnPressed?.Invoke();
+
+    //    // 自动恢复
+    //    StopAllCoroutines();
+    //    StartCoroutine(RecoverCoroutine());
+    //}
+
     public void Press()
     {
-        // 切换到按下状态
+        StartCoroutine(PressRoutine());
+    }
+
+    private IEnumerator PressRoutine()
+    {
+        // raise
+        if (raiseHand) raiseHand.SetActive(true);
+        if (downHand) downHand.SetActive(false);
+
+        yield return null; // 强制一帧
+
+        // down
         if (raiseHand) raiseHand.SetActive(false);
         if (downHand) downHand.SetActive(true);
+
         OnPressed?.Invoke();
 
-        // 自动恢复
-        StopAllCoroutines();
-        StartCoroutine(RecoverCoroutine());
+        yield return new WaitForSeconds(recoverDelay);
+
+        // raise
+        if (raiseHand) raiseHand.SetActive(true);
+        if (downHand) downHand.SetActive(false);
     }
 
     private IEnumerator RecoverCoroutine()

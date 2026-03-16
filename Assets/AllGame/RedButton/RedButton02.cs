@@ -32,6 +32,9 @@ public class RedButton02 : MonoBehaviour
     private bool gameFinished = false;
     private Coroutine winCoroutine;
 
+    private Coroutine button1Coroutine;
+    private Coroutine button2Coroutine;
+
     private void Awake()
     {
         progress = 0.5f;
@@ -187,19 +190,32 @@ public class RedButton02 : MonoBehaviour
         switch (playerIndex)
         {
             case 1:
-                StartCoroutine(SwapButtonImage(ButtonPrefab1));
+                //StartCoroutine(SwapButtonImage(ButtonPrefab1));
+                if (button1Coroutine != null)
+                    StopCoroutine(button1Coroutine);
+
+                button1Coroutine = StartCoroutine(SwapButtonImage(ButtonPrefab1));
                 break;
             case 2:
-                StartCoroutine(SwapButtonImage(ButtonPrefab2));
+                //StartCoroutine(SwapButtonImage(ButtonPrefab2));
+                if (button2Coroutine != null)
+                    StopCoroutine(button2Coroutine);
+                button2Coroutine = StartCoroutine(SwapButtonImage(ButtonPrefab2));
                 break;
         }
     }
 
     private IEnumerator SwapButtonImage(List<GameObject> buttonPrefabs)
     {
+        // 强制初始状态
+        //buttonPrefabs[1].SetActive(false);
+        //buttonPrefabs[0].SetActive(true);
+
         buttonPrefabs[0].SetActive(false);
         buttonPrefabs[1].SetActive(true);
+
         yield return new WaitForSeconds(buttonResetDelay);
+
         buttonPrefabs[1].SetActive(false);
         buttonPrefabs[0].SetActive(true);
     }
