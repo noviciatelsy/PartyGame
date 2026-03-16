@@ -63,6 +63,9 @@ EditorBuildSettings:
     path: Assets/Scenes/GameEnd.unity
     guid: 3f500c7975a35b645bfd2378a31617bd
   - enabled: 1
+    path: Assets/Scenes/LeapDay1.unity
+    guid: 61044aaf4b35df348bd5cb04aa2c7eaf
+  - enabled: 1
     path: Assets/Scenes/ZZZCredits.unity
     guid: 54f386821750a334e818294706741713
   m_configObjects: {}

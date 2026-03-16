@@ -114,11 +114,7 @@ public class RedButton01 : MonoBehaviour
 
         Debug.Log("Winner is Player " + playerIndex);
         GlobalScoreManager.Instance.AddScore(playerIndex, 1);
-        // ������Լӣ�?
-        // UI��ʾʤ��
-        // ���Ŷ���
-        // ��ֹ����
-        // ������һ����
+
         var camShake = Camera.main ? Camera.main.GetComponent<CameraEffects.CameraShake>() : null;
         if (camShake != null)
             StartCoroutine(camShake.Shake());

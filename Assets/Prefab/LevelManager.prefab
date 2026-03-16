@@ -48,6 +48,9 @@ MonoBehaviour:
   bgm1: {fileID: 8300000, guid: d8db3c451b8f56d41806a5b3065cb035, type: 3}
   bgm2: {fileID: 8300000, guid: fd3587b6faf961e4d9ca3677e6936b3e, type: 3}
   bgm3: {fileID: 8300000, guid: c99921b5a65fe8943b23bc8e5cb217f1, type: 3}
+  creditsBgm: {fileID: 0}
+  gameOverSceneName: GameEnd
+  mainMenuScene: AAABeginScene
   levels:
   - sceneName: RedButton01
     weight: 3
@@ -81,6 +84,8 @@ MonoBehaviour:
     weight: 2
   - sceneName: Face4
     weight: 2
+  - sceneName: LeapDay1
+    weight: 4
   avoidRepeat: 1
   Transition: {fileID: 0}
 --- !u!82 &3108482064808689205
