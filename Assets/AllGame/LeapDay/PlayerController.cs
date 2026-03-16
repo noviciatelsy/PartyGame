@@ -1,223 +1,124 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
-    public enum PlayerInputType { Player1_Space, Player2_Mouse }
-
-    [Header("Player")]
-    public PlayerInputType playerInput;
-
     [Header("Move")]
-    public float moveSpeed = 7f;
-    public int moveDir = 1;
+    public float moveSpeed = 6f;
+    int moveDir = 1;
 
     [Header("Jump")]
-    public float jumpForce = 15f;
+    public float jumpForce = 14f;
     public int maxJump = 2;
-    private int jumpCount = 0;
-    public float jumpBufferTime = 0.15f;
-    public float coyoteTime = 0.15f;
-
-    private float lastJumpPressedTime = -10f;
-    private float lastGroundedTime = -10f;
-
-    [Header("Obstacle")]
-    public LayerMask obstacleLayer;
-    private float checkDistance = 0.1f;
-    private float checkHeight = 1.1f;
-    private Transform groundCheck;
-    private float groundCheckRadius = 0.15f;
+    int jumpCount = 0;
 
     [Header("Wall Slide")]
-    public float slideSpeed = 3f;
-    public float normalGravity = 4f;
+    public float slideSpeed = 2f;
 
-    private Rigidbody2D rb;
+    Rigidbody2D rb;
 
-    private bool isGrounded;
-    private bool touchingObstacle;
-    private bool isWallSliding;
-    private Vector2 lastWallNormal;
+    bool isGround;
+    bool isWall;
+    bool isWallSlide;
 
-    Collider2D playerCollider;
+    bool wallLeft = false;
+    bool wallRight = false;
+    bool ground = false;
 
-    void Start()
+    void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        RegisterInput();
     }
 
-    void OnDestroy()
-    {
-        UnregisterInput();
-    }
-
-    void RegisterInput()
-    {
-        if (GlobalInput.Instance == null) return;
-
-        if (playerInput == PlayerInputType.Player1_Space)
-            GlobalInput.Instance.OnSpaceDown += OnJumpPressed;
-        else
-            GlobalInput.Instance.OnMouseDown += OnJumpPressed;
-    }
-
-    void UnregisterInput()
-    {
-        if (GlobalInput.Instance == null) return;
-
-        if (playerInput == PlayerInputType.Player1_Space)
-            GlobalInput.Instance.OnSpaceDown -= OnJumpPressed;
-        else
-            GlobalInput.Instance.OnMouseDown -= OnJumpPressed;
-    }
-
-    void OnJumpPressed()
-    {
-        lastJumpPressedTime = Time.time;
-    }
-
+    Vector2 contactNormal;
     void FixedUpdate()
     {
-        CheckObstacles();
-        HandleWallSlide();
-        HandleJump();
-        HandleMovement();
+        HandleMove();
+        contactNormal = Vector2.zero;
     }
 
-    void CheckObstacles()
+    void Update()
     {
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, obstacleLayer);
-
-        if (isGrounded)
-            lastGroundedTime = Time.time;
-
-        float halfHeight = checkHeight / 2f;
-
-        Vector2 top = new Vector2(transform.position.x, transform.position.y + halfHeight);
-        Vector2 mid = transform.position;
-        Vector2 bot = new Vector2(transform.position.x, transform.position.y - halfHeight);
-
-        Vector2 dir = new Vector2(moveDir, 0);
-
-        RaycastHit2D hitTop = Physics2D.Raycast(top, dir, checkDistance, obstacleLayer);
-        RaycastHit2D hitMid = Physics2D.Raycast(mid, dir, checkDistance, obstacleLayer);
-        RaycastHit2D hitBot = Physics2D.Raycast(bot, dir, checkDistance, obstacleLayer);
-
-        touchingObstacle = hitTop || hitMid || hitBot;
-
-        if (hitTop) lastWallNormal = hitTop.normal;
-        else if (hitMid) lastWallNormal = hitMid.normal;
-        else if (hitBot) lastWallNormal = hitBot.normal;
-
-        Debug.Log("ObstacleLayer mask = " + obstacleLayer.value);
-        DebugState("Check");
+        if (Input.GetKeyDown(KeyCode.Space))
+            Jump();
     }
 
-    void HandleWallSlide()
+    void HandleMove()
     {
-        bool previous = isWallSliding;
-        if (!isGrounded && touchingObstacle && Mathf.Abs(lastWallNormal.x) > 0.9f)
+        isGround = contactNormal.y > 0.7f;
+        isWall = Mathf.Abs(contactNormal.x) > 0.7f;
+
+        isWallSlide = !isGround && isWall;
+
+        if (isWallSlide)
         {
-            isWallSliding = true;
-
-            jumpCount = 0;
-
-            // 自动调整方向为离开墙
-            moveDir = -(int)Mathf.Sign(lastWallNormal.x);
-        }
-        else
-        {
-            isWallSliding = false;
-        }
-        if (previous != isWallSliding)
-        {
-            DebugState("WallSlideChange");
-        }
-    }
-
-    void HandleMovement()
-    {
-        rb.gravityScale = normalGravity;
-
-        if (isWallSliding)
-        {
-            float limitedY = Mathf.Max(rb.velocity.y, -slideSpeed);
-
-            // 关键修改：滑墙时水平速度为0
-            rb.velocity = new Vector2(0, limitedY);
-        }
-        else
-        {
-            if (isGrounded && touchingObstacle)
-            {
-                moveDir *= -1;
-            }
-
-            rb.velocity = new Vector2(moveDir * moveSpeed, rb.velocity.y);
-        }
-        DebugState("Move");
-    }
-
-    void HandleJump()
-    {
-        bool jumpBuffered = Time.time - lastJumpPressedTime <= jumpBufferTime;
-        bool coyoteValid = Time.time - lastGroundedTime <= coyoteTime;
-
-        if (!jumpBuffered)
+            rb.velocity = new Vector2(
+                0,
+                Mathf.Max(rb.velocity.y, -slideSpeed)
+            );
             return;
-        if (isWallSliding)
-        {
-            DebugState("WallJump");
         }
-        if (coyoteValid)
-        {
-            DebugState("GroundJump");
-        }
-        if (isWallSliding)
+
+        float wallDir = Mathf.Sign(contactNormal.x); // -1 左墙，1 右墙
+        if (isGround && isWall && wallDir == moveDir)
+            moveDir *= -1;
+
+        rb.velocity = new Vector2(
+            moveDir * moveSpeed,
+            rb.velocity.y
+        );
+
+        if (isGround || isWall)
+            jumpCount = 0;
+    }
+
+    void Jump()
+    {
+        if (jumpCount >= maxJump)
+            return;
+
+        if (isWallSlide)
         {
             moveDir *= -1;
 
-            rb.velocity = new Vector2(moveDir * moveSpeed, jumpForce);
-
-            jumpCount = 1;
-            lastJumpPressedTime = -10f;
-            isWallSliding = false;
-
-            return;
+            rb.velocity = new Vector2(
+                moveDir * moveSpeed,
+                jumpForce
+            );
         }
-
-        if (coyoteValid)
+        else
         {
-            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-
-            jumpCount = 1;
-            lastJumpPressedTime = -10f;
-
-            return;
+            rb.velocity = new Vector2(
+                rb.velocity.x,
+                jumpForce
+            );
         }
 
-        if (jumpCount < maxJump)
-        {
-            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-
-            jumpCount++;
-            lastJumpPressedTime = -10f;
-        }
+        jumpCount++;
     }
 
-    void DebugState(string tag)
+    void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log(
-            $"[{tag}] " +
-            $"Grounded:{isGrounded} " +
-            $"TouchWall:{touchingObstacle} " +
-            $"WallSlide:{isWallSliding} " +
-            $"Dir:{moveDir} " +
-            $"Vel:{rb.velocity}"
-        );
+        CollectCollision(collision);
+    }
+
+    void OnCollisionStay2D(Collision2D collision)
+    {
+        CollectCollision(collision);
+    }
+
+    void CollectCollision(Collision2D collision)
+    {
+        foreach (var contact in collision.contacts)
+        {
+            foreach (var c in collision.contacts)
+            {
+                Vector2 n = c.normal;
+                if (n.y > 0.7f) ground = true;
+                if (n.x > 0.7f) wallLeft = true;
+                if (n.x < -0.7f) wallRight = true;
+            }
+        }
+        Debug.Log(contactNormal);
     }
 }
