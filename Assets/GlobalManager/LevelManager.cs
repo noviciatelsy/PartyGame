@@ -59,6 +59,14 @@ public class LevelManager : MonoBehaviour
         isLoadingLevel = false;
         Time.timeScale = 1f;
         StartCoroutine(HandleSceneTransition());
+        // 主界面隐藏暂停按钮
+        if (GamePause.instance != null && GamePause.instance.OpenPanelButton != null)
+        {
+            if (scene.name == mainMenuScene)
+            {
+                GamePause.instance.OpenPanelButton.gameObject.SetActive(false);
+            }
+        }
         if (scene.name != mainMenuScene)
         {
             if (bgmSource != null)
@@ -91,7 +99,8 @@ public class LevelManager : MonoBehaviour
                 bgmSource.clip = null;
                 bgmChosen = false;
             }
-            firstGameEnter = true;
+            // 保证每次回到主菜单都重置转场动画状态
+            skipNextTransitionIn = true;
         }
     }
 
@@ -117,6 +126,15 @@ public class LevelManager : MonoBehaviour
     private IEnumerator HandleSceneTransition()
     {
         yield return null;
+
+    // 场景切换动画完成后显示暂停按钮（非主界面）
+    if (GamePause.instance != null && GamePause.instance.OpenPanelButton != null)
+    {
+        if (SceneManager.GetActiveScene().name != mainMenuScene)
+        {
+            GamePause.instance.OpenPanelButton.gameObject.SetActive(true);
+        }
+    }
 
         GameObject transitionObj = GameObject.FindGameObjectWithTag("LevelTransition");
 
@@ -151,7 +169,7 @@ public class LevelManager : MonoBehaviour
 
         if (levels == null || levels.Count == 0)
         {
-            Debug.LogError("LevelManager: 没锟斤拷锟斤拷锟矫关匡拷锟叫憋拷锟斤拷");
+            Debug.LogError("LevelManager: 没有可用的关卡");
             return;
         }
 
@@ -159,7 +177,7 @@ public class LevelManager : MonoBehaviour
 
         if (string.IsNullOrEmpty(nextLevel))
         {
-            Debug.LogError("LevelManager: 没锟叫匡拷锟矫关匡拷锟斤拷");
+            Debug.LogError("LevelManager: 没有可用的关卡");
             return;
         }
 
@@ -185,12 +203,11 @@ public class LevelManager : MonoBehaviour
 
     private IEnumerator LoadLevelAfterTransition(string sceneName)
     {
-        // 判断是否第一次从主菜单进入游戏场景
+        // 每次从主界面进入游戏场景都跳过转场动画前半段
         bool skipTransition = false;
-        if (firstGameEnter && SceneManager.GetActiveScene().name == mainMenuScene)
+        if (SceneManager.GetActiveScene().name == mainMenuScene)
         {
             skipTransition = true;
-            firstGameEnter = false;
         }
 
         if (!skipTransition && Transition != null)
@@ -201,13 +218,12 @@ public class LevelManager : MonoBehaviour
             yield return new WaitForSecondsRealtime(0.6f);
         }
         SceneManager.LoadScene(sceneName);
-
-        //鍙兘浼氭湁閿?
+        //可能存在暂停状态
         Time.timeScale = 1f;
     }
 
     // ============================
-    // 锟斤拷权锟斤拷锟斤拷锟斤拷锟斤拷呒锟?
+    // 权重随机关卡选择
     // ============================
     private string GetWeightedRandomLevel()
     {

@@ -12,6 +12,7 @@ public class StartSceneManager : MonoBehaviour
     [SerializeField] private PlayableDirector playableDirector;
     void Awake()
     {
+        GamePause.instance.OpenPanelButton.gameObject.SetActive(false);
         playableDirector.Play();
     }
     public void Initialize()
