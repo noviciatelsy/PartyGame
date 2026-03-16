@@ -27,6 +27,14 @@ public class PlayerDive : MonoBehaviour
     private Coroutine failCoroutine;
     public DiveGameManager gameManager;
 
+    [Header("Player Sprite")]
+    public SpriteRenderer playerSpriteRenderer;
+
+    public Sprite playerDefaultSprite;
+    public Sprite playerDiveSprite;
+
+    private bool diveSpriteSwitched = false;
+
     void Start()
     {
         Vector3 pos = transform.position;
@@ -35,36 +43,11 @@ public class PlayerDive : MonoBehaviour
         introFinished = true;
         introTimer = 0f;
 
-        //PlayIntro();
+        if (playerSpriteRenderer != null && playerDefaultSprite != null)
+        {
+            playerSpriteRenderer.sprite = playerDefaultSprite;
+        }
     }
-
-    //void PlayIntro()
-    //{
-    //    introTimer += Time.deltaTime;
-
-    //    float y;
-
-    //    // 前0.5秒
-    //    if (introTimer <= 1.0f)
-    //    {
-    //        float t = introTimer / 0.5f;
-    //        y = Mathf.Lerp(-25f, -20f, t);
-    //    }
-    //    // 后2秒
-    //    else
-    //    {
-    //        float t = Mathf.Clamp01((introTimer - 1.0f) / 2f);
-    //        y = Mathf.Lerp(-25f, 20f, t);
-
-    //        if (t >= 1f)
-    //        {
-    //            introFinished = true;
-    //        }
-    //    }
-
-    //    transform.position = new Vector3(transform.position.x, y, transform.position.z);
-    //}
-
     void Update()
     {
         if (isDead) return;
@@ -76,6 +59,11 @@ public class PlayerDive : MonoBehaviour
 
         if (isHolding)
         {
+            // 第一次开始下潜
+            if (!diveSpriteSwitched)
+            {
+                SwitchToDiveSprite();
+            }
             transform.position += Vector3.down * diveSpeed * Time.deltaTime;
 
             if (transform.position.y < -20f)
@@ -90,6 +78,16 @@ public class PlayerDive : MonoBehaviour
         if (!isDead && !isfinished)
         {
             UpdateAlpha();
+        }
+    }
+
+    void SwitchToDiveSprite()
+    {
+        diveSpriteSwitched = true;
+
+        if (playerSpriteRenderer != null && playerDiveSprite != null)
+        {
+            playerSpriteRenderer.sprite = playerDiveSprite;
         }
     }
 
@@ -146,16 +144,7 @@ public class PlayerDive : MonoBehaviour
 
         float y = transform.position.y;
 
-        float alpha;
-
-        if (y >= 0f)
-        {
-            alpha = Mathf.Clamp01((20f - y) / 20f);
-        }
-        else
-        {
-            alpha = 1f;
-        }
+        float alpha = Mathf.InverseLerp(28f, -5f, y);
 
         Color c = depthSprite.color;
         c.a = alpha;
