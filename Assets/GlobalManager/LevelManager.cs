@@ -42,7 +42,6 @@ public class LevelManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
@@ -61,14 +60,6 @@ public class LevelManager : MonoBehaviour
         isLoadingLevel = false;
         Time.timeScale = 1f;
         StartCoroutine(HandleSceneTransition());
-        // 主界面隐藏暂停按钮
-        if (GamePause.instance != null && GamePause.instance.OpenPanelButton != null)
-        {
-            if (scene.name == mainMenuScene)
-            {
-                GamePause.instance.OpenPanelButton.gameObject.SetActive(false);
-            }
-        }
         // 主界面：停止并重置
         if (scene.name == mainMenuScene)
         {
@@ -143,15 +134,6 @@ public class LevelManager : MonoBehaviour
     private IEnumerator HandleSceneTransition()
     {
         yield return null;
-
-    // 场景切换动画完成后显示暂停按钮（非主界面）
-    if (GamePause.instance != null && GamePause.instance.OpenPanelButton != null)
-    {
-        if (SceneManager.GetActiveScene().name != mainMenuScene)
-        {
-            GamePause.instance.OpenPanelButton.gameObject.SetActive(true);
-        }
-    }
 
         GameObject transitionObj = GameObject.FindGameObjectWithTag("LevelTransition");
 

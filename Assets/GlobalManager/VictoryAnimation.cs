@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class VictoryAnimation : MonoBehaviour
@@ -37,6 +38,15 @@ public class VictoryAnimation : MonoBehaviour
     private float coinStartScale = 0.8f;
     private float coinCenterScale = 3.5f;
     private float coinFinalScale = 1f;
+
+    [Header("Trophy Settings")]
+    public GameObject trophyPrefabPlayer1;
+    public GameObject trophyPrefabPlayer2;
+    public Transform[] player1TrophySlots = new Transform[5];
+    public Transform[] player2TrophySlots = new Transform[5];
+    public float trophyFlyTime = 0.8f;
+    [Tooltip("飞行过程中相对于预制体尺寸的缩放倍率（飞行时会在 1.0 到该值之间插值），着陆时恢复为预制体原始尺寸")]
+    public float trophyFlightScaleMultiplier = 1.2f;
 
     void Start()
     {
@@ -83,7 +93,7 @@ public class VictoryAnimation : MonoBehaviour
 
             while (t < rotateTime)
             {
-                t += Time.deltaTime;
+                t += Time.unscaledDeltaTime;
                 float lerp = t / rotateTime;
 
                 float rot = Mathf.Lerp(90, 0, lerp);
@@ -151,7 +161,7 @@ public class VictoryAnimation : MonoBehaviour
 
         while (time < maxTime)
         {
-            float dt = Time.deltaTime;
+            float dt = Time.unscaledDeltaTime;
             time += dt;
 
             float force = stiffness * (targetValue - value) - damping * velocity;
@@ -200,7 +210,7 @@ public class VictoryAnimation : MonoBehaviour
         // ===== 飞入中心 =====
         while (t < coinFlyInTime)
         {
-            t += Time.deltaTime;
+            t += Time.unscaledDeltaTime;
 
             float lerp = t / coinFlyInTime;
             float ease = 1 - Mathf.Pow(1 - lerp, 3);
@@ -227,7 +237,7 @@ public class VictoryAnimation : MonoBehaviour
         t = 0;
         while (t < coinFlipTime)
         {
-            t += Time.deltaTime;
+            t += Time.unscaledDeltaTime;
 
             float lerp = t / coinFlipTime;
 
@@ -239,8 +249,8 @@ public class VictoryAnimation : MonoBehaviour
 
         coin.rotation = Quaternion.identity;
 
-        // ===== 停顿 =====
-        yield return new WaitForSeconds(coinPauseTime);
+        // ===== 停顿（使用实时等待，不受 timeScale 影响） =====
+        yield return new WaitForSecondsRealtime(coinPauseTime);
 
         // ===== 飞向目标 =====
         t = 0;
@@ -253,7 +263,7 @@ public class VictoryAnimation : MonoBehaviour
 
         while (t < coinFlyOutTime)
         {
-            t += Time.deltaTime;
+            t += Time.unscaledDeltaTime;
 
             float lerp = t / coinFlyOutTime;
             float ease = 1 - Mathf.Pow(1 - lerp, 3);
@@ -267,10 +277,171 @@ public class VictoryAnimation : MonoBehaviour
             );
             var camShake = Camera.main ? Camera.main.GetComponent<CameraEffects.CameraShake>() : null;
             if (camShake != null)
-                StartCoroutine(camShake.Shake());
+                StartCoroutine(camShake.ShakeWithFollow());
             yield return null;
         }
         coin.position = coinTarget.position;
         coin.localScale = Vector3.one * coinFinalScale;
+        StartCoroutine(SpawnAndFlyTrophy(isPlayer1));
+    }
+
+    IEnumerator SpawnAndFlyTrophy(bool isPlayer1)
+    {
+        if (trophyPrefabPlayer1 == null && trophyPrefabPlayer2 == null) yield break;
+
+        int playerID = isPlayer1 ? 1 : 2;
+        int score = 0;
+        if (GlobalScoreManager.Instance != null)
+        {
+            score = GlobalScoreManager.Instance.GetScore(playerID);
+        }
+
+        int slotIndex = Mathf.Clamp(score - 1, 0, 4); // 0-based slot
+
+        Transform targetSlot = null;
+        if (isPlayer1)
+        {
+            if (player1TrophySlots != null && player1TrophySlots.Length > slotIndex)
+                targetSlot = player1TrophySlots[slotIndex];
+        }
+        else
+        {
+            if (player2TrophySlots != null && player2TrophySlots.Length > slotIndex)
+                targetSlot = player2TrophySlots[slotIndex];
+        }
+
+        if (targetSlot == null) yield break;
+
+        // 选择对应玩家的奖杯预制（优先使用对应玩家的预制，否则回退到通用 trophyPrefab）
+        GameObject prefabToUse = null;
+        if (isPlayer1)
+            prefabToUse = trophyPrefabPlayer1;
+        else
+            prefabToUse = trophyPrefabPlayer2;
+
+        if (prefabToUse == null) yield break;
+
+        // 在当前 coin 位置生成奖杯（world space）
+        GameObject trophy = Instantiate(prefabToUse, coin.position, Quaternion.identity);
+        Vector3 startPos = trophy.transform.position;
+        Vector3 endPos = targetSlot.position;
+        Vector3 prefabScale = trophy.transform.localScale; // 保持预制体原始缩放
+
+        float t = 0f;
+        while (t < trophyFlyTime)
+        {
+            t += Time.unscaledDeltaTime;
+            float lerp = t / trophyFlyTime;
+            float ease = 1 - Mathf.Pow(1 - lerp, 3);
+            trophy.transform.position = Vector3.Lerp(startPos, endPos, ease);
+            // 飞行过程中插值缩放（从预制体尺寸到预制体尺寸 * multiplier）
+            Vector3 targetScale = prefabScale * trophyFlightScaleMultiplier;
+            trophy.transform.localScale = Vector3.Lerp(prefabScale, targetScale, ease);
+            yield return null;
+        }
+
+        // 对齐到槽位位置并恢复预制体原始缩放
+        trophy.transform.position = endPos;
+        trophy.transform.localScale = prefabScale;
+
+        // 删除槽位中表示占位的空奖杯（若存在）——根据常见组件或名称判断
+        for (int i = targetSlot.childCount - 1; i >= 0; i--)
+        {
+            Transform child = targetSlot.GetChild(i);
+            if (child == null) continue;
+            // 如果是我们刚生成的奖杯，跳过
+            if (child == trophy.transform) continue;
+
+            string lname = child.name.ToLower();
+            bool looksLikePlaceholder = lname.Contains("奖杯");
+            if (looksLikePlaceholder || child.GetComponent<Image>() != null || child.GetComponent<SpriteRenderer>() != null || child.GetComponent<MeshRenderer>() != null)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+
+        // 把奖杯父级设为槽位，并确保世界空间尺寸与预制体一致（考虑槽位父级的缩放）
+        trophy.transform.SetParent(targetSlot, true);
+        trophy.transform.localPosition = Vector3.zero;
+        trophy.transform.localRotation = Quaternion.identity;
+        // 计算合适的本地缩放，使得 trophy 在世界空间的尺寸等于 prefabScale（实例化时的世界尺寸）
+        Vector3 parentLossy = targetSlot.lossyScale;
+        Vector3 finalLocalScale = new Vector3(
+            parentLossy.x != 0f ? prefabScale.x / parentLossy.x : prefabScale.x,
+            parentLossy.y != 0f ? prefabScale.y / parentLossy.y : prefabScale.y,
+            parentLossy.z != 0f ? prefabScale.z / parentLossy.z : prefabScale.z
+        );
+        trophy.transform.localScale = finalLocalScale;
+    }
+
+    // 在场景加载时，根据当前分数即时在槽位中生成对应数量的奖杯（无动画）
+    public void PopulateTrophiesFromScores(int p1Score, int p2Score)
+    {
+        // 清空并生成player1槽位
+        if (player1TrophySlots != null)
+        {
+            for (int i = 0; i < player1TrophySlots.Length; i++)
+            {
+                Transform slot = player1TrophySlots[i];
+                if (slot == null) continue;
+                // 清空槽位中的占位或旧奖杯
+                for (int c = slot.childCount - 1; c >= 0; c--)
+                {
+                    DestroyImmediate(slot.GetChild(c).gameObject);
+                }
+
+                if (i < p1Score)
+                {
+                    GameObject prefab = trophyPrefabPlayer1;
+                    if (prefab == null) continue;
+                    // Instantiate without parent, then set parent and correct localScale so world size matches prefab
+                    GameObject trophy = Instantiate(prefab);
+                    trophy.transform.SetParent(slot, true);
+                    trophy.transform.localPosition = Vector3.zero;
+                    trophy.transform.localRotation = Quaternion.identity;
+                    Vector3 parentLossy = slot.lossyScale;
+                    Vector3 prefabScale = prefab.transform.localScale;
+                    Vector3 finalLocalScale = new Vector3(
+                        parentLossy.x != 0f ? prefabScale.x / parentLossy.x : prefabScale.x,
+                        parentLossy.y != 0f ? prefabScale.y / parentLossy.y : prefabScale.y,
+                        parentLossy.z != 0f ? prefabScale.z / parentLossy.z : prefabScale.z
+                    );
+                    trophy.transform.localScale = finalLocalScale;
+                }
+            }
+        }
+
+        // 清空并生成player2槽位
+        if (player2TrophySlots != null)
+        {
+            for (int i = 0; i < player2TrophySlots.Length; i++)
+            {
+                Transform slot = player2TrophySlots[i];
+                if (slot == null) continue;
+                for (int c = slot.childCount - 1; c >= 0; c--)
+                {
+                    DestroyImmediate(slot.GetChild(c).gameObject);
+                }
+
+                if (i < p2Score)
+                {
+                    GameObject prefab = trophyPrefabPlayer2;
+                    if (prefab == null) continue;
+                    // Instantiate without parent, then set parent and correct localScale so world size matches prefab
+                    GameObject trophy = Instantiate(prefab);
+                    trophy.transform.SetParent(slot, true);
+                    trophy.transform.localPosition = Vector3.zero;
+                    trophy.transform.localRotation = Quaternion.identity;
+                    Vector3 parentLossy = slot.lossyScale;
+                    Vector3 prefabScale = prefab.transform.localScale;
+                    Vector3 finalLocalScale = new Vector3(
+                        parentLossy.x != 0f ? prefabScale.x / parentLossy.x : prefabScale.x,
+                        parentLossy.y != 0f ? prefabScale.y / parentLossy.y : prefabScale.y,
+                        parentLossy.z != 0f ? prefabScale.z / parentLossy.z : prefabScale.z
+                    );
+                    trophy.transform.localScale = finalLocalScale;
+                }
+            }
+        }
     }
 }

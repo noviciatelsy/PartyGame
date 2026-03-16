@@ -12,6 +12,10 @@ public class GlobalScoreManager : MonoBehaviour
     [Header("Score")]
     public int player1Score = 0;
     public int player2Score = 0;
+    [Header("Game Over Settings")]
+    public int winTarget = 5;
+    public string gameOverScene = "GameEnd";
+    public float delayBeforeGameOver = 1.2f;
 
 
     private void Awake()
@@ -71,6 +75,12 @@ public class GlobalScoreManager : MonoBehaviour
         //Debug.Log($"[ScoreManager] Score After Load: {player1Score}:{player2Score}");
 
         UpdateUI();
+        // 在每个场景加载后，尝试把当前分数反映到场景中的 VictoryAnimation（生成对应数量的奖杯）
+        VictoryAnimation va = GetVictoryAnimation();
+        if (va != null)
+        {
+            va.PopulateTrophiesFromScores(player1Score, player2Score);
+        }
     }
 
     private Transform cameraTransform;
@@ -119,6 +129,21 @@ public class GlobalScoreManager : MonoBehaviour
         Debug.Log($"[ScoreManager] Score Now: {player1Score}:{player2Score}");
 
         UpdateUI();
+
+        // 检查是否达到胜利目标
+        if (player1Score >= winTarget || player2Score >= winTarget)
+        {
+            StartCoroutine(DelayedGameOver());
+        }
+    }
+
+    private IEnumerator DelayedGameOver()
+    {
+        yield return new WaitForSeconds(delayBeforeGameOver);
+        if (LevelManager.Instance != null)
+        {
+            LevelManager.Instance.LoadLevel(gameOverScene);
+        }
     }
 
     public int GetScore(int playerID)

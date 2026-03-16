@@ -10,7 +10,6 @@ public class GamePause : MonoBehaviour
     [SerializeField] private Button resumeButton;
     [SerializeField] private Button quitButton;
     [SerializeField] private Button MainMenuButton;
-    public Button OpenPanelButton;
     [SerializeField] private Image Panel;
     [SerializeField] private Animator panelAnimator;
     public bool IsGamePaused { get; private set; } = false;
@@ -45,13 +44,6 @@ public class GamePause : MonoBehaviour
         resumeButton.onClick.AddListener(ResumeGame);
         quitButton.onClick.AddListener(QuitGame);
         MainMenuButton.onClick.AddListener(ReturnToMainMenu);
-        OpenPanelButton.onClick.AddListener(() =>
-        {
-            if (!IsGamePaused)
-            {
-                PauseGame();
-            }
-        });
     }
     private bool IsDisabledScene()
     {
