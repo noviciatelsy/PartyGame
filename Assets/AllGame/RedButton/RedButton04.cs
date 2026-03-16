@@ -51,7 +51,7 @@ public class RedButton04 : MonoBehaviour
 
 
     // =========================
-    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿?
     // =========================
     private void OnPlayer1Input(GlobalInput.InputType type)
     {
@@ -98,7 +98,9 @@ public class RedButton04 : MonoBehaviour
 
         Debug.Log("Winner is Player " + playerIndex);
         GlobalScoreManager.Instance.AddScore(playerIndex, 1);
-
+        var camShake = Camera.main ? Camera.main.GetComponent<CameraEffects.CameraShake>() : null;
+        if (camShake != null)
+            StartCoroutine(camShake.Shake());
         if (winCoroutine == null)
             winCoroutine = StartCoroutine(WinDelayCoroutine());
     }

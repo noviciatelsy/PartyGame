@@ -43,8 +43,10 @@ public class faceManager : MonoBehaviour
         if (player2Controller != null)
             player2Controller.ShowCorrectImage();
 
-        
 
+        var camShake = Camera.main ? Camera.main.GetComponent<CameraEffects.CameraShake>() : null;
+        if (camShake != null)
+            StartCoroutine(camShake.Shake());
         if (winCoroutine == null)
             winCoroutine = StartCoroutine(WinDelayCoroutine());
     }

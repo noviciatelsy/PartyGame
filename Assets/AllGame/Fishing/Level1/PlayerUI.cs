@@ -42,6 +42,17 @@ public class PlayerUI : MonoBehaviour
     public PlayerEntity player_1;
     public PlayerEntity player_2;
 
+    [Header("Íæ¼Ò1Í·Ïñ")] public GameObject p1NormalObj; // ³£Ì¬
+    public GameObject p1WinObj; // Ê¤Àû
+    public GameObject p1LoseObj; // Ê§°Ü
+    [Header("Íæ¼Ò2Í·Ïñ")] public GameObject p2NormalObj;
+    public GameObject p2WinObj;
+    public GameObject p2LoseObj;
+
+    [Header("Ïà»úÕğ¶¯")]
+    public Transform mainCameraTransform;
+    private Vector3 _originalCameraPos;
+
     [Header("ç‰©ç†è®¾ç½®")]
     [Header("ä¸‹è½é‡åŠ›")]
     [SerializeField] private float gravity = 2500f;
@@ -49,14 +60,14 @@ public class PlayerUI : MonoBehaviour
     [SerializeField] private float liftForce = 3500f;
     [Header("æœ€å¤§ç§»åŠ¨é€Ÿåº¦é™åˆ¶")]
     [SerializeField] private float maxVelocity = 1200f;
-    [Range(0f, 1f), Header("è§¦åº•åå¼¹ç³»æ•°ï¼ˆ0-1ï¼‰")]
+    [Range(0f, 1f), Header("è§¦åº•åå¼¹ç³»æ•°ï¼?0-1ï¼?")]
     [SerializeField] private float bounceFactor = 0.35f;
     [Header("é˜»åŠ›ï¼Œè¶Šæ¥è¿‘1è¶Šå°")]
     [SerializeField] private float drag = 0.98f;
-    [Header("è¿›åº¦æ¡é…ç½®")]
+    [Header("è¿›åº¦æ¡é…ç½?")]
     [SerializeField, Range(0f, 1f)] private float initialProgress = 0.3f;
-    [Header("æ—¶é•¿é…ç½®ï¼ˆç§’ï¼‰")]
-    [SerializeField] private float holdTimeToWin = 3f; // ä»0æ¢å¤åˆ°æ»¡éœ€è¦çš„æ—¶é—´
+    [Header("æ—¶é•¿é…ç½®ï¼ˆç§’ï¼?")]
+    [SerializeField] private float holdTimeToWin = 3f; // ä»?0æ¢å¤åˆ°æ»¡éœ€è¦çš„æ—¶é—´
     [SerializeField] private float holdTimeToLose = 3f; // ä»æ»¡æ‰åˆ°0éœ€è¦çš„æ—¶é—´
 
     public Action<PlayerEntity, bool> OnPlayerHoldResult;
@@ -73,6 +84,18 @@ public class PlayerUI : MonoBehaviour
 
         ConfigureVerticalFill(player_1);
         ConfigureVerticalFill(player_2);
+
+        // Í·Ïñ³õÊ¼»¯£º³£Ì¬ÏÔÊ¾£¬Ê¤¸ºÒş²Ø
+        if (p1NormalObj) p1NormalObj.SetActive(true);
+        if (p1WinObj) p1WinObj.SetActive(false);
+        if (p1LoseObj) p1LoseObj.SetActive(false);
+        if (p2NormalObj) p2NormalObj.SetActive(true);
+        if (p2WinObj) p2WinObj.SetActive(false);
+        if (p2LoseObj) p2LoseObj.SetActive(false);
+
+        // Ïà»úÕğ¶¯³õÊ¼»¯
+        if (mainCameraTransform == null && Camera.main != null) mainCameraTransform = Camera.main.transform;
+        if (mainCameraTransform != null) _originalCameraPos = mainCameraTransform.localPosition;
     }
 
     private void ConfigureVerticalFill(PlayerEntity p)
@@ -230,5 +253,70 @@ public class PlayerUI : MonoBehaviour
     {
         if (player_1 != null) player_1.ResetState(initialProgress);
         if (player_2 != null) player_2.ResetState(initialProgress);
+        // ÖØÖÃÍ·ÏñÎª³£Ì¬
+        if (p1NormalObj) p1NormalObj.SetActive(true);
+        if (p1WinObj) p1WinObj.SetActive(false);
+        if (p1LoseObj) p1LoseObj.SetActive(false);
+        if (p2NormalObj) p2NormalObj.SetActive(true);
+        if (p2WinObj) p2WinObj.SetActive(false);
+        if (p2LoseObj) p2LoseObj.SetActive(false);
+    }
+
+    // Í·ÏñÇĞ»»·½·¨
+    public void ShowPortraits(int winnerID, bool isDraw = false)
+    {
+        // Æ½¾ÖÖ»ÏÔÊ¾³£Ì¬
+        if (isDraw)
+        {
+            if (p1NormalObj) p1NormalObj.SetActive(true);
+            if (p1WinObj) p1WinObj.SetActive(false);
+            if (p1LoseObj) p1LoseObj.SetActive(false);
+            if (p2NormalObj) p2NormalObj.SetActive(true);
+            if (p2WinObj) p2WinObj.SetActive(false);
+            if (p2LoseObj) p2LoseObj.SetActive(false);
+            return;
+        }
+        // Íæ¼Ò1Ê¤
+        if (winnerID == 1)
+        {
+            if (p1NormalObj) p1NormalObj.SetActive(false);
+            if (p1WinObj) p1WinObj.SetActive(true);
+            if (p1LoseObj) p1LoseObj.SetActive(false);
+            if (p2NormalObj) p2NormalObj.SetActive(false);
+            if (p2WinObj) p2WinObj.SetActive(false);
+            if (p2LoseObj) p2LoseObj.SetActive(true);
+        }
+        // Íæ¼Ò2Ê¤
+        else if (winnerID == 2)
+        {
+            if (p1NormalObj) p1NormalObj.SetActive(false);
+            if (p1WinObj) p1WinObj.SetActive(false);
+            if (p1LoseObj) p1LoseObj.SetActive(true);
+            if (p2NormalObj) p2NormalObj.SetActive(false);
+            if (p2WinObj) p2WinObj.SetActive(true);
+            if (p2LoseObj) p2LoseObj.SetActive(false);
+        }
+    }
+
+    // ÆÁÄ»Õğ¶¯·½·¨
+    public void ShakeCamera(float duration = 0.2f, float magnitude = 0.1f)
+    {
+        if (mainCameraTransform != null)
+            StartCoroutine(ShakeCameraCoroutine(duration, magnitude));
+    }
+
+    private IEnumerator ShakeCameraCoroutine(float duration, float magnitude)
+    {
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            float x = UnityEngine.Random.Range(-1f, 1f) * magnitude;
+            float y = UnityEngine.Random.Range(-1f, 1f) * magnitude;
+            mainCameraTransform.localPosition = new Vector3(
+                _originalCameraPos.x + x, _originalCameraPos.y + y, _originalCameraPos.z);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        mainCameraTransform.localPosition = _originalCameraPos;
     }
 }

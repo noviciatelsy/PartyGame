@@ -82,7 +82,7 @@ public class RedButton02 : MonoBehaviour
 
         player1Hand.Press();
 
-        // ���1������
+        // ���?1������
         tugPower -= powerPerClick;
 
         AfterPowerChanged();
@@ -98,7 +98,7 @@ public class RedButton02 : MonoBehaviour
 
         player2Hand.Press();
 
-        // ���2������
+        // ���?2������
         tugPower += powerPerClick;
 
         AfterPowerChanged();
@@ -137,11 +137,14 @@ public class RedButton02 : MonoBehaviour
     {
         Debug.Log("Winner is Player " + playerIndex);
         GlobalScoreManager.Instance.AddScore(playerIndex, 1);
-        // �����������
+        // �����������?
         // ʤ��UI
         // ����
         // ��Ч
         // �ؿ�����
+        var camShake = Camera.main ? Camera.main.GetComponent<CameraEffects.CameraShake>() : null;
+        if (camShake != null)
+            StartCoroutine(camShake.Shake());
         if (winCoroutine == null)
             winCoroutine = StartCoroutine(WinDelayCoroutine());
     }
@@ -207,7 +210,7 @@ public class RedButton02 : MonoBehaviour
 
     private IEnumerator SwapButtonImage(List<GameObject> buttonPrefabs)
     {
-        // 强制初始状态
+        // 强制初始状�?
         //buttonPrefabs[1].SetActive(false);
         //buttonPrefabs[0].SetActive(true);
 

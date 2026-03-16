@@ -45,6 +45,10 @@ public LevelTimer levelTimer;
                     GlobalScoreManager.Instance.AddScore(1, 1);
                 else
                     GlobalScoreManager.Instance.AddScore(2, 1);
+
+                // 头像切换与震动
+                playerUIComp.ShowPortraits(winner.playerID);
+                playerUIComp.ShakeCamera();
             }
 
             winCoroutine = StartCoroutine(MatchWinCoroutine(winner));
@@ -143,6 +147,10 @@ public LevelTimer levelTimer;
             GlobalScoreManager.Instance.AddScore(2, 1);
         }
 
+        // 头像切换与震动
+        playerUIComp.ShowPortraits(roundWinner.playerID);
+        playerUIComp.ShakeCamera();
+
         if (winCoroutine == null)
             winCoroutine = StartCoroutine(MatchWinCoroutine(roundWinner));
     }
@@ -150,6 +158,11 @@ public LevelTimer levelTimer;
     private IEnumerator MatchWinCoroutine(PlayerEntity winner)
     {
         yield return new WaitForSeconds(2f);
+        // 结算后确保头像状态正确
+        if (winner != null)
+        {
+            playerUIComp.ShowPortraits(winner.playerID);
+        }
         OnGameEnd?.Invoke(winner);
         if (LevelManager.Instance != null)
         {

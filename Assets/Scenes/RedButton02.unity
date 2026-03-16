@@ -348,6 +348,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: WinAnimation
       objectReference: {fileID: 0}
+    - target: {fileID: 4730927558644204552, guid: 20cea8d856e77034c89c96ae5ca04724, type: 3}
+      propertyPath: wintext
+      value: "\u66F4\u80DC\u4E00\u7B79\uFF01"
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -529,6 +533,7 @@ GameObject:
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
   - component: {fileID: 519420030}
+  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -655,6 +660,21 @@ Transform:
   - {fileID: 1479549439}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &519420033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1a19f806d01f1141b99da26b07ea051, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cam: {fileID: 519420031}
+  defaultDuration: 0.2
+  defaultMagnitude: 0.1
 --- !u!1001 &550518033
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -9,7 +9,7 @@ public class StickHeroGameManager : MonoBehaviour
     public StickHero player1;
     public StickHero player2;
 
-    public Platform platformPrefab; 
+    public Platform platformPrefab;
     public Platform nextPlatform;
 
     public Camera cam;
@@ -152,7 +152,7 @@ public class StickHeroGameManager : MonoBehaviour
     }
 
     // ======================================
-    // ï¿½ï¿½ï¿½ï¿½ï¿½
+    // ï¿½ï¿½ï¿½ï¿½ï¿?
     // ======================================
 
     void FollowCamera()
@@ -218,7 +218,9 @@ public class StickHeroGameManager : MonoBehaviour
             GlobalScoreManager.Instance.AddScore(2, 1);
             Debug.Log("Player 2 WIN!");
         }
-
+        var camShake = Camera.main ? Camera.main.GetComponent<CameraEffects.CameraShake>() : null;
+        if (camShake != null)
+            StartCoroutine(camShake.Shake());
         // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½UI
         if (winCoroutine == null)
             winCoroutine = StartCoroutine(WinDelayCoroutine());

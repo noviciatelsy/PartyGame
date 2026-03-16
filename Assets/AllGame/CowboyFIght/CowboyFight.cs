@@ -174,6 +174,11 @@ public class CowboyFight : MonoBehaviour
 
         if (winCoroutine == null)
             winCoroutine = StartCoroutine(WinDelayCoroutine());
+
+            // ÆÁÄ»¶¶¶¯
+            var camShake = Camera.main ? Camera.main.GetComponent<CameraEffects.CameraShake>() : null;
+            if (camShake != null)
+                StartCoroutine(camShake.Shake());
     }
 
     IEnumerator WinDelayCoroutine()

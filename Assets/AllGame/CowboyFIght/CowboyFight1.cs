@@ -22,7 +22,7 @@ public class CowboyFight01 : MonoBehaviour
     private Coroutine winCoroutine;
 
     private Coroutine introMoveCoroutine;
-    public Transform image1;  
+    public Transform image1;
     public Transform image2;
 
     void Start()
@@ -166,7 +166,9 @@ public class CowboyFight01 : MonoBehaviour
 
         Debug.Log("Winner is Player " + playerIndex);
         GlobalScoreManager.Instance.AddScore(playerIndex, 1);
-
+        var camShake = Camera.main ? Camera.main.GetComponent<CameraEffects.CameraShake>() : null;
+        if (camShake != null)
+            StartCoroutine(camShake.Shake());
         if (winCoroutine == null)
             winCoroutine = StartCoroutine(WinDelayCoroutine());
     }
