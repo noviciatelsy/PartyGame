@@ -1104,6 +1104,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5440259281168700538, guid: 386f3c3cc1d3dfb4799741bf9a91d875, type: 3}
+      propertyPath: facemanager
+      value: 
+      objectReference: {fileID: 389223479}
     - target: {fileID: 8832148420231081686, guid: 386f3c3cc1d3dfb4799741bf9a91d875, type: 3}
       propertyPath: m_Name
       value: Face2 (1)
@@ -1762,6 +1766,10 @@ PrefabInstance:
       propertyPath: player
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5440259281168700538, guid: d6295047b7d2a98478bbe237b203645a, type: 3}
+      propertyPath: facemanager
+      value: 
+      objectReference: {fileID: 389223479}
     - target: {fileID: 8832148420231081686, guid: d6295047b7d2a98478bbe237b203645a, type: 3}
       propertyPath: m_Name
       value: Face3
