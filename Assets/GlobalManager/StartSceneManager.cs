@@ -14,11 +14,6 @@ public class StartSceneManager : MonoBehaviour
     {
         playableDirector.Play();
     }
-    void Start()
-    {
-
-
-    }
     public void Initialize()
     {
         startButton.onClick.AddListener(() => LevelManager.Instance.NextLevel());

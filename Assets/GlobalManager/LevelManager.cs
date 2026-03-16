@@ -9,6 +9,12 @@ public class LevelManager : MonoBehaviour
     private bool isLoadingLevel = false;
     private bool skipNextTransitionIn = true;
 
+    [Header("È«¾ÖBGM")]
+    public AudioClip bgm1;
+    public AudioClip bgm2;
+    public AudioClip bgm3;
+    private AudioSource bgmSource;
+
     [System.Serializable]
     public class LevelData
     {
@@ -36,6 +42,22 @@ public class LevelManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         SceneManager.sceneLoaded += OnSceneLoaded;
+        bgmSource = GetComponent<AudioSource>();
+        if (bgmSource == null)
+        {
+            bgmSource = gameObject.AddComponent<AudioSource>();
+            bgmSource.loop = true;
+            bgmSource.playOnAwake = false;
+        }
+        AudioClip[] bgms = new AudioClip[] { bgm1, bgm2, bgm3 };
+        var validList = new System.Collections.Generic.List<AudioClip>();
+        foreach (var b in bgms) if (b != null) validList.Add(b);
+        if (validList.Count > 0)
+        {
+            int idx = Random.Range(0, validList.Count);
+            bgmSource.clip = validList[idx];
+            bgmSource.Play();
+        }
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
