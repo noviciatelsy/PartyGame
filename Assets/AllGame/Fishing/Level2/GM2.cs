@@ -235,7 +235,7 @@ public class GM2 : MonoBehaviour
 
     private IEnumerator WinDelayCoroutine()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(1.5f);
 
         if (LevelManager.Instance != null)
         {
