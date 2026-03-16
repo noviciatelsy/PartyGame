@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -7,7 +8,7 @@ using UnityEngine.SceneManagement;
 public class GlobalScoreManager : MonoBehaviour
 {
     public static GlobalScoreManager Instance;
-
+    public Action<int> OnGameEnd;
     private VictoryAnimation victoryAnim;
     [Header("Score")]
     public int player1Score = 0;
@@ -133,16 +134,17 @@ public class GlobalScoreManager : MonoBehaviour
         // 检查是否达到胜利目标
         if (player1Score >= winTarget || player2Score >= winTarget)
         {
-            StartCoroutine(DelayedGameOver());
+            StartCoroutine(DelayedGameOver(playerID));
         }
     }
 
-    private IEnumerator DelayedGameOver()
+    private IEnumerator DelayedGameOver(int winnerPlayerID)
     {
         yield return new WaitForSeconds(delayBeforeGameOver);
         if (LevelManager.Instance != null)
         {
             LevelManager.Instance.LoadLevel(gameOverScene);
+            OnGameEnd?.Invoke(winnerPlayerID);
         }
     }
 
@@ -165,7 +167,7 @@ public class GlobalScoreManager : MonoBehaviour
 
     // ==========================
     // UI
-    
+
     // ==========================
 
     public void UpdateUI()
