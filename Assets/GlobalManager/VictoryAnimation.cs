@@ -137,7 +137,6 @@ public class VictoryAnimation : MonoBehaviour
     // =========================
     // ÎÄ×Öµ¯»É¶¯»­
     // =========================
-
     IEnumerator SpringScale(Transform target)
     {
         float value = 0f;
@@ -273,6 +272,5 @@ public class VictoryAnimation : MonoBehaviour
         }
         coin.position = coinTarget.position;
         coin.localScale = Vector3.one * coinFinalScale;
-
     }
 }

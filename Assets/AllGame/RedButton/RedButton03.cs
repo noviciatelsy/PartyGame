@@ -225,6 +225,8 @@ public class RedButton03 : MonoBehaviour
 
     private Coroutine button1Coroutine;
     private Coroutine button2Coroutine;
+    public SpringButton spring1;
+    public SpringButton spring2;
     private void HandleButtonPress(int playerIndex)
     {
         switch (playerIndex)
@@ -235,12 +237,14 @@ public class RedButton03 : MonoBehaviour
                     StopCoroutine(button1Coroutine);
 
                 button1Coroutine = StartCoroutine(SwapButtonImage(ButtonPrefab1));
+                if (spring1) spring1.Press();
                 break;
             case 2:
                 //StartCoroutine(SwapButtonImage(ButtonPrefab2));
                 if (button2Coroutine != null)
                     StopCoroutine(button2Coroutine);
                 button2Coroutine = StartCoroutine(SwapButtonImage(ButtonPrefab2));
+                if (spring2) spring2.Press();
                 break;
         }
     }
