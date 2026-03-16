@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class SceneSwitchTest : MonoBehaviour
 {
+    private static bool firstEnter = true;
     [Header("Scene Names")]
     [SerializeField] private string scene1Name;
     [SerializeField] private string scene2Name;
@@ -37,8 +38,16 @@ public class SceneSwitchTest : MonoBehaviour
 
     IEnumerator LoadLevel(string sceneName)
     {
-        Transition.SetTrigger("Start");
-        yield return new WaitForSeconds(0.6f);
-        SceneManager.LoadScene(sceneName);
+        if (firstEnter)
+        {
+            firstEnter = false;
+            SceneManager.LoadScene(sceneName);
+        }
+        else
+        {
+            Transition.SetTrigger("Start");
+            yield return new WaitForSeconds(0.6f);
+            SceneManager.LoadScene(sceneName);
+        }
     }
 }

@@ -14,13 +14,14 @@ public class GM1 : MonoBehaviour
     private Action spaceHoldHandler;
     private Action<GlobalInput.InputType> spaceActionHandler;
     private Action<GlobalInput.InputType> mouseActionHandler;
+    private bool gameFinished = false;
 public LevelTimer levelTimer;
     void Start()
     {
         levelTimer = GameObject.FindObjectOfType<LevelTimer>();
         levelTimer.OnTimerEndCallBack += () =>
         {
-            if (winCoroutine != null) return;
+            if (winCoroutine != null || gameFinished) return;
 
             PlayerEntity winner = null;
             var p1 = playerUIComp.player_1;
@@ -116,6 +117,7 @@ public LevelTimer levelTimer;
     }
     private void HandleResult(PlayerEntity p, bool success)
     {
+        if (gameFinished) return;
         PlayerEntity roundWinner = null;
         if (success)
         {
@@ -131,6 +133,7 @@ public LevelTimer levelTimer;
 
         if (roundWinner == null) return;
 
+        gameFinished = true;
         Debug.Log($"{roundWinner.playerName} Win!");
 
         if (fishes != null)
@@ -163,6 +166,7 @@ public LevelTimer levelTimer;
         {
             playerUIComp.ShowPortraits(winner.playerID);
         }
+        gameFinished = false;
         OnGameEnd?.Invoke(winner);
         if (LevelManager.Instance != null)
         {

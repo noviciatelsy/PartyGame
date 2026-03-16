@@ -1146,6 +1146,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: HandA
       objectReference: {fileID: 0}
+    - target: {fileID: 2232486388499899768, guid: e79e3347ab17c6d4891471f2425a559d, type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4216194750415894617, guid: e79e3347ab17c6d4891471f2425a559d, type: 3}
       propertyPath: m_SortingOrder
       value: 2

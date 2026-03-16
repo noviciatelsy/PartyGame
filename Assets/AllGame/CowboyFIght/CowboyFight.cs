@@ -8,7 +8,8 @@ public class CowboyFight : MonoBehaviour
     [Header("Countdown")]
     public float countdownTime = 3f;
     public TextMeshPro countdownText;
-
+    public AudioSource audioSource;
+    [SerializeField] AudioClip LoadingSound;
     private bool canShoot = false;
     public SpriteRenderer shootImage;
     private bool gameFinished = false;
@@ -22,14 +23,14 @@ public class CowboyFight : MonoBehaviour
     private Coroutine winCoroutine;
 
     private Coroutine introMoveCoroutine;
-    public Transform image1;  
+    public Transform image1;
     public Transform image2;
 
     void Start()
     {
         GlobalInput.Instance.OnSpaceAction += OnPlayer1Input;
         GlobalInput.Instance.OnMouseLeftAction += OnPlayer2Input;
-
+        audioSource = GetComponent<AudioSource>();
         if (shootImage != null)
         {
             Color c = shootImage.color;
@@ -90,7 +91,16 @@ public class CowboyFight : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         if (countdownText != null)
+        {
             countdownText.text = "1";
+            if (LoadingSound != null)
+            {
+                if (!audioSource.isPlaying)
+                {
+                    audioSource.PlayOneShot(LoadingSound);
+                }
+            }
+        }
 
         yield return new WaitForSeconds(1f);
 
@@ -175,10 +185,10 @@ public class CowboyFight : MonoBehaviour
         if (winCoroutine == null)
             winCoroutine = StartCoroutine(WinDelayCoroutine());
 
-            // ÆÁÄ»¶¶¶¯
-            var camShake = Camera.main ? Camera.main.GetComponent<CameraEffects.CameraShake>() : null;
-            if (camShake != null)
-                StartCoroutine(camShake.Shake());
+        // ÆÁÄ»¶¶¶¯
+        var camShake = Camera.main ? Camera.main.GetComponent<CameraEffects.CameraShake>() : null;
+        if (camShake != null)
+            StartCoroutine(camShake.Shake());
     }
 
     IEnumerator WinDelayCoroutine()

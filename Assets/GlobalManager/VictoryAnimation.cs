@@ -7,7 +7,10 @@ public class VictoryAnimation : MonoBehaviour
     [Header("Objects")]
     public Transform leftObj;
     public Transform rightObj;
-
+    [Header("Audio")]
+    public AudioSource audioSource;
+    [SerializeField] AudioClip medalFlipSound;
+    [SerializeField] AudioClip medalLandedSound;
     [Header("Text")]
     public TextMeshPro text1;
     public TextMeshPro text2;
@@ -39,7 +42,6 @@ public class VictoryAnimation : MonoBehaviour
     {
         text1.text = "";
         text2.text = "";
-
         text1.transform.localScale = Vector3.zero;
         text2.transform.localScale = Vector3.zero;
 
@@ -64,7 +66,10 @@ public class VictoryAnimation : MonoBehaviour
     IEnumerator VictoryRoutine(bool isPlayer1)
     {
         isPlaying = true;
-
+        if (audioSource != null && medalFlipSound != null)
+        {
+            audioSource.PlayOneShot(medalFlipSound);
+        }
         float t = 0;
         bool textStarted = false;
 
@@ -221,7 +226,6 @@ public class VictoryAnimation : MonoBehaviour
 
         // ===== 翻面 =====
         t = 0;
-
         while (t < coinFlipTime)
         {
             t += Time.deltaTime;
@@ -241,7 +245,10 @@ public class VictoryAnimation : MonoBehaviour
 
         // ===== 飞向目标 =====
         t = 0;
-
+        if (audioSource != null && medalLandedSound != null)
+        {
+            audioSource.PlayOneShot(medalLandedSound);
+        }
         Vector3 startPos = coin.position;
         Vector3 startScale = coin.localScale;
 
@@ -262,7 +269,6 @@ public class VictoryAnimation : MonoBehaviour
 
             yield return null;
         }
-
         coin.position = coinTarget.position;
         coin.localScale = Vector3.one * coinFinalScale;
         var camShake = Camera.main ? Camera.main.GetComponent<CameraEffects.CameraShake>() : null;

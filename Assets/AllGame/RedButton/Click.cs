@@ -10,7 +10,7 @@ public class Click : MonoBehaviour
 
     [Header("按下后自动恢复时间")]
     public float recoverDelay = 0f;
-
+    public AudioSource clickSound;
     public Action OnPressed;
 
     private void Awake()
@@ -46,6 +46,8 @@ public class Click : MonoBehaviour
         if (raiseHand) raiseHand.SetActive(true);
         if (downHand) downHand.SetActive(false);
 
+        if (!clickSound.isPlaying) clickSound.Play();
+
         yield return null; // 强制一帧
 
         // down
@@ -64,7 +66,7 @@ public class Click : MonoBehaviour
     private IEnumerator RecoverCoroutine()
     {
         yield return new WaitForSeconds(recoverDelay);
-        // 恢复抬手状态
+
         if (raiseHand) raiseHand.SetActive(true);
         if (downHand) downHand.SetActive(false);
     }

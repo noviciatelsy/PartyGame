@@ -47,7 +47,7 @@ public class GamePause : MonoBehaviour
     }
     private bool IsDisabledScene()
     {
-        return SceneManager.GetActiveScene().name == "AAABeginScene";
+        return SceneManager.GetActiveScene().name == LevelManager.Instance.mainMenuScene;
     }
     private void PauseGame()
     {
@@ -87,7 +87,7 @@ public class GamePause : MonoBehaviour
         onComplete?.Invoke();
     }
 
-    // // 保留供 Animation Event 备用
+    // // 保留�? Animation Event 备用
     // public void OnPauseAnimationComplete()
     // {
     //     isAnimating = false;
@@ -113,7 +113,8 @@ public class GamePause : MonoBehaviour
     }
     private void ReturnToMainMenu()
     {
-        LevelManager.Instance.LoadLevel("AAABeginScene");
+        SceneManager.LoadScene(LevelManager.Instance.mainMenuScene);
+        ResumeGame();
     }
     
 }

@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
+    private static bool firstGameEnter = true;
     public static LevelManager Instance;
     private bool isLoadingLevel = false;
     private bool skipNextTransitionIn = true;
@@ -14,6 +15,8 @@ public class LevelManager : MonoBehaviour
     public AudioClip bgm2;
     public AudioClip bgm3;
     private AudioSource bgmSource;
+    public string mainMenuScene = "AAABeginScene";
+    private bool bgmChosen = false;
 
     [System.Serializable]
     public class LevelData
@@ -49,6 +52,56 @@ public class LevelManager : MonoBehaviour
             bgmSource.loop = true;
             bgmSource.playOnAwake = false;
         }
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        isLoadingLevel = false;
+        Time.timeScale = 1f;
+        StartCoroutine(HandleSceneTransition());
+        if (scene.name != mainMenuScene)
+        {
+            if (bgmSource != null)
+            {
+                if (!bgmChosen)
+                {
+                    AudioClip[] bgms = new AudioClip[] { bgm1, bgm2, bgm3 };
+                    var validList = new System.Collections.Generic.List<AudioClip>();
+                    foreach (var b in bgms) if (b != null) validList.Add(b);
+                    if (validList.Count > 0)
+                    {
+                        int idx = Random.Range(0, validList.Count);
+                        bgmSource.clip = validList[idx];
+                        bgmSource.Play();
+                        bgmChosen = true;
+                        StartCoroutine(WaitForBgmEnd());
+                    }
+                }
+                else if (!bgmSource.isPlaying && bgmSource.clip != null)
+                {
+                    bgmSource.Play();
+                }
+            }
+        }
+        else
+        {
+            if (bgmSource != null)
+            {
+                bgmSource.Stop();
+                bgmSource.clip = null;
+                bgmChosen = false;
+            }
+            firstGameEnter = true;
+        }
+    }
+
+    private IEnumerator WaitForBgmEnd()
+    {
+        if (bgmSource == null) yield break;
+        while (bgmSource.isPlaying || bgmSource.clip == null)
+        {
+            yield return null;
+        }
         AudioClip[] bgms = new AudioClip[] { bgm1, bgm2, bgm3 };
         var validList = new System.Collections.Generic.List<AudioClip>();
         foreach (var b in bgms) if (b != null) validList.Add(b);
@@ -57,14 +110,8 @@ public class LevelManager : MonoBehaviour
             int idx = Random.Range(0, validList.Count);
             bgmSource.clip = validList[idx];
             bgmSource.Play();
+            StartCoroutine(WaitForBgmEnd());
         }
-    }
-
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        isLoadingLevel = false;
-        Time.timeScale = 1f;
-        StartCoroutine(HandleSceneTransition());
     }
 
     private IEnumerator HandleSceneTransition()
@@ -138,7 +185,15 @@ public class LevelManager : MonoBehaviour
 
     private IEnumerator LoadLevelAfterTransition(string sceneName)
     {
-        if (Transition != null)
+        // 判断是否第一次从主菜单进入游戏场景
+        bool skipTransition = false;
+        if (firstGameEnter && SceneManager.GetActiveScene().name == mainMenuScene)
+        {
+            skipTransition = true;
+            firstGameEnter = false;
+        }
+
+        if (!skipTransition && Transition != null)
         {
             var cg = Transition.GetComponentInChildren<CanvasGroup>();
             if (cg != null) cg.alpha = 1f;

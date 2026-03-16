@@ -8,7 +8,8 @@ public class CowboyFight01 : MonoBehaviour
     [Header("Countdown")]
     public float countdownTime = 3f;
     public TextMeshPro countdownText;
-
+    public AudioSource audioSource;
+    [SerializeField] AudioClip LoadingSound;
     private bool canShoot = false;
     public SpriteRenderer shootImage;
     private bool gameFinished = false;
@@ -29,7 +30,7 @@ public class CowboyFight01 : MonoBehaviour
     {
         GlobalInput.Instance.OnSpaceAction += OnPlayer1Input;
         GlobalInput.Instance.OnMouseLeftAction += OnPlayer2Input;
-
+        audioSource = GetComponent<AudioSource>();
         if (shootImage != null)
         {
             Color c = shootImage.color;
@@ -83,10 +84,17 @@ public class CowboyFight01 : MonoBehaviour
             countdownText.text = "3";
 
         yield return new WaitForSeconds(1f);
-
+        if (LoadingSound != null)
+        {
+            if (!audioSource.isPlaying)
+            {
+                audioSource.PlayOneShot(LoadingSound);
+            }
+        }
         // ¿ªÇ¹
         if (countdownText != null)
             countdownText.text = "¿ª»ð!";
+
 
         canShoot = true;
         isTiming = true;

@@ -7,7 +7,7 @@ public class Cowboy : MonoBehaviour
     public GameObject winImage;
     public GameObject loseImage;
     public GameObject fireLine;
-
+    public AudioSource audiosource;
     void Start()
     {
         SetIdle();
@@ -19,7 +19,7 @@ public class Cowboy : MonoBehaviour
         idleImage.SetActive(true);
         winImage.SetActive(false);
         loseImage.SetActive(false);
-
+        audiosource = GetComponent<AudioSource>();
         if (fireLine != null)
             fireLine.SetActive(false);
     }
@@ -31,8 +31,11 @@ public class Cowboy : MonoBehaviour
         winImage.SetActive(true);
         loseImage.SetActive(false);
 
-        if (fireLine != null)
+        if (fireLine != null && audiosource != null)
+        {
+            audiosource.Play();
             fireLine.SetActive(true);
+        }
     }
 
     // Ê§°Ü
