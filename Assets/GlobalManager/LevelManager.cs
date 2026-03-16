@@ -14,6 +14,8 @@ public class LevelManager : MonoBehaviour
     public AudioClip bgm1;
     public AudioClip bgm2;
     public AudioClip bgm3;
+    [Header("ZZZCredits专属BGM")]
+    public AudioClip creditsBgm;
     private AudioSource bgmSource;
     public string mainMenuScene = "AAABeginScene";
     private bool bgmChosen = false;
@@ -67,31 +69,8 @@ public class LevelManager : MonoBehaviour
                 GamePause.instance.OpenPanelButton.gameObject.SetActive(false);
             }
         }
-        if (scene.name != mainMenuScene)
-        {
-            if (bgmSource != null)
-            {
-                if (!bgmChosen)
-                {
-                    AudioClip[] bgms = new AudioClip[] { bgm1, bgm2, bgm3 };
-                    var validList = new System.Collections.Generic.List<AudioClip>();
-                    foreach (var b in bgms) if (b != null) validList.Add(b);
-                    if (validList.Count > 0)
-                    {
-                        int idx = Random.Range(0, validList.Count);
-                        bgmSource.clip = validList[idx];
-                        bgmSource.Play();
-                        bgmChosen = true;
-                        StartCoroutine(WaitForBgmEnd());
-                    }
-                }
-                else if (!bgmSource.isPlaying && bgmSource.clip != null)
-                {
-                    bgmSource.Play();
-                }
-            }
-        }
-        else
+        // 主界面：停止并重置
+        if (scene.name == mainMenuScene)
         {
             if (bgmSource != null)
             {
@@ -99,8 +78,46 @@ public class LevelManager : MonoBehaviour
                 bgmSource.clip = null;
                 bgmChosen = false;
             }
-            // 保证每次回到主菜单都重置转场动画状态
-            skipNextTransitionIn = true;
+            firstGameEnter = true;
+            return;
+        }
+
+        // ZZZCredits 专属 BGM，仅在该场景播放 creditsBgm
+        if (scene.name == "ZZZCredits")
+        {
+            if (bgmSource != null)
+            {
+                bgmSource.Stop();
+                if (creditsBgm != null)
+                {
+                    bgmSource.clip = creditsBgm;
+                    bgmSource.Play();
+                }
+                bgmChosen = false; // 确保普通BGM下次重新选择
+            }
+            return;
+        }
+
+        // 其它场景：恢复或选择全局BGM
+        if (bgmSource != null)
+        {
+            AudioClip[] bgms = new AudioClip[] { bgm1, bgm2, bgm3 };
+            var validList = new System.Collections.Generic.List<AudioClip>();
+            foreach (var b in bgms) if (b != null) validList.Add(b);
+
+            // 如果当前clip是creditsBgm，或没有播放，或者尚未选择过，则选一个新的
+            if (validList.Count > 0 && (bgmSource.clip == null || bgmSource.clip == creditsBgm || !bgmChosen || !bgmSource.isPlaying))
+            {
+                int idx = Random.Range(0, validList.Count);
+                bgmSource.clip = validList[idx];
+                bgmSource.Play();
+                bgmChosen = true;
+                StartCoroutine(WaitForBgmEnd());
+            }
+            else if (!bgmSource.isPlaying && bgmSource.clip != null)
+            {
+                bgmSource.Play();
+            }
         }
     }
 
@@ -203,11 +220,12 @@ public class LevelManager : MonoBehaviour
 
     private IEnumerator LoadLevelAfterTransition(string sceneName)
     {
-        // 每次从主界面进入游戏场景都跳过转场动画前半段
+        // 判断是否第一次从主菜单进入游戏场景
         bool skipTransition = false;
-        if (SceneManager.GetActiveScene().name == mainMenuScene)
+        if (firstGameEnter && SceneManager.GetActiveScene().name == mainMenuScene)
         {
             skipTransition = true;
+            firstGameEnter = false;
         }
 
         if (!skipTransition && Transition != null)

@@ -8,12 +8,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/AAABeginScene.unity
     guid: 8418c6e5dd682da41a2dd6b11311d61b
-  - enabled: 0
-    path: Assets/Scenes/TestScene1.unity
-    guid: 21fc575854758a649a1a38854aef68b3
-  - enabled: 0
-    path: Assets/Scenes/TestScene2.unity
-    guid: c6310ab10638dd047a8c302f3c698d00
   - enabled: 1
     path: Assets/Scenes/RedButton01.unity
     guid: 190308c67dbc64a489b24cbbc44547cc
@@ -65,4 +59,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Face4.unity
     guid: 05d7b323df9bd5f489ec46e7b15896ca
+  - enabled: 1
+    path: Assets/Scenes/ZZZCredits.unity
+    guid: 54f386821750a334e818294706741713
   m_configObjects: {}

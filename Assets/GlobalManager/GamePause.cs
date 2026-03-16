@@ -95,19 +95,6 @@ public class GamePause : MonoBehaviour
         onComplete?.Invoke();
     }
 
-    // // 保留�? Animation Event 备用
-    // public void OnPauseAnimationComplete()
-    // {
-    //     isAnimating = false;
-    //     SetPanelInteractable(true);
-    // }
-    // public void OnResumeAnimationComplete()
-    // {
-    //     Panel.gameObject.SetActive(false);
-    //     IsGamePaused = false;
-    //     isAnimating = false;
-    //     Time.timeScale = 1f;
-    // }
 
     private void SetPanelInteractable(bool interactable)
     {

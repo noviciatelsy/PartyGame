@@ -299,7 +299,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 702, y: -12}
+  m_AnchoredPosition: {x: 910, y: -12}
   m_SizeDelta: {x: 500, y: 500}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &359882193
@@ -1153,6 +1153,7 @@ GameObject:
   - component: {fileID: 1157303367}
   - component: {fileID: 1157303369}
   - component: {fileID: 1157303368}
+  - component: {fileID: 1157303370}
   m_Layer: 5
   m_Name: Word
   m_TagString: Untagged
@@ -1176,7 +1177,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 703, y: 564}
+  m_AnchoredPosition: {x: 703, y: 565}
   m_SizeDelta: {x: 658, y: 165}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1157303368
@@ -1217,6 +1218,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1157303366}
   m_CullTransparentMesh: 1
+--- !u!95 &1157303370
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1157303366}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &1415904729
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1525,6 +1547,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 4164723273317612953, guid: 5f812c178c33b6146ac21a8fa6d0f026, type: 3}
+      propertyPath: creditsBgm
+      value: 
+      objectReference: {fileID: 8300000, guid: d1c481487de7b174d9cbd4dcb7e3c12d, type: 3}
+    - target: {fileID: 4164723273317612953, guid: 5f812c178c33b6146ac21a8fa6d0f026, type: 3}
       propertyPath: levels.Array.data[0].weight
       value: 3
       objectReference: {fileID: 0}
@@ -1751,6 +1777,8 @@ PlayableDirector:
     value: {fileID: 1913872379}
   - key: {fileID: 718604732187051875, guid: 776452c303b24f4468361c3ac55968a2, type: 2}
     value: {fileID: 200494328}
+  - key: {fileID: 340457393698398571, guid: 776452c303b24f4468361c3ac55968a2, type: 2}
+    value: {fileID: 1157303370}
   m_ExposedReferences:
     m_References: []
 --- !u!4 &1976546857
