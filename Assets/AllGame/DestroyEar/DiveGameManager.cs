@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using System.Reflection;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class DiveGameManager : MonoBehaviour
 {

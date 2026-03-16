@@ -91,8 +91,6 @@ public class LevelManager : MonoBehaviour
             firstGameEnter = true;
             return;
         }
-
-        // ZZZCredits 专属 BGM，仅在该场景播放 creditsBgm
         if (scene.name == "ZZZCredits")
         {
             if (bgmSource != null)
@@ -107,15 +105,11 @@ public class LevelManager : MonoBehaviour
             }
             return;
         }
-
-        // 其它场景：恢复或选择全局BGM
         if (bgmSource != null)
         {
             AudioClip[] bgms = new AudioClip[] { bgm1, bgm2, bgm3 };
             var validList = new System.Collections.Generic.List<AudioClip>();
             foreach (var b in bgms) if (b != null) validList.Add(b);
-
-            // 如果当前clip是creditsBgm，或没有播放，或者尚未选择过，则选一个新的
             if (validList.Count > 0 && (bgmSource.clip == null || bgmSource.clip == creditsBgm || !bgmChosen || !bgmSource.isPlaying))
             {
                 int idx = Random.Range(0, validList.Count);
@@ -231,10 +225,18 @@ public class LevelManager : MonoBehaviour
 
         if (!skipTransition && Transition != null)
         {
-            var cg = Transition.GetComponentInChildren<CanvasGroup>();
-            if (cg != null) cg.alpha = 1f;
-            Transition.SetTrigger("Start");
-            yield return new WaitForSecondsRealtime(0.6f);
+            // 如果游戏已经结束，则跳过转场动画
+            if (GlobalScoreManager.Instance == null || !GlobalScoreManager.Instance.isGameOver)
+            {
+                var cg = Transition.GetComponentInChildren<CanvasGroup>();
+                if (cg != null) cg.alpha = 1f;
+                Transition.SetTrigger("Start");
+                yield return new WaitForSecondsRealtime(0.6f);
+            }
+            else
+            {
+                yield return new WaitForSecondsRealtime(1.2f);
+            }
         }
         SceneManager.LoadScene(sceneName);
         //可能存在暂停状态

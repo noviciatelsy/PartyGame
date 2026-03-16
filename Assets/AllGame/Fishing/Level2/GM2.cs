@@ -37,7 +37,7 @@ public class GM2 : MonoBehaviour
 
 	[Header("Audio")]
 	public AudioClip preQTESound;
-	// public AudioSource audioSource; //在QTE开始前播放音效，先保留接口
+	public AudioSource audioSource;
 
 	private RectTransform activeZone1;
 	private RectTransform activeZone2;
@@ -78,14 +78,14 @@ public class GM2 : MonoBehaviour
 		float zoneHeight = Mathf.Max(minZoneHeight, baseZoneHeight - (roundIndex - 1) * zoneShrinkPerRound);
 		float pointerSpeed = basePointerSpeed + (roundIndex - 1) * speedIncreasePerRound;
 
-		// if (audioSource != null && preQTESound != null) audioSource.PlayOneShot(preQTESound);
+
 		yield return new WaitForSeconds(preQTEDelay);
 		float sharedY = CalcRandomZoneY(upBound1, downBound1, zoneHeight);
 		CreateOrResetZone(ref activeZone1, upBound1, pointer1, zoneHeight, sharedY);
 		CreateOrResetZone(ref activeZone2, upBound2, pointer2, zoneHeight, sharedY);
 		SetPointerToTop(pointer1, upBound1);
 		SetPointerToTop(pointer2, upBound2);
-
+		if (audioSource != null && preQTESound != null) audioSource.PlayOneShot(preQTESound);
 		bool roundEnded = false;
 		bool isDraw = false;
 		int roundWinner = 0;

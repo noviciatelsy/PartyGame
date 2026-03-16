@@ -90,40 +90,20 @@ public class BO5TrophyNative : MonoBehaviour
         }
     }
 
-    IEnumerator VictoryRoutine()
+   IEnumerator VictoryRoutine()
     {
-        // 隐藏碎片，显示完整奖杯
-        foreach (var f in fragments) f.gameObject.SetActive(false);
+        foreach (var f in fragments) f.gameObject.SetActive(false);  
         fullTrophy.gameObject.SetActive(true);
         fullTrophy.localPosition = fragments[0].parent.localPosition;
         fullTrophy.localScale = Vector3.one;
         fullTrophy.localRotation = Quaternion.identity;
-
         StartCoroutine(ShakeCamera(0.5f, 0.3f));
-
         SwitchPortraits();
-
-        // 同步启动头像动画
         if (winnerPortrait) StartCoroutine(WinnerPortraitAnim());
         if (loserPortrait) StartCoroutine(LoserPortraitAnim());
-
-        // 奖杯飞回中心 + 旋转放大
-        float elapsed = 0f;
-        float duration = 0.7f;
-        Vector3 startPos = fullTrophy.localPosition;
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsed / duration);
-            float s = Mathf.Sin(t * Mathf.PI * 0.5f);
-
-            fullTrophy.localPosition = Vector3.Lerp(startPos, centerPoint.localPosition, s);
-            fullTrophy.localScale = Vector3.Lerp(Vector3.one, Vector3.one * finalTrophyScale, s);
-            fullTrophy.localRotation = Quaternion.Euler(0, 0, t * 360f);
-            yield return null;
-        }
-        if (loserNormalObj) loserNormalObj.SetActive(false);
-        if (loserLoseObj) loserLoseObj.SetActive(true);
+        yield return null;
+        gameObject.SetActive(false);
+        fullTrophy.gameObject.SetActive(false);
     }
     void SwitchPortraits()
     {

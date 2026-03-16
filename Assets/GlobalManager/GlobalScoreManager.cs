@@ -18,7 +18,7 @@ public class GlobalScoreManager : MonoBehaviour
     public string gameOverScene = "GameEnd";
     public float delayBeforeGameOver = 1.2f;
 
-
+    public bool isGameOver = false;
     private void Awake()
     {
         //Debug.Log($"[ScoreManager] Awake on {gameObject.name}  scene:{SceneManager.GetActiveScene().name}");
@@ -32,7 +32,7 @@ public class GlobalScoreManager : MonoBehaviour
 
         Instance = this;
         transform.SetParent(null);
-
+        isGameOver = false;
         DontDestroyOnLoad(gameObject);
 
         //Debug.Log("[ScoreManager] Set as Instance + DontDestroyOnLoad");
@@ -144,6 +144,7 @@ public class GlobalScoreManager : MonoBehaviour
         if (LevelManager.Instance != null)
         {
             OnGameEnd?.Invoke(winnerPlayerID);
+            isGameOver = true;
             LevelManager.Instance.LoadLevel(gameOverScene);
         }
     }
