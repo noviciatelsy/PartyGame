@@ -22,6 +22,9 @@ public class LevelManager : MonoBehaviour
     public string mainMenuScene = "AAABeginScene";
     private bool bgmChosen = false;
 
+    private List<string> levelSequence = new List<string>();
+    private int sequenceIndex = 0;
+
     [System.Serializable]
     public class LevelData
     {
@@ -46,6 +49,8 @@ public class LevelManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+
+        GenerateLevelSequence(12);
 
         SceneManager.sceneLoaded += OnSceneLoaded;
         bgmSource = GetComponent<AudioSource>();
@@ -185,7 +190,8 @@ public class LevelManager : MonoBehaviour
             return;
         }
 
-        string nextLevel = GetWeightedRandomLevel();
+        //string nextLevel = GetWeightedRandomLevel();
+        string nextLevel = GetNextSequenceLevel();
 
         if (string.IsNullOrEmpty(nextLevel))
         {
@@ -284,5 +290,57 @@ public class LevelManager : MonoBehaviour
         }
 
         return validLevels[0].sceneName;
+    }
+
+    void GenerateLevelSequence(int count)
+    {
+        levelSequence.Clear();
+
+        List<LevelData> pool = new List<LevelData>(levels);
+
+        int limit = Mathf.Min(count, pool.Count);
+
+        for (int i = 0; i < limit; i++)
+        {
+            int totalWeight = 0;
+
+            foreach (var l in pool)
+            {
+                if (l.weight > 0)
+                    totalWeight += l.weight;
+            }
+
+            int rand = Random.Range(0, totalWeight);
+
+            int cumulative = 0;
+
+            for (int j = 0; j < pool.Count; j++)
+            {
+                cumulative += pool[j].weight;
+
+                if (rand < cumulative)
+                {
+                    levelSequence.Add(pool[j].sceneName);
+                    pool.RemoveAt(j);   // ¹Ø¼ü£ºÒÆ³ý£¬±ÜÃâÖØ¸´
+                    break;
+                }
+            }
+        }
+
+        sequenceIndex = 0;
+    }
+
+    string GetNextSequenceLevel()
+    {
+        if (sequenceIndex >= levelSequence.Count)
+        {
+            Debug.Log("Level sequence finished.");
+            return null;
+        }
+
+        string level = levelSequence[sequenceIndex];
+        sequenceIndex++;
+
+        return level;
     }
 }
