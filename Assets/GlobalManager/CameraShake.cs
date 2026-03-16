@@ -41,7 +41,7 @@ namespace CameraEffects
                     yield return null;
                 }
                 // 恢复为调用时的位置
-                transform.localPosition = originalPos;
+                transform.localPosition = _initialLocalPos;
                 _isShaking = false;
         }
         //适用于摄像机跟随的震动：每帧以当前localPosition为基准做偏移
