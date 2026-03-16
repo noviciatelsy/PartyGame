@@ -8,117 +8,109 @@ public class PlayerController : MonoBehaviour
     int moveDir = 1;
 
     [Header("Jump")]
-    public float jumpForce = 14f;
+    private float jumpForceY = 16f;       // 垂直跳跃速度
     public int maxJump = 2;
     int jumpCount = 0;
 
     [Header("Wall Slide")]
-    public float slideSpeed = 2f;
+    private float slideSpeed = 2f; // 最大滑墙下落速度
+    private float slideAcceleration = 3f; // 滑墙下落加速度
 
     Rigidbody2D rb;
+    LayerMask wallLayer;
+    LayerMask groundLayer;
 
-    bool isGround;
-    bool isWall;
-    bool isWallSlide;
-
+    bool isWallSliding = false;
     bool wallLeft = false;
     bool wallRight = false;
-    bool ground = false;
-
+    bool isGround = true;
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        wallLayer = LayerMask.GetMask("Wall"); // 确保墙体在 Wall Layer
+        groundLayer = LayerMask.GetMask("Wall", "OnewayPlatform");
     }
 
-    Vector2 contactNormal;
-    void FixedUpdate()
-    {
-        HandleMove();
-        contactNormal = Vector2.zero;
-    }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
+        {
             Jump();
+        }
     }
 
-    void HandleMove()
+    void FixedUpdate()
     {
-        isGround = contactNormal.y > 0.7f;
-        isWall = Mathf.Abs(contactNormal.x) > 0.7f;
+        // 检测前方墙体
+        float detectDist = 0.9f;
+        float detectDist2 = 0.8f;
 
-        isWallSlide = !isGround && isWall;
+        wallRight = Physics2D.Raycast(transform.position, Vector2.right, detectDist, wallLayer);
+        wallLeft = Physics2D.Raycast(transform.position, Vector2.left, detectDist, wallLayer);
+        isGround = Physics2D.Raycast(transform.position, Vector2.down, detectDist2, groundLayer);
 
-        if (isWallSlide)
+        Debug.Log($"[FixedUpdate] velocity: ({rb.velocity.x:F2}, {rb.velocity.y:F2}), moveDir: {moveDir}, jumpCount: {jumpCount}, Wall Right: {wallRight}, Wall Left: {wallLeft}, isGround: {isGround}");
+
+        // 刷新跳跃次数：碰到墙或踩地面
+        if (isGround || wallLeft || wallRight)
         {
-            rb.velocity = new Vector2(
-                0,
-                Mathf.Max(rb.velocity.y, -slideSpeed)
-            );
-            return;
+            jumpCount = 0;
         }
 
-        float wallDir = Mathf.Sign(contactNormal.x); // -1 左墙，1 右墙
-        if (isGround && isWall && wallDir == moveDir)
+        // 计算墙滑状态
+        isWallSliding = !isGround && (wallLeft || wallRight);
+
+        // 水平移动逻辑
+        float targetVelX = moveDir * moveSpeed;
+
+        if (isWallSliding)
+        {
+            // 墙滑时只控制竖直速度
+            float newVelY = rb.velocity.y - slideAcceleration * Time.fixedDeltaTime;
+            newVelY = Mathf.Max(newVelY, -slideSpeed);
+            rb.velocity = new Vector2(rb.velocity.x, newVelY);
+        }
+        else
+        {
+            // 普通移动
+            rb.velocity = new Vector2(targetVelX, rb.velocity.y);
+        }
+
+        // 墙反向逻辑，仅在非墙滑状态下触发
+        if (isGround && ((wallRight && moveDir > 0) || (wallLeft && moveDir < 0)))
+        {
             moveDir *= -1;
+        }
 
-        rb.velocity = new Vector2(
-            moveDir * moveSpeed,
-            rb.velocity.y
-        );
-
-        if (isGround || isWall)
-            jumpCount = 0;
+        // 可视化射线，方便调试
+        Debug.DrawRay(transform.position, Vector2.right * detectDist, Color.red);
+        Debug.DrawRay(transform.position, Vector2.left * detectDist, Color.green);
+        Debug.DrawRay(transform.position, Vector2.down * detectDist2, Color.yellow);
     }
 
     void Jump()
     {
-        if (jumpCount >= maxJump)
-            return;
+        if (jumpCount >= maxJump) return;
 
-        if (isWallSlide)
+        Debug.Log($"[FixedUpdate] velocity: ({rb.velocity.x:F2}, {rb.velocity.y:F2}), moveDir: {moveDir}, jumpCount: {jumpCount}, Wall Right: {wallRight}, Wall Left: {wallLeft}, isGround: {isGround}");
+
+        if (isWallSliding)
         {
-            moveDir *= -1;
-
-            rb.velocity = new Vector2(
-                moveDir * moveSpeed,
-                jumpForce
-            );
+            // 墙跳：离开墙体方向水平 + 垂直跳跃
+            float jumpDir = wallRight ? -1 : 1; // 离开墙的方向
+            rb.velocity = new Vector2(moveSpeed * jumpDir, jumpForceY);
         }
         else
         {
-            rb.velocity = new Vector2(
-                rb.velocity.x,
-                jumpForce
-            );
+            // 普通跳跃
+            rb.velocity = new Vector2(moveSpeed * moveDir, jumpForceY);
         }
 
-        jumpCount++;
-    }
-
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        CollectCollision(collision);
-    }
-
-    void OnCollisionStay2D(Collision2D collision)
-    {
-        CollectCollision(collision);
-    }
-
-    void CollectCollision(Collision2D collision)
-    {
-        foreach (var contact in collision.contacts)
+        if ((wallRight && moveDir > 0) || (wallLeft && moveDir < 0))
         {
-            foreach (var c in collision.contacts)
-            {
-                Vector2 n = c.normal;
-                if (n.y > 0.7f) ground = true;
-                if (n.x > 0.7f) wallLeft = true;
-                if (n.x < -0.7f) wallRight = true;
-            }
+            moveDir *= -1;
         }
-        Debug.Log(contactNormal);
+        jumpCount++;
     }
 }

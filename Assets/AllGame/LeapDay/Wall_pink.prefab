@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 308385210529898387}
   - component: {fileID: 2409984261420555730}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93,7 +93,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3508282664239750955}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: WallSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -125,7 +125,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4466944817475505336}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Wall_pink
   m_TagString: Untagged
   m_Icon: {fileID: 0}
