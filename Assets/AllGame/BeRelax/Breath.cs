@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -51,6 +52,12 @@ public class Breath : MonoBehaviour
     public TextMeshPro[] fontList;
     private Coroutine fontFadeCoroutine;
 
+    [Header("Audio")]
+    public AudioClip inhaleClip1;
+    public AudioClip exhaleClip1;
+    public AudioClip inhaleClip2;
+    public AudioClip exhaleClip2;
+    private AudioSource audioSource;
     void Start()
     {
         GlobalInput.Instance.OnSpaceDown += OnPlayer1Down;
@@ -78,6 +85,10 @@ public class Breath : MonoBehaviour
         {
             Debug.LogWarning("AlphaController Î´¸³Öµ£¡");
         }
+
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+            audioSource = gameObject.AddComponent<AudioSource>();
     }
 
     IEnumerator StartDelay()
@@ -305,6 +316,8 @@ public class Breath : MonoBehaviour
 
     void OnPlayer1Down()
     {
+        PlayInhale(1);
+
         if (p1Coroutine != null)
             StopCoroutine(p1Coroutine);
 
@@ -314,6 +327,8 @@ public class Breath : MonoBehaviour
 
     void OnPlayer1Up()
     {
+        PlayExhale(1);
+
         if (p1Coroutine != null)
             StopCoroutine(p1Coroutine);
 
@@ -323,6 +338,8 @@ public class Breath : MonoBehaviour
 
     void OnPlayer2Down()
     {
+        PlayInhale(2);
+
         if (p2Coroutine != null)
             StopCoroutine(p2Coroutine);
 
@@ -332,6 +349,8 @@ public class Breath : MonoBehaviour
 
     void OnPlayer2Up()
     {
+        PlayExhale(2);
+
         if (p2Coroutine != null)
             StopCoroutine(p2Coroutine);
 
@@ -409,4 +428,37 @@ public class Breath : MonoBehaviour
         }
     }
 
+
+    void PlayInhale(int index)
+    {
+        if (inhaleClip1 != null && inhaleClip2!= null && audioSource != null)
+        {
+            audioSource.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
+
+            if (index == 1)
+            {
+                audioSource.PlayOneShot(inhaleClip1);
+            }
+            else
+            {
+                audioSource.PlayOneShot(inhaleClip2);
+            }
+        }
+    }
+
+    void PlayExhale(int index)
+    {
+        if (exhaleClip1 != null && exhaleClip2 != null && audioSource != null)
+        {
+            audioSource.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
+            if (index == 1)
+            {
+                audioSource.PlayOneShot(exhaleClip1);
+            }
+            else
+            {
+                audioSource.PlayOneShot(exhaleClip2);
+            }
+        }
+    }
 }

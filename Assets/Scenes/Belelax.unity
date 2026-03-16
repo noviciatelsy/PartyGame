@@ -670,6 +670,10 @@ MonoBehaviour:
   - {fileID: 912424780}
   - {fileID: 979139524}
   - {fileID: 883588641}
+  inhaleClip1: {fileID: 8300000, guid: 5fa75a57a5821c646bd2f2a7fb3555fe, type: 3}
+  exhaleClip1: {fileID: 8300000, guid: 9769e95e21374ed45b47a8df89c5422f, type: 3}
+  inhaleClip2: {fileID: 8300000, guid: 16bb31a9a54f9db4dbb9432de637ce13, type: 3}
+  exhaleClip2: {fileID: 8300000, guid: 3b9e3d56a7ff1234f82aa7e317e777e7, type: 3}
 --- !u!114 &389223480
 MonoBehaviour:
   m_ObjectHideFlags: 0
