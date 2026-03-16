@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-//QTE：两个指针在各自区域从上到下快速移动，玩家按键尝试在随机生成的 QTE 区域内停止指针。
+//QTE：两个指针在各自区域从上到下快速移动，玩家按键尝试在随机生成的 QTE 区域内停止指针�?
 public class GM2 : MonoBehaviour
 {
 	[Header("UI Bounds & Pointers")]
@@ -20,19 +20,19 @@ public class GM2 : MonoBehaviour
 	[Header("游戏设置")]
 	public int totalRounds = 5;
 	public int roundsToWin = 3;
-	public List<GameObject> player1Medals;
-	public List<GameObject> player2Medals;
+	public BO5TrophyNative player1Trophy;
+	public BO5TrophyNative player2Trophy;
 
 	[Header("初始QTE区域高度")]
 	public float baseZoneHeight = 120f; 
-    [Header("每轮QTE区域缩小量")]
+    [Header("每轮QTE区域缩小�?")]
 	public float zoneShrinkPerRound = 25f;
 	public float minZoneHeight = 30f;
 	[Header("像素/秒，第一轮的指针移动速度")]
 	public float basePointerSpeed = 600f; 
     [Header("每轮增加的指针速度")] 
 	public float speedIncreasePerRound = 250f;
-[Header("QTE开始前的提示延迟时间")]
+[Header("QTE开始前的提示延迟时�?")]
 	public float preQTEDelay = 1.0f; 
 
 	[Header("Audio")]
@@ -51,16 +51,12 @@ public class GM2 : MonoBehaviour
 
     void Start()
 	{
-		if (player1Medals != null) foreach (var m in player1Medals) if (m != null) m.SetActive(false);
-		if (player2Medals != null) foreach (var m in player2Medals) if (m != null) m.SetActive(false);
-
 		StartMatch();
 	}
 
 	public void StartMatch()
 	{
 		score1 = 0; score2 = 0; currentRound = 0; matchActive = true;
-		UpdateMedalsUI();
 		StartNextRound();
 	}
 
@@ -92,6 +88,7 @@ public class GM2 : MonoBehaviour
 
 		bool roundEnded = false;
 		bool isDraw = false;
+		int roundWinner = 0;
 		bool attempted1 = false;
 		bool attempted2 = false;
 
@@ -113,26 +110,23 @@ public class GM2 : MonoBehaviour
 			if (p1Pressed && p2Pressed)
 			{
 				if (p1Hit && !p2Hit)
-					score1++;
+				{ score1++; roundWinner = 1; }
 				else if (!p1Hit && p2Hit)
-					score2++;
+				{ score2++; roundWinner = 2; }
 				else
 					isDraw = true;
-				UpdateMedalsUI();
 				roundEnded = true;
 			}
 			else if (p1Pressed)
 			{
-				if (p1Hit) score1++;
-				else score2++;
-				UpdateMedalsUI();
+				if (p1Hit) { score1++; roundWinner = 1; }
+				else { score2++; roundWinner = 2; }
 				roundEnded = true;
 			}
 			else if (p2Pressed)
 			{
-				if (p2Hit) score2++;
-				else score1++;
-				UpdateMedalsUI();
+				if (p2Hit) { score2++; roundWinner = 2; }
+				else { score1++; roundWinner = 1; }
 				roundEnded = true;
 			}
 			bool p1AtBottom = pointer1.anchoredPosition.y <= bottomY1;
@@ -149,20 +143,26 @@ public class GM2 : MonoBehaviour
 		if (activeZone1 != null) Destroy(activeZone1.gameObject);
 		if (activeZone2 != null) Destroy(activeZone2.gameObject);
 
+		// ����������Ƭ����
+		if (roundWinner == 1 && player1Trophy != null)
+			player1Trophy.PlayWinStep(score1);
+		else if (roundWinner == 2 && player2Trophy != null)
+			player2Trophy.PlayWinStep(score2);
+
 		if (isDraw)
 		{
-			// 平局：回退轮次，重赛
 			currentRound--;
 			yield return new WaitForSeconds(1.0f);
 			StartNextRound();
 		}
 		else if (score1 >= roundsToWin || score2 >= roundsToWin)
 		{
+			yield return new WaitForSeconds(4f);
 			EndMatch();
 		}
 		else
 		{
-			yield return new WaitForSeconds(1.0f);
+			yield return new WaitForSeconds(2.0f);
 			StartNextRound();
 		}
 	}
@@ -212,20 +212,6 @@ public class GM2 : MonoBehaviour
 		return py <= top && py >= bottom;
 	}
 
-	private void UpdateMedalsUI()
-	{
-		if (player1Medals != null)
-		{
-			for (int i = 0; i < player1Medals.Count; i++)
-				player1Medals[i].SetActive(i < score1);
-		}
-		if (player2Medals != null)
-		{
-			for (int i = 0; i < player2Medals.Count; i++)
-				player2Medals[i].SetActive(i < score2);
-		}
-	}
-
 	private void EndMatch()
 	{
 		matchActive = false;
@@ -239,7 +225,10 @@ public class GM2 : MonoBehaviour
 		{
 			GlobalScoreManager.Instance.AddScore(2, 1);
 		}
-		else Debug.Log("draw");
+		else
+		{
+			Debug.Log("draw");
+		}
         if (winCoroutine == null)
             winCoroutine = StartCoroutine(WinDelayCoroutine());
     }
