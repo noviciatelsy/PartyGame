@@ -10,7 +10,8 @@ public class BO5TrophyNative : MonoBehaviour
 
     [Header("ÀÈ∆¨µÙ¬‰")]
     public float fragmentDropHeight = 500f;
-
+    public AudioClip fragmentDropSound;
+    public AudioSource audioSource;
     [Header("◊Ó÷’Ω±±≠Àı∑≈")]
     public float finalTrophyScale = 3f;
 
@@ -72,6 +73,11 @@ public class BO5TrophyNative : MonoBehaviour
             yield return null;
         }
         frag.localPosition = targetPos;
+
+        if (fragmentDropSound)
+        {
+            audioSource.PlayOneShot(fragmentDropSound);
+        }
 
         // »Î≤€«·’
         StartCoroutine(ShakeCamera(0.15f, 0.1f));

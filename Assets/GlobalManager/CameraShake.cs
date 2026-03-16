@@ -1,32 +1,44 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace CameraEffects
 {
-public class CameraShake : MonoBehaviour
-{
-    public Camera cam;
-    [Header("默认抖动时长")]
-    public float defaultDuration = 0.2f;
-    [Header("默认抖动幅度")]
-    public float defaultMagnitude = 0.1f;
-    private Vector3 originalPos;
-    public IEnumerator Shake(float? duration = null, float? magnitude = null)
+    public class CameraShake : MonoBehaviour
     {
-        float useDuration = duration ?? defaultDuration;
-        float useMagnitude = magnitude ?? defaultMagnitude;
-        originalPos = transform.localPosition;
-        float elapsed = 0.0f;
-        while (elapsed < useDuration)
+        public Camera cam;
+        [Header("默认参数")]
+        public float defaultDuration = 0.2f;
+        public float defaultMagnitude = 0.1f;
+
+        private Vector3 _initialLocalPos;
+        private bool _isShaking = false;
+
+        private void Awake()
         {
-            float x = Random.Range(-1f, 1f) * useMagnitude;
-            float y = Random.Range(-1f, 1f) * useMagnitude;
-            transform.localPosition = new Vector3(originalPos.x + x, originalPos.y + y, originalPos.z);
-            elapsed += Time.deltaTime;
-            yield return null;
+            _initialLocalPos = transform.localPosition;
         }
-        transform.localPosition = originalPos;
+
+        public IEnumerator Shake(float? duration = null, float? magnitude = null)
+        {
+            if (_isShaking) yield break; 
+            
+            _isShaking = true;
+            float useDuration = duration ?? defaultDuration;
+            float useMagnitude = magnitude ?? defaultMagnitude;
+            
+            float elapsed = 0.0f;
+
+            while (elapsed < useDuration)
+            {
+                float x = Random.Range(-1f, 1f) * useMagnitude;
+                float y = Random.Range(-1f, 1f) * useMagnitude;
+                transform.localPosition = _initialLocalPos + new Vector3(x, y, 0);
+
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            transform.localPosition = _initialLocalPos;
+            _isShaking = false;
+        }
     }
-}
 }
