@@ -21,6 +21,10 @@ public class StickHeroGameManager : MonoBehaviour
     public bool gameFinished = false;
 
     private Coroutine winCoroutine;
+    [Header("Audio")]
+    public AudioClip dropStickClip;
+    private AudioSource audioSource;
+
     void Awake()
     {
         Instance = this;
@@ -39,6 +43,12 @@ public class StickHeroGameManager : MonoBehaviour
 
         GlobalInput.Instance.OnMouseDown += P2Grow;
         GlobalInput.Instance.OnMouseUp += P2Drop;
+
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
     }
 
     void LateUpdate()
@@ -71,6 +81,7 @@ public class StickHeroGameManager : MonoBehaviour
 
     void P1Drop()
     {
+        PlayDropSound();
         player1.DropStick();
     }
 
@@ -81,6 +92,7 @@ public class StickHeroGameManager : MonoBehaviour
 
     void P2Drop()
     {
+        PlayDropSound();
         player2.DropStick();
     }
 
@@ -261,5 +273,14 @@ public class StickHeroGameManager : MonoBehaviour
         }
 
         return false;
+    }
+
+    void PlayDropSound()
+    {
+        if (dropStickClip != null && audioSource != null)
+        {
+            audioSource.pitch = Random.Range(0.95f, 1.05f);
+            audioSource.PlayOneShot(dropStickClip);
+        }
     }
 }
