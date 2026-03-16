@@ -145,13 +145,13 @@ public class CowboyFight : MonoBehaviour
             }
             if (playerIndex == 1)
             {
-                player1.Fire();
-                player2.OnShoot();
+                player1.SetWin();
+                player2.SetLose();
             }
             else
             {
-                player2.Fire();
-                player1.OnShoot();
+                player2.SetWin();
+                player1.SetLose();
             }
             DeclareWinner(playerIndex);
         }
