@@ -145,7 +145,9 @@ public class GlobalScoreManager : MonoBehaviour
         {
             OnGameEnd?.Invoke(winnerPlayerID);
             isGameOver = true;
-            LevelManager.Instance.LoadLevel(gameOverScene);
+            //update to force loading
+            //LevelManager.Instance.LoadLevel(gameOverScene);
+            LevelManager.Instance.ForceLoadLevel(gameOverScene);
         }
     }
 

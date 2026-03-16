@@ -25,6 +25,9 @@ public class LevelManager : MonoBehaviour
     private List<string> levelSequence = new List<string>();
     private int sequenceIndex = 0;
 
+    private bool forceLoading = false;
+    private Coroutine loadingCoroutine;
+
     [System.Serializable]
     public class LevelData
     {
@@ -180,7 +183,7 @@ public class LevelManager : MonoBehaviour
 
     public void NextLevel()
     {
-        if (isLoadingLevel) return;   // 防止重复加载
+        if (isLoadingLevel || forceLoading) return;   // 防止重复加载
 
         isLoadingLevel = true;
 
@@ -214,6 +217,14 @@ public class LevelManager : MonoBehaviour
             Debug.LogError("LevelManager.LoadLevel: sceneName is null or empty");
             return;
         }
+
+        if (loadingCoroutine != null)
+        {
+            StopCoroutine(loadingCoroutine);
+            loadingCoroutine = null;
+        }
+
+        isLoadingLevel = true;
 
         lastLevelLoaded = sceneName;
         StartCoroutine(LoadLevelAfterTransition(sceneName));
@@ -342,5 +353,16 @@ public class LevelManager : MonoBehaviour
         sequenceIndex++;
 
         return level;
+    }
+
+    public void ForceLoadLevel(string sceneName)
+    {
+        forceLoading = true;
+
+        StopAllCoroutines();
+
+        isLoadingLevel = true;
+
+        StartCoroutine(LoadLevelAfterTransition(sceneName));
     }
 }
