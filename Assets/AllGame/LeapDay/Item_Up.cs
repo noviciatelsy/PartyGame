@@ -14,8 +14,6 @@ public class Item_Up : MonoBehaviour
             // 调用玩家功能
             player.ToUp();
 
-            // 销毁物品（如果需要）
-            Destroy(gameObject);
         }
     }
 }

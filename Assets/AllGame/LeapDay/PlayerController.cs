@@ -191,17 +191,21 @@ public class PlayerController : MonoBehaviour
         Debug.LogWarning("win");
         if (player == PlayerType.Player1)
         {
-            LeapdayGM.Instance.DeclareWinner(1);
+            LeapdayGM.Instance.DeclareWinner(2);
         }
         else
         {
-            LeapdayGM.Instance.DeclareWinner(2);
+            LeapdayGM.Instance.DeclareWinner(1);
         }
     }
 
     public void ToUp()
     {
         Debug.LogWarning("Up");
+        float upJumpForce = 28f;
+
+        // 清除当前竖直速度再给一个大跳
+        rb.velocity = new Vector2(rb.velocity.x, upJumpForce);
     }
 
     public void ToDown()

@@ -65,12 +65,10 @@ MonoBehaviour:
   - sceneName: CowBoyFight
     weight: 3
   - sceneName: CowBoyFight01
-    weight: 1
+    weight: 2
   - sceneName: FishingLevel1
     weight: 3
   - sceneName: FishingLevel2
-    weight: 3
-  - sceneName: Balloon
     weight: 3
   - sceneName: Belelax
     weight: 3
@@ -85,7 +83,9 @@ MonoBehaviour:
   - sceneName: Face4
     weight: 2
   - sceneName: LeapDay1
-    weight: 4
+    weight: 3
+  - sceneName: LeapDay2
+    weight: 3
   avoidRepeat: 1
   Transition: {fileID: 0}
 --- !u!82 &3108482064808689205
