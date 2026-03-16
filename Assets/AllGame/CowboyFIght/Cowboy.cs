@@ -1,59 +1,48 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Cowboy : MonoBehaviour
 {
-    [Header("Fire Visual")]
-    public Transform fireImage;     // 开火图片
-    public GameObject bulletLine;   // 枪线图片
+    [Header("Cowboy Images")]
+    public GameObject idleImage;
+    public GameObject winImage;
+    public GameObject loseImage;
+    public GameObject fireLine;
 
-    public float rotate = 10.0f;
     void Start()
     {
-        transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-        // 初始化
-        if (fireImage != null)
-        {
-            fireImage.localPosition = new Vector3(0f, 0f, 1f);
-        }
-
-        if (bulletLine != null)
-        {
-            bulletLine.SetActive(false);
-        }
+        SetIdle();
     }
 
-    // =========================
-    // 开火接口
-    // =========================
-    public void Fire()
+    // 初始状态
+    public void SetIdle()
     {
-        transform.rotation = Quaternion.Euler(0f, 0f, rotate);
+        idleImage.SetActive(true);
+        winImage.SetActive(false);
+        loseImage.SetActive(false);
 
-        if (fireImage != null)
-        {
-            fireImage.localPosition = new Vector3(0f, 0f, -1f);
-        }
-
-        StartCoroutine(FireCoroutine());
+        if (fireLine != null)
+            fireLine.SetActive(false);
     }
 
-    IEnumerator FireCoroutine()
+    // 胜利
+    public void SetWin()
     {
-        yield return new WaitForSeconds(0.05f);
+        idleImage.SetActive(false);
+        winImage.SetActive(true);
+        loseImage.SetActive(false);
 
-        if (bulletLine != null)
-        {
-            bulletLine.SetActive(true);
-        }
+        if (fireLine != null)
+            fireLine.SetActive(true);
     }
 
-    public void OnShoot()
+    // 失败
+    public void SetLose()
     {
-        if (fireImage != null)
-        {
-            fireImage.localPosition = new Vector3(0f, 0f, -1f);
-        }
+        idleImage.SetActive(false);
+        winImage.SetActive(false);
+        loseImage.SetActive(true);
+
+        if (fireLine != null)
+            fireLine.SetActive(false);
     }
 }

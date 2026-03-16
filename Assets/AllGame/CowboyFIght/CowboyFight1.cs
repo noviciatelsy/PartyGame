@@ -134,13 +134,13 @@ public class CowboyFight01 : MonoBehaviour
             }
             if (playerIndex == 1)
             {
-                player1.Fire();
-                player2.OnShoot();
+                player1.SetWin();
+                player2.SetLose();
             }
             else
             {
-                player2.Fire();
-                player1.OnShoot();
+                player2.SetWin();
+                player1.SetLose();
             }
             DeclareWinner(playerIndex);
         }
@@ -158,11 +158,16 @@ public class CowboyFight01 : MonoBehaviour
         canShoot = false;
         isTiming = false;
 
-        if (GlobalInput.Instance != null)
-        {
-            GlobalInput.Instance.OnSpaceAction -= OnPlayer1Input;
-            GlobalInput.Instance.OnMouseLeftAction -= OnPlayer2Input;
-        }
+        //if (playerIndex == 1)
+        //{
+        //    player1.SetWin();
+        //    player2.SetLose();
+        //}
+        //else
+        //{
+        //    player2.SetWin();
+        //    player1.SetLose();
+        //}
 
         Debug.Log("Winner is Player " + playerIndex);
         GlobalScoreManager.Instance.AddScore(playerIndex, 1);
