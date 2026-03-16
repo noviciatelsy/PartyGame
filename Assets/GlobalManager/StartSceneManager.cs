@@ -18,7 +18,7 @@ public class StartSceneManager : MonoBehaviour
     public void Initialize()
     {
         startButton.onClick.AddListener(() => LevelManager.Instance.NextLevel());
-        chooseButton.onClick.AddListener(() => LevelManager.Instance.LoadLevel("ChooseScene"));
+        chooseButton.onClick.AddListener(() => LevelManager.Instance.LoadLevel("ZZZCredits"));
         exitButton.onClick.AddListener(() => Application.Quit());
     }
 
