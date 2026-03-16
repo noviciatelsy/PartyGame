@@ -1533,6 +1533,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CircleFade
       objectReference: {fileID: 0}
+    - target: {fileID: 1420034003177837709, guid: e54159ad036a1db4e92cf887d8b0ac0d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6358543558556881491, guid: e54159ad036a1db4e92cf887d8b0ac0d, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -1842,6 +1846,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leftObj: {fileID: 471220105}
   rightObj: {fileID: 2095494356}
+  audioSource: {fileID: 0}
+  medalFlipSound: {fileID: 0}
+  medalLandedSound: {fileID: 0}
   text1: {fileID: 33271067}
   text2: {fileID: 2038555295}
   wintext: 

@@ -14,6 +14,7 @@ public class FaceController : MonoBehaviour
 
     [Header("归属玩家")]
     public PlayerType player;
+    [SerializeField] private AudioSource audioSource;
 
     [Header("五官列表（仅表示数量）")]
     public List<FaceFeature> features = new List<FaceFeature>();
@@ -40,7 +41,7 @@ public class FaceController : MonoBehaviour
             c.a = 0f;
             correctSprite.color = c;
         }
-        
+
         // 初始化五官
         foreach (var f in features)
         {
@@ -87,7 +88,7 @@ public class FaceController : MonoBehaviour
 
         if (currentIndex >= features.Count)
             return;
-
+        audioSource.Play();
         features[currentIndex].TryStop();
     }
 
@@ -121,7 +122,7 @@ public class FaceController : MonoBehaviour
         if (clamped < 0.1f)
             totalClampedDistance += 0f;   // 完美不扣分
         else
-            totalClampedDistance += Mathf.Pow(clamped, 1.5f); 
+            totalClampedDistance += Mathf.Pow(clamped, 1.5f);
 
         //totalClampedDistance += clamped;
 
@@ -140,7 +141,7 @@ public class FaceController : MonoBehaviour
 
         Debug.Log(player + " 匹配度: " + score.ToString("F2") + "%");
 
-        if (scoreText != null)  
+        if (scoreText != null)
         {
             scoreText.gameObject.SetActive(true);
             scoreText.text = "匹配度:" + score.ToString("F2") + "%";

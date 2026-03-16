@@ -99,10 +99,8 @@ public class BO5TrophyNative : MonoBehaviour
         fullTrophy.localScale = Vector3.one;
         fullTrophy.localRotation = Quaternion.identity;
 
-        // 强震
         StartCoroutine(ShakeCamera(0.5f, 0.3f));
 
-        // 同步：切换头像 Sprite
         SwitchPortraits();
 
         // 同步启动头像动画
@@ -124,14 +122,9 @@ public class BO5TrophyNative : MonoBehaviour
             fullTrophy.localRotation = Quaternion.Euler(0, 0, t * 360f);
             yield return null;
         }
-        // 结算后确保败者头像为失败图
         if (loserNormalObj) loserNormalObj.SetActive(false);
         if (loserLoseObj) loserLoseObj.SetActive(true);
     }
-
-    /// <summary>
-    /// 切换头像：胜者显示Win图，败者显示Lose图
-    /// </summary>
     void SwitchPortraits()
     {
         // 只显示胜者胜利图，隐藏胜者常态图
