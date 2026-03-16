@@ -63,11 +63,11 @@ MonoBehaviour:
   - sceneName: DestroyEar
     weight: 3
   - sceneName: CowBoyFight
-    weight: 3
+    weight: 4
   - sceneName: CowBoyFight01
     weight: 2
   - sceneName: FishingLevel1
-    weight: 3
+    weight: 4
   - sceneName: FishingLevel2
     weight: 3
   - sceneName: Belelax

@@ -11,6 +11,7 @@ public class CameraFollowHeight : MonoBehaviour
 
     private Transform target;
     PlayerController[] players;
+    bool gameEnded = false;
 
     private void Start()
     {
@@ -46,6 +47,8 @@ public class CameraFollowHeight : MonoBehaviour
                 );
             }
         }
+
+        CheckPlayerOutOfScreen();
     }
 
     void FindHighestPlayer()
@@ -76,5 +79,45 @@ public class CameraFollowHeight : MonoBehaviour
             new Vector3(-100, y, 0),
             new Vector3(100, y, 0)
         );
+    }
+
+    void CheckPlayerOutOfScreen()
+    {
+        Camera cam = Camera.main;
+        if (cam == null) return;
+
+        foreach (PlayerController p in players)
+        {
+            if (p == null) continue;
+
+            Vector3 viewPos = cam.WorldToViewportPoint(p.transform.position);
+
+            bool outOfScreen =
+                viewPos.y < -0.1f ||   // 掉到屏幕下
+                viewPos.y > 1.1f ||    // 飞出屏幕上
+                viewPos.x < -0.1f ||
+                viewPos.x > 1.1f;
+
+            if (outOfScreen && !gameEnded)
+            {
+                gameEnded = true;
+                DeclareOtherPlayerWin(p);
+                return;
+            }
+        }
+    }
+
+    void DeclareOtherPlayerWin(PlayerController loser)
+    {
+        foreach (PlayerController p in players)
+        {
+            if (p == null) continue;
+
+            if (p != loser)
+            {
+                p.Towin();
+                break;
+            }
+        }
     }
 }
