@@ -20,7 +20,11 @@ public class RedButton01 : MonoBehaviour
     private bool gameFinished = false;
     private Coroutine winCoroutine;
 
-    private float buttonResetDelay = 0.02f;
+    private float buttonResetDelay = 0.15f;
+    float button1Timer = 0f;
+    float button2Timer = 0f;
+    public SpringButton spring1;
+    public SpringButton spring2;
 
     private void Start()
     {
@@ -36,6 +40,32 @@ public class RedButton01 : MonoBehaviour
 
         GlobalInput.Instance.OnSpaceAction -= OnPlayer1Input;
         GlobalInput.Instance.OnMouseLeftAction -= OnPlayer2Input;
+    }
+
+
+    private void Update()
+    {
+        if (button1Timer > 0)
+        {
+            button1Timer -= Time.deltaTime;
+
+            if (button1Timer <= 0)
+            {
+                ButtonPrefab1[1].SetActive(false);
+                ButtonPrefab1[0].SetActive(true);
+            }
+        }
+
+        if (button2Timer > 0)
+        {
+            button2Timer -= Time.deltaTime;
+
+            if (button2Timer <= 0)
+            {
+                ButtonPrefab2[1].SetActive(false);
+                ButtonPrefab2[0].SetActive(true);
+            }
+        }
     }
 
     // ======================
@@ -115,35 +145,31 @@ public class RedButton01 : MonoBehaviour
         }
     }
 
-    private Coroutine button1Coroutine;
-    private Coroutine button2Coroutine;
     private void HandleButtonPress(int playerIndex)
     {
         switch (playerIndex)
         {
             case 1:
-                //StartCoroutine(SwapButtonImage(ButtonPrefab1));
-                if (button1Coroutine != null)
-                    StopCoroutine(button1Coroutine);
 
-                button1Coroutine = StartCoroutine(SwapButtonImage(ButtonPrefab1));
+                button1Timer = buttonResetDelay;
+
+                ButtonPrefab1[1].SetActive(false);
+                ButtonPrefab1[0].SetActive(false);
+
+                ButtonPrefab1[1].SetActive(true);
+                if (spring1) spring1.Press();
                 break;
+
             case 2:
-                //StartCoroutine(SwapButtonImage(ButtonPrefab2));
-                if (button2Coroutine != null)
-                    StopCoroutine(button2Coroutine);
-                button2Coroutine = StartCoroutine(SwapButtonImage(ButtonPrefab2));
+
+                button2Timer = buttonResetDelay;
+
+                ButtonPrefab2[1].SetActive(false);
+                ButtonPrefab2[0].SetActive(false);
+
+                ButtonPrefab2[1].SetActive(true);
+                if (spring2) spring2.Press();
                 break;
         }
-    }
-
-
-    private IEnumerator SwapButtonImage(List<GameObject> buttonPrefabs)
-    {
-        buttonPrefabs[0].SetActive(false);
-        buttonPrefabs[1].SetActive(true);
-        yield return new WaitForSeconds(buttonResetDelay);
-        buttonPrefabs[1].SetActive(false);
-        buttonPrefabs[0].SetActive(true);
     }
 }

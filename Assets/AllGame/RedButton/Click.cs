@@ -9,35 +9,23 @@ public class Click : MonoBehaviour
     [SerializeField] GameObject downHand;
 
     [Header("按下后自动恢复时间")]
-    public float recoverDelay = 0f;
+    private float recoverDelay = 0.15f;
     public AudioSource clickSound;
     public Action OnPressed;
 
     private void Awake()
     {
-        // 初始显示抬手，隐藏按下
         if (raiseHand) raiseHand.SetActive(true);
         if (downHand) downHand.SetActive(false);
     }
 
-    /// <summary>
-    /// 外部调用
-    /// </summary>
-    //public void Press()
-    //{
-    //    // 切换到按下状态
-    //    if (raiseHand) raiseHand.SetActive(false);
-    //    if (downHand) downHand.SetActive(true);
-    //    OnPressed?.Invoke();
-
-    //    // 自动恢复
-    //    StopAllCoroutines();
-    //    StartCoroutine(RecoverCoroutine());
-    //}
-
+    Coroutine pressCoroutine;
     public void Press()
     {
-        StartCoroutine(PressRoutine());
+        if (pressCoroutine != null)
+            StopCoroutine(pressCoroutine);
+
+        pressCoroutine = StartCoroutine(PressRoutine());
     }
 
     private IEnumerator PressRoutine()
@@ -46,27 +34,20 @@ public class Click : MonoBehaviour
         if (raiseHand) raiseHand.SetActive(true);
         if (downHand) downHand.SetActive(false);
 
-        if (!clickSound.isPlaying) clickSound.Play();
-
-        yield return null; // 强制一帧
+        yield return null;
 
         // down
         if (raiseHand) raiseHand.SetActive(false);
         if (downHand) downHand.SetActive(true);
+
+        if (clickSound && !clickSound.isPlaying)
+            clickSound.Play();
 
         OnPressed?.Invoke();
 
         yield return new WaitForSeconds(recoverDelay);
 
         // raise
-        if (raiseHand) raiseHand.SetActive(true);
-        if (downHand) downHand.SetActive(false);
-    }
-
-    private IEnumerator RecoverCoroutine()
-    {
-        yield return new WaitForSeconds(recoverDelay);
-
         if (raiseHand) raiseHand.SetActive(true);
         if (downHand) downHand.SetActive(false);
     }

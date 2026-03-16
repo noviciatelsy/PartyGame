@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1134684153556143237}
+  - component: {fileID: 3021738330777700148}
   m_Layer: 0
   m_Name: BTN1
   m_TagString: Untagged
@@ -33,6 +34,22 @@ Transform:
   - {fileID: 4198649941877876801}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3021738330777700148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 958958818003245419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fdf3c776f1d63f4f975f441edaf792b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stiffness: 350
+  damping: 18
+  pressImpulse: -6
+  maxScale: 1.2
 --- !u!1 &2719571612322289958
 GameObject:
   m_ObjectHideFlags: 0
