@@ -517,7 +517,6 @@ MonoBehaviour:
   ButtonPrefab2:
   - {fileID: 240794574}
   - {fileID: 240794573}
-  buttonResetDelay: 0.15
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

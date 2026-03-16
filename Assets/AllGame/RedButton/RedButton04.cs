@@ -113,18 +113,28 @@ public class RedButton04 : MonoBehaviour
         }
     }
 
+    private Coroutine button1Coroutine;
+    private Coroutine button2Coroutine;
     private void HandleButtonPress(int playerIndex)
     {
         switch (playerIndex)
         {
             case 1:
-                StartCoroutine(SwapButtonImage(ButtonPrefab1));
+                //StartCoroutine(SwapButtonImage(ButtonPrefab1));
+                if (button1Coroutine != null)
+                    StopCoroutine(button1Coroutine);
+
+                button1Coroutine = StartCoroutine(SwapButtonImage(ButtonPrefab1));
                 break;
             case 2:
-                StartCoroutine(SwapButtonImage(ButtonPrefab2));
+                //StartCoroutine(SwapButtonImage(ButtonPrefab2));
+                if (button2Coroutine != null)
+                    StopCoroutine(button2Coroutine);
+                button2Coroutine = StartCoroutine(SwapButtonImage(ButtonPrefab2));
                 break;
         }
     }
+
 
     private IEnumerator SwapButtonImage(List<GameObject> buttonPrefabs)
     {

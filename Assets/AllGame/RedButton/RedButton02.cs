@@ -17,7 +17,7 @@ public class RedButton02 : MonoBehaviour
     public List<GameObject> ButtonPrefab2;
 
     [Header("按钮图片切换回弹延迟")]
-    public float buttonResetDelay = 0.15f;
+    private float buttonResetDelay = 0.05f;
 
     [Header("��������")]
     public Transform lineObject;

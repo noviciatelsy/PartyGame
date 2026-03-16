@@ -21,7 +21,7 @@ public class RedButton01 : MonoBehaviour
     private Coroutine winCoroutine;
 
     [Header("按钮图片切换回弹延迟")]
-    public float buttonResetDelay = 0.15f;
+    private float buttonResetDelay = 0.05f;
 
     private void Start()
     {
@@ -112,18 +112,29 @@ public class RedButton01 : MonoBehaviour
             LevelManager.Instance.NextLevel();
         }
     }
+
+    private Coroutine button1Coroutine;
+    private Coroutine button2Coroutine;
     private void HandleButtonPress(int playerIndex)
     {
         switch (playerIndex)
         {
             case 1:
-                StartCoroutine(SwapButtonImage(ButtonPrefab1));
+                //StartCoroutine(SwapButtonImage(ButtonPrefab1));
+                if (button1Coroutine != null)
+                    StopCoroutine(button1Coroutine);
+
+                button1Coroutine = StartCoroutine(SwapButtonImage(ButtonPrefab1));
                 break;
             case 2:
-                StartCoroutine(SwapButtonImage(ButtonPrefab2));
+                //StartCoroutine(SwapButtonImage(ButtonPrefab2));
+                if (button2Coroutine != null)
+                    StopCoroutine(button2Coroutine);
+                button2Coroutine = StartCoroutine(SwapButtonImage(ButtonPrefab2));
                 break;
         }
     }
+
 
     private IEnumerator SwapButtonImage(List<GameObject> buttonPrefabs)
     {

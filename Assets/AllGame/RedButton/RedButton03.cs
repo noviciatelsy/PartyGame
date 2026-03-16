@@ -221,27 +221,34 @@ public class RedButton03 : MonoBehaviour
             player2Text.text = value;
     }
 
+    private Coroutine button1Coroutine;
+    private Coroutine button2Coroutine;
     private void HandleButtonPress(int playerIndex)
     {
-        if (gameFinished) return;
-        if (canTouch) return;
         switch (playerIndex)
         {
             case 1:
-                StartCoroutine(SwapButtonImage(ButtonPrefab1));
+                //StartCoroutine(SwapButtonImage(ButtonPrefab1));
+                if (button1Coroutine != null)
+                    StopCoroutine(button1Coroutine);
+
+                button1Coroutine = StartCoroutine(SwapButtonImage(ButtonPrefab1));
                 break;
             case 2:
-                StartCoroutine(SwapButtonImage(ButtonPrefab2));
+                //StartCoroutine(SwapButtonImage(ButtonPrefab2));
+                if (button2Coroutine != null)
+                    StopCoroutine(button2Coroutine);
+                button2Coroutine = StartCoroutine(SwapButtonImage(ButtonPrefab2));
                 break;
         }
     }
+
 
     private IEnumerator SwapButtonImage(List<GameObject> buttonPrefabs)
     {
         buttonPrefabs[0].SetActive(false);
         buttonPrefabs[1].SetActive(true);
         yield return new WaitForSeconds(buttonResetDelay);
-        if (gameFinished) yield break;
         buttonPrefabs[1].SetActive(false);
         buttonPrefabs[0].SetActive(true);
     }
