@@ -10,6 +10,7 @@ public class PlayerEntity
 {
     [Header("References")]
     public RectTransform frameRect;
+    public AudioSource audiosource;
     public Image progressImage; 
     [Header("Center Fill (Optional)")]
     public Image progressLeftImage; 
@@ -236,6 +237,14 @@ public class PlayerUI : MonoBehaviour
     {
         if (player_1 != null && player_1.playerID == playerID) player_1.isPressing = true;
         if (player_2 != null && player_2.playerID == playerID) player_2.isPressing = true;
+        // 播放长按音效（若配置了 AudioSource）
+        PlayerEntity p = (player_1 != null && player_1.playerID == playerID) ? player_1 : player_2;
+        if (p != null && p.audiosource != null)
+        {
+            p.audiosource.loop = true;
+            if (!p.audiosource.isPlaying)
+                p.audiosource.Play();
+        }
     }
 
     public void StopHoldForPlayer(int playerID)
@@ -246,6 +255,12 @@ public class PlayerUI : MonoBehaviour
         if (p != null)
         {
             p.currentVelocity -= gravity * Time.deltaTime * 0.5f;
+            // 停止长按音效
+            if (p.audiosource != null && p.audiosource.isPlaying)
+            {
+                p.audiosource.Stop();
+                p.audiosource.loop = false;
+            }
         }
     }
 
@@ -260,6 +275,17 @@ public class PlayerUI : MonoBehaviour
         if (p2NormalObj) p2NormalObj.SetActive(true);
         if (p2WinObj) p2WinObj.SetActive(false);
         if (p2LoseObj) p2LoseObj.SetActive(false);
+        // 确保长按音效被停止
+        if (player_1 != null && player_1.audiosource != null && player_1.audiosource.isPlaying)
+        {
+            player_1.audiosource.Stop();
+            player_1.audiosource.loop = false;
+        }
+        if (player_2 != null && player_2.audiosource != null && player_2.audiosource.isPlaying)
+        {
+            player_2.audiosource.Stop();
+            player_2.audiosource.loop = false;
+        }
     }
 
     // 头像切换方法
