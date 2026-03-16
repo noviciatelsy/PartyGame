@@ -11,6 +11,9 @@ public enum PlayerType
 public class PlayerController : MonoBehaviour
 {
     public PlayerType player;
+    [Header("Audio")]
+    public AudioClip jumpClip;      // 跳跃音效
+    private AudioSource audioSource; // 播放器
 
     [Header("Move")]
     public float moveSpeed = 6f;
@@ -41,6 +44,9 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         wallLayer = LayerMask.GetMask("Wall"); // 确保墙体在 Wall Layer
         groundLayer = LayerMask.GetMask("Wall", "OnewayPlatform");
+
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.playOnAwake = false;
     }
 
     private void Start()
@@ -142,6 +148,11 @@ public class PlayerController : MonoBehaviour
         if (jumpCount >= maxJump) return;
 
         //Debug.Log($"[FixedUpdate] velocity: ({rb.velocity.x:F2}, {rb.velocity.y:F2}), moveDir: {moveDir}, jumpCount: {jumpCount}, Wall Right: {wallRight}, Wall Left: {wallLeft}, isGround: {isGround}");
+        if (jumpClip != null && audioSource != null)
+        {
+            audioSource.pitch = UnityEngine.Random.Range(0.95f, 1.05f); // 随机音高，防止重复感
+            audioSource.PlayOneShot(jumpClip);
+        }
 
         if (isWallSliding)
         {
@@ -150,7 +161,7 @@ public class PlayerController : MonoBehaviour
             rb.velocity = new Vector2(moveSpeed * jumpDir, jumpForceY);
         }
         else
-        {
+        {   
             // 普通跳跃
             rb.velocity = new Vector2(moveSpeed * moveDir, jumpForceY);
         }
