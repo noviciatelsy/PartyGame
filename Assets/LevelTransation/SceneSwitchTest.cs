@@ -18,21 +18,21 @@ public class SceneSwitchTest : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            if (!string.IsNullOrEmpty(scene1Name))
-            {
-                StartCoroutine(LoadLevel(scene1Name));
-            }
-        }
+        //if (Input.GetKeyDown(KeyCode.Alpha1))
+        //{
+        //    if (!string.IsNullOrEmpty(scene1Name))
+        //    {
+        //        StartCoroutine(LoadLevel(scene1Name));
+        //    }
+        //}
 
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            if (!string.IsNullOrEmpty(scene2Name))
-            {
-                StartCoroutine(LoadLevel(scene2Name));
-            }
-        }
+        //if (Input.GetKeyDown(KeyCode.Alpha2))
+        //{
+        //    if (!string.IsNullOrEmpty(scene2Name))
+        //    {
+        //        StartCoroutine(LoadLevel(scene2Name));
+        //    }
+        //}
     }
 
     IEnumerator LoadLevel(string sceneName)

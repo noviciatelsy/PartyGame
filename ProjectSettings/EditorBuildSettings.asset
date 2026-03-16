@@ -8,10 +8,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/AAABeginScene.unity
     guid: 8418c6e5dd682da41a2dd6b11311d61b
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/TestScene1.unity
     guid: 21fc575854758a649a1a38854aef68b3
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/TestScene2.unity
     guid: c6310ab10638dd047a8c302f3c698d00
   - enabled: 1
@@ -56,4 +56,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/StickHero.unity
     guid: 085dc6e424a81a64d9064031e8144e6e
+  - enabled: 1
+    path: Assets/Scenes/Face2.unity
+    guid: e6944af2f2807894b92a85f52e68756b
+  - enabled: 1
+    path: Assets/Scenes/Face3.unity
+    guid: cc0f1f1b2c4f6f643bff1317576ce4a2
+  - enabled: 1
+    path: Assets/Scenes/Face4.unity
+    guid: 05d7b323df9bd5f489ec46e7b15896ca
   m_configObjects: {}

@@ -3,8 +3,8 @@ using UnityEngine;
 public class FaceFeature : MonoBehaviour
 {
     [Header("下落速度区间")]
-    private float minFallSpeed = 8f;
-    private float maxFallSpeed = 15f;
+    private float minFallSpeed = 5f;
+    private float maxFallSpeed = 9f;
 
     [Header("目标Y位置")]
     public float targetY;
@@ -20,6 +20,7 @@ public class FaceFeature : MonoBehaviour
     public void Init(FaceController controller)
     {
         face = controller;
+
     }
 
     public void StartFalling()
@@ -78,4 +79,11 @@ public class FaceFeature : MonoBehaviour
 
         face.OnFeatureStopped(distance);
     }
+
+    [Header("正确图片")]
+    public SpriteRenderer correctSprite;
+    private float revealDuration = 1f;
+
+    private Coroutine revealCoroutine;
+    
 }

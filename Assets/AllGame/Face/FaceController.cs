@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
@@ -33,7 +34,13 @@ public class FaceController : MonoBehaviour
 
         if (scoreText != null)
             scoreText.gameObject.SetActive(false);
-
+        if (correctSprite != null)
+        {
+            Color c = correctSprite.color;
+            c.a = 0f;
+            correctSprite.color = c;
+        }
+        
         // 初始化五官
         foreach (var f in features)
         {
@@ -140,5 +147,39 @@ public class FaceController : MonoBehaviour
         }
 
         facemanager.RegisterScore(player, score);
+    }
+
+    [Header("正确图片")]
+    public SpriteRenderer correctSprite;
+
+    private float revealDuration = 1.0f;
+    public void ShowCorrectImage()
+    {
+        if (correctSprite != null)
+            StartCoroutine(RevealRoutine());
+    }
+
+    IEnumerator RevealRoutine()
+    {
+        float timer = 0f;
+
+        Color c = correctSprite.color;
+        c.a = 0f;
+        correctSprite.color = c;
+
+        while (timer < revealDuration)
+        {
+            timer += Time.deltaTime;
+
+            float t = timer / revealDuration;
+
+            c.a = Mathf.Lerp(0f, 1f, t);
+            correctSprite.color = c;
+
+            yield return null;
+        }
+
+        c.a = 1f;
+        correctSprite.color = c;
     }
 }

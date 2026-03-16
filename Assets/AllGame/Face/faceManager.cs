@@ -28,11 +28,30 @@ public class faceManager : MonoBehaviour
         CheckGameEnd();
     }
 
+    public FaceController player1Controller;
+    public FaceController player2Controller;
     void CheckGameEnd()
     {
         if (!player1Finished || !player2Finished)
             return;
 
+
+        // ÏÔÊ¾ÕýÈ·Í¼Æ¬
+        if (player1Controller != null)
+            player1Controller.ShowCorrectImage();
+
+        if (player2Controller != null)
+            player2Controller.ShowCorrectImage();
+
+        
+
+        if (winCoroutine == null)
+            winCoroutine = StartCoroutine(WinDelayCoroutine());
+    }
+
+    private IEnumerator WinDelayCoroutine()
+    {
+        yield return new WaitForSeconds(1.1f);
         if (player1Score > player2Score)
         {
             Debug.Log("Player 1 Wins!");
@@ -45,13 +64,6 @@ public class faceManager : MonoBehaviour
         }
         else
             Debug.Log("Draw!");
-
-        if (winCoroutine == null)
-            winCoroutine = StartCoroutine(WinDelayCoroutine());
-    }
-
-    private IEnumerator WinDelayCoroutine()
-    {
         yield return new WaitForSeconds(3f);
 
         if (LevelManager.Instance != null)
@@ -59,4 +71,5 @@ public class faceManager : MonoBehaviour
             LevelManager.Instance.NextLevel();
         }
     }
+
 }

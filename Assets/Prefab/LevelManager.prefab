@@ -53,8 +53,6 @@ MonoBehaviour:
     weight: 2
   - sceneName: RedButton01
     weight: 1
-  - sceneName: face
-    weight: 3
   - sceneName: DestroyEar
     weight: 3
   - sceneName: CowBoyFight
@@ -71,5 +69,13 @@ MonoBehaviour:
     weight: 3
   - sceneName: StickHero
     weight: 3
+  - sceneName: Face
+    weight: 3
+  - sceneName: Face2
+    weight: 3
+  - sceneName: Face3
+    weight: 2
+  - sceneName: Face4
+    weight: 2
   avoidRepeat: 1
   Transition: {fileID: 0}
