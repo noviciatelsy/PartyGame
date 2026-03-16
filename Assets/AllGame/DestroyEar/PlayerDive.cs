@@ -19,7 +19,7 @@ public class PlayerDive : MonoBehaviour
     private bool isHolding = false;
     private bool isDead = false;
     public bool isfinished = false;
-
+    public AudioSource diveAudioSource;
     public float introDuration = 2.5f;
     private bool introFinished = false;
     private float introTimer = 0f;
@@ -95,6 +95,20 @@ public class PlayerDive : MonoBehaviour
     {
         if (isDead) return;
         isHolding = hold;
+        if (isHolding)
+        {
+            if (diveAudioSource != null && !diveAudioSource.isPlaying)
+            {
+                diveAudioSource.Play();
+            }
+        }
+        else
+        {
+            if (diveAudioSource != null && diveAudioSource.isPlaying)
+            {
+                diveAudioSource.Stop();
+            }
+        }
     }
 
     public float GetDepth()

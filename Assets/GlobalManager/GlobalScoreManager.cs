@@ -143,8 +143,8 @@ public class GlobalScoreManager : MonoBehaviour
         yield return new WaitForSeconds(delayBeforeGameOver);
         if (LevelManager.Instance != null)
         {
-            LevelManager.Instance.LoadLevel(gameOverScene);
             OnGameEnd?.Invoke(winnerPlayerID);
+            LevelManager.Instance.LoadLevel(gameOverScene);
         }
     }
 

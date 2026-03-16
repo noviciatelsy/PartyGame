@@ -1567,6 +1567,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4164723273317612953, guid: 5f812c178c33b6146ac21a8fa6d0f026, type: 3}
+      propertyPath: levels.Array.data[10].weight
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4164723273317612953, guid: 5f812c178c33b6146ac21a8fa6d0f026, type: 3}
       propertyPath: levels.Array.data[3].sceneName
       value: RedButton04
       objectReference: {fileID: 0}

@@ -9,7 +9,7 @@ public class DiveGameManager : MonoBehaviour
 {
     public PlayerDive player1;
     public PlayerDive player2;
-
+    public AudioSource deadMusicSource;
     public TMP_Text timerText;
     public float gameDuration = 15f;
     private float timer;
@@ -80,7 +80,7 @@ public class DiveGameManager : MonoBehaviour
     public void PlayerFailed(PlayerDive player)
     {
         if (gameFinished) return;
-
+        deadMusicSource?.Play();
         gameFinished = true;
 
         PlayerDive winner;

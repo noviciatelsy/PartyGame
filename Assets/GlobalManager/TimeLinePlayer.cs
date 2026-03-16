@@ -1,26 +1,38 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
 
 public class TimeLinePlayer : MonoBehaviour
 {
+    public AudioSource aS;
     public PlayableDirector timeline_1;
     public PlayableDirector timeline_2;
-    void Awake()
-    {
-        GlobalScoreManager.Instance.OnGameEnd += HandleGameEnd;
-    }
 
-    private void HandleGameEnd(int winnerPlayerID)
+    void Start()
     {
-        if (winnerPlayerID == 1)
+        if (GlobalScoreManager.Instance == null)
         {
-            timeline_1.Play();
+            Debug.LogError("TimeLinePlayer: GlobalScoreManager ¶ªÊ§£¡");
+            return;
         }
-        else if (winnerPlayerID == 2)
+        int p1Score = GlobalScoreManager.Instance.GetScore(1);
+        int p2Score = GlobalScoreManager.Instance.GetScore(2);
+
+        if (p1Score > p2Score)
         {
-            timeline_2.Play();
+            if (timeline_1 != null) timeline_1.Play();
         }
+        else if (p2Score > p1Score)
+        {
+            if (timeline_2 != null) timeline_2.Play();
+        }
+
+        if (aS != null)
+        {
+            aS.Play();
+        }
+    }
+    public void ExitGame()
+    {
+        LevelManager.Instance.LoadLevel(LevelManager.Instance.mainMenuScene);
     }
 }

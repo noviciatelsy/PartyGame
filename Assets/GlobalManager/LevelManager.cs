@@ -16,6 +16,8 @@ public class LevelManager : MonoBehaviour
     public AudioClip bgm3;
     [Header("ZZZCredits专属BGM")]
     public AudioClip creditsBgm;
+    [Header("Game Over Scene")]
+    public string gameOverSceneName = "GameEnd";
     private AudioSource bgmSource;
     public string mainMenuScene = "AAABeginScene";
     private bool bgmChosen = false;
@@ -60,6 +62,23 @@ public class LevelManager : MonoBehaviour
         isLoadingLevel = false;
         Time.timeScale = 1f;
         StartCoroutine(HandleSceneTransition());
+        // 如果进入最终结算场景，停止所有音源并返回（由结算场景自行播放音频）
+        if (!string.IsNullOrEmpty(gameOverSceneName) && scene.name == gameOverSceneName)
+        {
+            if (bgmSource != null)
+            {
+                bgmSource.Stop();
+                bgmSource.clip = null;
+                bgmChosen = false;
+            }
+
+            AudioSource[] all = FindObjectsOfType<AudioSource>();
+            foreach (var a in all)
+            {
+                try { a.Stop(); } catch { }
+            }
+            return;
+        }
         // 主界面：停止并重置
         if (scene.name == mainMenuScene)
         {
