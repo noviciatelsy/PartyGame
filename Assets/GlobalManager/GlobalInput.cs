@@ -163,7 +163,7 @@ public class GlobalInput : MonoBehaviour
 
             MouseHolding = false;
 
-            OnMouseUp?.Invoke(); // ✅ 在真正松开时触发
+            OnMouseUp?.Invoke(); //在真正松开时触发
 
             float duration = Time.unscaledTime - mousePressStart;
 
