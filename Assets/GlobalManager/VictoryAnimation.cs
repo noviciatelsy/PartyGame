@@ -265,5 +265,8 @@ public class VictoryAnimation : MonoBehaviour
 
         coin.position = coinTarget.position;
         coin.localScale = Vector3.one * coinFinalScale;
+        var camShake = Camera.main ? Camera.main.GetComponent<CameraEffects.CameraShake>() : null;
+        if (camShake != null)
+            StartCoroutine(camShake.Shake());
     }
 }

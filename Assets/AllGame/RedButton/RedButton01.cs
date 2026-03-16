@@ -20,8 +20,7 @@ public class RedButton01 : MonoBehaviour
     private bool gameFinished = false;
     private Coroutine winCoroutine;
 
-    [Header("按钮图片切换回弹延迟")]
-    private float buttonResetDelay = 0.05f;
+    private float buttonResetDelay = 0.02f;
 
     private void Start()
     {
