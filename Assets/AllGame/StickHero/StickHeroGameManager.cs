@@ -220,7 +220,7 @@ public class StickHeroGameManager : MonoBehaviour
         }
         var camShake = Camera.main ? Camera.main.GetComponent<CameraEffects.CameraShake>() : null;
         if (camShake != null)
-            StartCoroutine(camShake.Shake());
+            StartCoroutine(camShake.ShakeWithFollow());
         // ������Լ�UI
         if (winCoroutine == null)
             winCoroutine = StartCoroutine(WinDelayCoroutine());

@@ -106,7 +106,8 @@ public class DiveGameManager : MonoBehaviour
 
         // Ê¤ÀûÕßµ­³ö
         StartCoroutine(WinnerFadeRoutine(winner));
-
+        var camShake = Camera.main ? Camera.main.GetComponent<CameraEffects.CameraShake>() : null;
+        if (camShake != null) StartCoroutine(camShake.ShakeWithFollow());
         if (winCoroutine == null)
             winCoroutine = StartCoroutine(WinDelayCoroutine());
     }
@@ -158,7 +159,6 @@ public class DiveGameManager : MonoBehaviour
         {
             Debug.Log("Draw!");
         }
-
         player1.isfinished = true;
         player2.isfinished = true;
         StartCoroutine(WinnerFadeRoutine(player1));
