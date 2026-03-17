@@ -14,11 +14,30 @@ public class StartSceneManager : MonoBehaviour
     {
         playableDirector.Play();
     }
+    void Start()
+    {
+        Initialize();
+    }
+
     public void Initialize()
     {
-        startButton.onClick.AddListener(() => LevelManager.Instance.NextLevel());
-        chooseButton.onClick.AddListener(() => LevelManager.Instance.LoadLevel("ZZZCredits"));
-        exitButton.onClick.AddListener(() => Application.Quit());
+        if (startButton != null)
+        {
+            startButton.onClick.RemoveAllListeners();
+            startButton.onClick.AddListener(() => LevelManager.Instance.NextLevel());
+        }
+
+        if (chooseButton != null)
+        {
+            chooseButton.onClick.RemoveAllListeners();
+            chooseButton.onClick.AddListener(() => LevelManager.Instance.LoadLevel("ZZZCredits"));
+        }
+
+        if (exitButton != null)
+        {
+            exitButton.onClick.RemoveAllListeners();
+            exitButton.onClick.AddListener(() => Application.Quit());
+        }
     }
 
 }

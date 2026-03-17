@@ -1,14 +1,23 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
-
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 public class TimeLinePlayer : MonoBehaviour
 {
     public AudioSource aS;
     public PlayableDirector timeline_1;
     public PlayableDirector timeline_2;
-
+    public List<Button> exitButtons;
     void Start()
     {
+        foreach (var btn in exitButtons)
+        {
+            btn.onClick.AddListener(() =>
+      {
+          SceneManager.LoadScene(LevelManager.Instance.mainMenuScene);
+      });
+        }
         if (GlobalScoreManager.Instance == null)
         {
             Debug.LogError("TimeLinePlayer: GlobalScoreManager ¶ªÊ§£¡");

@@ -50,9 +50,11 @@ public class LevelManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+        else
+        {
         Instance = this;
         DontDestroyOnLoad(gameObject);
-
+        }
         GenerateLevelSequence(12);
 
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -97,6 +99,15 @@ public class LevelManager : MonoBehaviour
                 bgmChosen = false;
             }
             firstGameEnter = true;
+            
+            forceLoading = false; 
+            
+            if (GlobalScoreManager.Instance != null)
+            {
+                GlobalScoreManager.Instance.isGameOver = false; 
+                GlobalScoreManager.Instance.ResetScore(); 
+            }
+
             return;
         }
         if (scene.name == "ZZZCredits")
