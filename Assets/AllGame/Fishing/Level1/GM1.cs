@@ -15,45 +15,8 @@ public class GM1 : MonoBehaviour
     private Action<GlobalInput.InputType> spaceActionHandler;
     private Action<GlobalInput.InputType> mouseActionHandler;
     private bool gameFinished = false;
-public LevelTimer levelTimer;
     void Start()
     {
-        levelTimer = GameObject.FindObjectOfType<LevelTimer>();
-        levelTimer.OnTimerEndCallBack += () =>
-        {
-            if (winCoroutine != null || gameFinished) return;
-
-            PlayerEntity winner = null;
-            var p1 = playerUIComp.player_1;
-            var p2 = playerUIComp.player_2;
-
-            if (p1 != null && p2 != null)
-            {
-                winner = p1.progress >= p2.progress ? p1 : p2;
-            }
-            else
-            {
-                winner = p1 != null ? p1 : p2;
-            }
-
-            if (winner != null)
-            {
-                Debug.Log($"Time's up! {winner.playerName} wins (progress: {winner.progress:F2})");
-                if (fishes != null)
-                    foreach (var f in fishes) if (f != null) f.enabled = false;
-
-                if (winner.playerID == 1)
-                    GlobalScoreManager.Instance.AddScore(1, 1);
-                else
-                    GlobalScoreManager.Instance.AddScore(2, 1);
-
-                // Í·ÏñÇÐ»»ÓëÕð¶¯
-                playerUIComp.ShowPortraits(winner.playerID);
-                playerUIComp.ShakeCamera();
-            }
-
-            winCoroutine = StartCoroutine(MatchWinCoroutine(winner));
-        };
         Time.timeScale = 1f; 
         foreach (var fish in fishes)
         {
@@ -114,6 +77,19 @@ public LevelTimer levelTimer;
             playerUIComp.StopHoldForPlayer(2);
         }
         mouseWasDown = mouseDown;
+        if (!gameFinished && playerUIComp != null)
+        {
+            var p1 = playerUIComp.player_1;
+            var p2 = playerUIComp.player_2;
+            if (p1 != null && p1.progress >= 1f)
+            {
+                HandleResult(p1, true);
+            }
+            else if (p2 != null && p2.progress >= 1f)
+            {
+                HandleResult(p2, true);
+            }
+        }
     }
     private void HandleResult(PlayerEntity p, bool success)
     {

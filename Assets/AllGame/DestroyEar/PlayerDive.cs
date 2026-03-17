@@ -11,7 +11,7 @@ public class PlayerDive : MonoBehaviour
     }
 
     public PlayerType playerType;
-
+    public Transform failTransformY;
     [Header("Dive Settings")]
     public float diveSpeed = 5f;
     public SpriteRenderer depthSprite;
@@ -59,14 +59,13 @@ public class PlayerDive : MonoBehaviour
 
         if (isHolding)
         {
-            // 第一次开始下潜
             if (!diveSpriteSwitched)
             {
                 SwitchToDiveSprite();
             }
             transform.position += Vector3.down * diveSpeed * Time.deltaTime;
 
-            if (transform.position.y < -20f)
+            if (transform.position.y < failTransformY.position.y)
             {
                 if (failCoroutine == null)
                 {
